@@ -614,6 +614,8 @@ def apply_changes(film, shot, changes, redo_keyframe=False, why=()):
 FILM_REVIEW = strict({
     "score": I,
     "overall": S,
+    "strengths": arr(S),
+    "weaknesses": arr(S),
     "pacing": arr(S),
     "shots": arr(strict({
         "shot_id": S,
@@ -630,19 +632,33 @@ def critique(film, cut, timeline):
     """Muse Wonder watches the whole cut against the shot timeline and returns shot-level fixes."""
     meta.CONTEXT.pop("shot", None)
     lines = "\n".join(f"{t0:6.1f}-{t1:6.1f} s  {sid}: {desc}" for sid, t0, t1, desc in timeline)
-    r = meta.chat("muse-wonder-1.0", [
+    messages = [
         {"role": "system", "content":
             "You are a film director and editor giving notes on the rough cut of a wordless 2.5D animated short "
             "(painted stills cut into depth layers and filmed with a virtual camera; characters can only breathe, "
-            "bend their neck and hop). Judge story clarity, emotional arc, pacing, continuity of the character and "
-            "places, and visual quality. Use the timeline to refer to shots by id. Only list shots that need a "
-            "change, using only the allowed values."},
+            "bend their neck and hop). Watch the whole cut and judge story clarity, emotional arc, pacing, "
+            "continuity of the character and places, and visual quality. score is an integer from 0 to 10. "
+            "strengths and weaknesses: at least three specific observations each, citing shot ids from the "
+            "timeline. In shots, list only shots that need a change, with the problem in a sentence and only the "
+            "allowed values."},
         {"role": "user", "content": [
             {"type": "text", "text": f"Story brief:\n{(film.root / 'story.md').read_text(encoding='utf-8')}\n\n"
                                      f"Timeline of the cut:\n{lines}"},
             {"type": "video_url", "video_url": {"url": str(cut), "fps": 1}},
         ]},
-    ], schema=FILM_REVIEW, max_tokens=16000, reasoning_effort="medium")
+    ]
+    for effort in ("medium", "high"):
+        r = meta.chat("muse-wonder-1.0", json.loads(json.dumps(messages)), schema=FILM_REVIEW, max_tokens=24000,
+                      reasoning_effort=effort)
+        problems = [n for n in r["shots"] if n["problem"].strip().lower() not in ("", "none", "n/a")]
+        # A real review stays on its scale and engages with the film; anything else is a degenerate answer.
+        if 0 <= r["score"] <= 10 and len(r["weaknesses"]) >= 2 and (problems or r["score"] >= 8):
+            r["shots"] = problems
+            break
+        print(f"  critique rejected (score {r['score']}, {len(r['weaknesses'])} weaknesses); retrying deeper")
+    else:
+        r["unreliable"] = True
+        r["shots"] = []
     (film.root / "critique.json").write_text(json.dumps(r, indent=2, ensure_ascii=False), encoding="utf-8")
     return r
 
@@ -920,9 +936,10 @@ def main():
     if a.stage == "critique":
         out, timeline = cut(film, res)
         r = critique(film, out, timeline)
-        print(f"Muse Wonder: {r['score']}/10. {r['overall']}")
-        for p in r["pacing"]:
-            print(" pacing:", p)
+        print(f"Muse Wonder: {r['score']}/10{' (UNRELIABLE)' if r.get('unreliable') else ''}. {r['overall']}")
+        for label in ("strengths", "weaknesses", "pacing"):
+            for p in r.get(label, []):
+                print(f" {label}: {p}")
         apply_critique(film, r)
         return print(f"spent ${meta.spent():.2f}")
     for shot in film.shots(only):
