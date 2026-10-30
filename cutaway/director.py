@@ -212,6 +212,8 @@ def keyframe(film, shot):
         base += (" Use the reference photographs only for the real architecture and layout of this place in "
                  "Port Louis, Mauritius; repaint everything in the film's style.")
     base += " No legible text, logos or brand names."
+    if st.get("repaint_notes"):  # why the previous painting was rejected by a review or critique
+        base += " This repaint must fix: " + " ".join(st["repaint_notes"])
     notes = ""
     for attempt in range(3):
         prompt = base + (f" Avoid these problems from a previous attempt: {notes}" if notes else "")
@@ -509,12 +511,14 @@ def render(film, shot, resolution=(960, 540), stills=None):
     else:
         out = d / f"frames_{tag}"
         mp4 = d / f"shot_{tag}.mp4"
-        if mp4.exists():
-            return mp4
-        # Frames from an older spec (or empty placeholders from an interrupted render) must not be reused.
+        # A clip is current only if it was made from exactly this spec; frames from an older spec (or empty
+        # placeholders from an interrupted render) must not be reused either.
         stamp = out / ".spec"
         current = sp.read_text()
         stale = not stamp.exists() or stamp.read_text() != current
+        if mp4.exists() and not stale:
+            return mp4
+        mp4.unlink(missing_ok=True)
         for f in out.glob("*.png"):
             if stale or f.stat().st_size == 0:
                 f.unlink()
@@ -597,17 +601,18 @@ def apply_changes(film, shot, changes, redo_keyframe=False, why=()):
     st.setdefault("revisions", []).append({"changes": changes, "redo_keyframe": redo_keyframe, "why": list(why)})
     shot.update(changes)
     film.save()
+    # Nothing is deleted: renders are stamped with their spec and redo themselves when it changes, so a
+    # reverted change costs nothing. A replaced keyframe is archived, not lost.
     d = film.shot_dir(shot)
-    for p in d.glob("shot_*.mp4"):
-        p.unlink()
-    for frames in d.glob("frames_*"):
-        for f in frames.glob("*.png"):
-            f.unlink()
-    if redo_keyframe:  # a new painting deserves a fresh review
+    if redo_keyframe:  # a new painting deserves a fresh review, and must know what to fix
         st.pop("keyframe_ok", None)
         st.pop("layers", None)
         st.pop("reviewed", None)
-        (d / "keyframe.png").unlink(missing_ok=True)
+        st["repaint_notes"] = list(why)
+        kf = d / "keyframe.png"
+        if kf.exists():
+            n = len(list(d.glob("keyframe_prev*.png")))
+            kf.rename(d / f"keyframe_prev{n}.png")
     film.save_state(shot)
 
 
@@ -689,9 +694,16 @@ def confirm_repaint(film, shot, problem):
     return r["repaint"]
 
 
+MAX_CRITIQUE_CHANGES = 5  # one critique round may change at most this many shots, in the order it lists them
+
+
 def apply_critique(film, r):
     by_id = {s["id"]: s for s in film.plan["shots"]}
+    changed = 0
     for note in r["shots"]:
+        if changed >= MAX_CRITIQUE_CHANGES:
+            print(f"  change budget spent; not applying the note on {note['shot_id']}")
+            continue
         shot = by_id.get(note["shot_id"])
         if not shot or shot["kind"] != "painted":
             continue
@@ -706,6 +718,7 @@ def apply_critique(film, r):
         if changes or redo:
             print(f"  {shot['id']}: {note['problem']} -> {changes} redo_keyframe={redo}")
             apply_changes(film, shot, changes, redo_keyframe=redo, why=[f"Muse Wonder: {note['problem']}"])
+            changed += 1
 
 
 NOTE_CHANGES = strict({
