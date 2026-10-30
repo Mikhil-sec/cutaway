@@ -405,9 +405,21 @@ def spec(film, shot, resolution=(960, 540)):
     with Image.open(L["plate"]) as p:
         image_size = list(p.size)
     spec_layers = [{"name": "plate", "image": L["plate"], "depth": BACK_DEPTH}]
+    # Two cut-out cards in the same plane make dithered transparency fight over pixels (a camouflage
+    # pattern), so keep characters at least GAP apart, nearest first, and the ground behind all of them.
+    GAP = 0.08
+    depths_sorted = sorted(range(len(L["subjects"])), key=lambda i: L["subjects"][i]["depth"])
+    sdepths, last = {}, -1e9
+    for i in depths_sorted:
+        sdepths[i] = max(L["subjects"][i]["depth"], last + GAP)
+        last = sdepths[i]
     if L["ground"]:
-        spec_layers.append({"name": "ground", **L["ground"]})
+        g = dict(L["ground"])
+        if sdepths:
+            g["depth"] = max(g["depth"], max(sdepths.values()) + 0.2)
+        spec_layers.append({"name": "ground", **g})
     for n, s in enumerate(L["subjects"]):
+        s = {**s, "depth": sdepths[n]}
         anim = puppet.motion(shot["action"] if n == 0 else "idle", shot["duration_s"], seed=n + 1,
                              facing=s["facing"])
         if not s["has_head"]:
@@ -417,10 +429,10 @@ def spec(film, shot, resolution=(960, 540)):
                                        "feet": s["pivots"]["feet"]}, "anim": anim})
     if L["foreground"]:
         spec_layers.append({"name": "foreground", **L["foreground"], "wind": {"amp": 1.0, "period": 3.4}})
-    shadows = [{"feet": s["pivots"]["feet"], "width_px": s["bbox"][2] - s["bbox"][0], "depth": s["depth"]}
-               for s in L["subjects"]]
+    shadows = [{"feet": s["pivots"]["feet"], "width_px": s["bbox"][2] - s["bbox"][0], "depth": sdepths[i]}
+               for i, s in enumerate(L["subjects"])]
 
-    main =L["subjects"][0] if L["subjects"] else None
+    main = {**L["subjects"][0], "depth": sdepths[0]} if L["subjects"] else None
     if main:
         x0, y0, x1, y1 = main["bbox"]
         wx, _, wz = camera.pixel_to_world((x0 + x1) / 2, (y0 + y1) / 2, main["depth"], image_size, ASPECT)
@@ -457,7 +469,9 @@ def spec(film, shot, resolution=(960, 540)):
             (x0, z0, x1, z1), sd = subject
             # The box was computed at the default margin; layer sizes scale with the margin.
             k = overscan / 1.25
-            fitted_subject = ((x0 * k, z0 * k, x1 * k, z1 * k), sd)
+            # One character needs room around it; a group only needs everyone in frame.
+            margin = 0.12 if len(L["subjects"]) == 1 else 0.02
+            fitted_subject = ((x0 * k, z0 * k, x1 * k, z1 * k), sd, margin)
         else:
             fitted_subject = None
         keys_o = [dict(k_) for k_ in keys]
@@ -568,7 +582,8 @@ def review(film, shot, res=(960, 540), force=False):
     if r["duration"] != "keep":
         changes["duration_s"] = round(min(10, max(3, shot["duration_s"] * (0.8 if r["duration"] == "shorter" else 1.2))), 1)
     print(f"  {shot['id']} review {r['score']}/10 {r['notes'][:1]} changes={changes} redo_keyframe={r['redo_keyframe']}")
-    redo = r["redo_keyframe"] and r["score"] <= 4  # repainting is costly: only for clearly failed frames
+    # Repainting is costly: only for clearly failed frames, and never a keyframe the human director locked.
+    redo = r["redo_keyframe"] and r["score"] <= 4 and not st.get("keyframe_locked")
     if r["score"] < 7 and (changes or redo):
         apply_changes(film, shot, changes, redo_keyframe=redo, why=r["notes"])
     elif r["score"] < 7 and r["redo_keyframe"]:
@@ -632,6 +647,32 @@ def critique(film, cut, timeline):
     return r
 
 
+REPAINT_CHECK = strict({"repaint": B, "reason": S})
+
+
+def confirm_repaint(film, shot, problem):
+    """A second model must agree before a painted keyframe is thrown away: Muse Spark looks at the frame
+    and the note, and says whether repainting the still would actually fix it (rather than timing,
+    camera or editing)."""
+    kf = film.shot_dir(shot) / "keyframe.png"
+    if not kf.exists():
+        return True
+    r = meta.chat(SPARK, [
+        {"role": "system", "content":
+            "An editor's note asks for this film keyframe to be repainted. Repainting is expensive and loses an "
+            "approved image. Say repaint=true only if the problem is in the painted still itself (wrong place, "
+            "missing or wrong characters or props, composition that contradicts the story beat) and a new "
+            "painting would fix it. Say false if the note is praise, asks to keep the frame, or is about "
+            "timing, camera, sound or editing."},
+        {"role": "user", "content": [
+            {"type": "text", "text": f"Shot {shot['id']}: {shot['keyframe_prompt']}\nEditor's note: {problem}"},
+            {"type": "image_url", "image_url": {"url": str(kf)}},
+        ]},
+    ], schema=REPAINT_CHECK, max_tokens=4000, reasoning_effort="low")
+    print(f"    repaint check for {shot['id']}: {r['repaint']} ({r['reason'][:90]})")
+    return r["repaint"]
+
+
 def apply_critique(film, r):
     by_id = {s["id"]: s for s in film.plan["shots"]}
     for note in r["shots"]:
@@ -644,9 +685,11 @@ def apply_critique(film, r):
         for k in ("intensity", "action"):
             if note[k] not in ("keep", shot[k]):
                 changes[k] = note[k]
-        if changes or note["redo_keyframe"]:
-            print(f"  {shot['id']}: {note['problem']} -> {changes} redo_keyframe={note['redo_keyframe']}")
-            apply_changes(film, shot, changes, redo_keyframe=note["redo_keyframe"], why=[note["problem"]])
+        redo = (note["redo_keyframe"] and not film.state(shot).get("keyframe_locked")
+                and confirm_repaint(film, shot, note["problem"]))
+        if changes or redo:
+            print(f"  {shot['id']}: {note['problem']} -> {changes} redo_keyframe={redo}")
+            apply_changes(film, shot, changes, redo_keyframe=redo, why=[f"Muse Wonder: {note['problem']}"])
 
 
 NOTE_CHANGES = strict({

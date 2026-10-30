@@ -48,7 +48,7 @@ def assemble(clips, out):
     inputs, graph = [], []
     for i, (path, trans) in enumerate(clips):
         inputs += ["-i", path]
-        chain = f"[{i}:v]settb=AVTB,fps=24,format=yuv420p"
+        chain = f"[{i}:v]fps=24,format=yuv420p,settb=1/24"
         if trans == "fade_from_black":
             chain += f",fade=in:st=0:d={FADE_IN_S}"
         graph.append(f"{chain}[v{i}]")
@@ -60,7 +60,8 @@ def assemble(clips, out):
             graph.append(f"[{acc}][v{i}]xfade=transition=fade:duration={XFADE_S}:offset={length - XFADE_S:.3f}[{nxt}]")
             length += d - XFADE_S
         else:
-            graph.append(f"[{acc}][v{i}]concat=n=2:v=1:a=0[{nxt}]")
+            # concat outputs a microsecond timebase; xfade needs both inputs on the same one
+            graph.append(f"[{acc}][v{i}]concat=n=2:v=1:a=0,settb=1/24[{nxt}]")
             length += d
         acc = nxt
     ff(*inputs, "-filter_complex", ";".join(graph), "-map", f"[{acc}]", "-c:v", "libx264", "-crf", 18,

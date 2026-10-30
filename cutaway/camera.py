@@ -136,17 +136,20 @@ def fit_keys(keys, back_depth, aspect, subject=None, edge_depths=(), steps=48):
             out.append(k2)
         return out
 
+    margin = subject[2] if subject and len(subject) > 2 else 0.12
+
     def ok(cand, framing=True):
         for pos, lens, pitch, yaw in _poses(cand, steps):
             if any(edge_overshoot(d, aspect, pos, lens, pitch, yaw) > -0.05 * d / 40 for d in depths):
                 return False
-            if framing and subject and subject_cut(subject[0], subject[1], aspect, pos, lens, pitch, yaw) > 0:
+            if framing and subject and subject_cut(subject[0], subject[1], aspect, pos, lens, pitch, yaw,
+                                                   margin) > 0:
                 return False
         return True
 
     centre = (0.0, 0.0)
     if subject:
-        (x0, z0, x1, z1), d = subject
+        (x0, z0, x1, z1), d = subject[:2]
         # Shifting the camera by c moves the view at the subject's depth by c: aim part-way at the subject.
         centre = ((x0 + x1) / 2, (z0 + z1) / 2)
     for framing in (True, False):
