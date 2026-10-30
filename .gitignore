@@ -8,3 +8,6 @@ out/
 *.lock
 ledger.json
 generation_log.jsonl
+refs/
+films/*/shots/
+films/*/cut*.mp4

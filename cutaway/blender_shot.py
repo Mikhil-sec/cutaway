@@ -15,7 +15,14 @@ Shot spec:
     layers: [{name, image, depth, pivot?: [px, py], follow?: layer name, anim?: {...}}]
         anim.rot:     [[t, degrees counter-clockwise], ...]  (around pivot)
         anim.breathe: {amp, period}                          (vertical scale around pivot)
+      or puppet layers (characters), which bend smoothly instead of hinging:
+        {name, image, depth, puppet: {weights, pivot, feet},
+         anim?: {bend: [[t, deg], ...], breathe: {amp, period, phase?}, hop: [[t, units], ...]}}
+      or wind layers (plants, umbrellas): {name, image, depth, wind: {amp, period}}
     fog: [{depth, opacity, speed, color?: [r, g, b]}]
+    shadows: [{feet: [px, py], width_px, depth, opacity?}]   (contact shadows under characters)
+    effects: [{type: "motes", depth, opacity?, scale?, drift?: [u/s, v/s]}
+              | {type: "flashes", depth, count?, rate? (per second each), peak?, seed?}]
     camera: {keys: [{t, pos: [x, y, z], lens?, focus?: layer name, pitch?, yaw?, roll?}],
              fstop?, shake?: {deg, units, hz}}
 """
@@ -26,10 +33,12 @@ import sys
 from pathlib import Path
 
 import bpy
+import numpy as np
 
-SENSOR_MM = 36.0
-REF_LENS_MM = 35.0
-OVERSCAN = 1.25  # same factor on every layer: alignment holds, and moves have room before the edges show
+sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
+from cutaway.camera import REF_LENS_MM, SENSOR_MM, edge_overshoot, layer_size, pixel_to_world  # noqa: E402
+
+BEND_MAX_DEG = 10.0  # the bend shape key at value 1; keyed values scale it
 
 
 def parse_args():
@@ -121,11 +130,6 @@ def fog_material(name, opacity, color):
     return mat, noise.inputs["W"]
 
 
-def layer_size(depth, aspect):
-    width = depth * SENSOR_MM / REF_LENS_MM * OVERSCAN
-    return width, width / aspect
-
-
 def add_plane(name, depth, aspect, mat):
     w, h = layer_size(depth, aspect)
     bpy.ops.mesh.primitive_plane_add(size=2, location=(0, depth, 0), rotation=(math.pi / 2, 0, 0))
@@ -136,11 +140,158 @@ def add_plane(name, depth, aspect, mat):
     return plane
 
 
-def pixel_to_world(px, py, depth, image_size, aspect):
-    """Where pixel (px, py) of a still lands on the plane at this depth."""
+def add_grid_layer(name, depth, aspect, mat, cols=64, rows=36):
+    """An image layer as a grid mesh (object at its depth) so it can deform, e.g. sway in the wind."""
     w, h = layer_size(depth, aspect)
-    iw, ih = image_size
-    return ((px / iw - 0.5) * w, depth, (0.5 - py / ih) * h)
+    us, vs = np.linspace(0, 1, cols), np.linspace(0, 1, rows)
+    verts = [((u - 0.5) * w, 0.0, (v - 0.5) * h) for v in vs for u in us]
+    faces = [(r * cols + c, r * cols + c + 1, (r + 1) * cols + c + 1, (r + 1) * cols + c)
+             for r in range(rows - 1) for c in range(cols - 1)]
+    mesh = bpy.data.meshes.new(name)
+    mesh.from_pydata(verts, [], faces)
+    uv = mesh.uv_layers.new(name="UVMap")
+    for poly in mesh.polygons:
+        for li in poly.loop_indices:
+            vi = mesh.loops[li].vertex_index
+            uv.data[li].uv = (us[vi % cols], vs[vi // cols])
+    obj = bpy.data.objects.new(name, mesh)
+    obj.location = (0.0, depth, 0.0)
+    bpy.context.scene.collection.objects.link(obj)
+    obj.data.materials.append(mat)
+    return obj, verts, w
+
+
+def add_wind_layer(i, layer, aspect):
+    """A layer whose upper parts sway more than their base: plants, umbrellas, hanging things."""
+    depth = float(layer["depth"])
+    obj, verts, w = add_grid_layer(layer.get("name", f"layer_{i}"), depth, aspect,
+                                   image_material(f"mat_{i}", layer["image"]))
+    obj.shape_key_add(name="Basis")
+    sway = obj.shape_key_add(name="sway")
+    sway.slider_min, sway.slider_max = -2.0, 2.0
+    zs = [z for _, _, z in verts]
+    z0, z1 = min(zs), max(zs)
+    reach = 0.012 * w  # sway at the very top, in scene units
+    for vi, (x, y, z) in enumerate(verts):
+        v = (z - z0) / (z1 - z0)
+        sway.data[vi].co = (x + reach * v ** 1.6, y, z - 0.15 * reach * v ** 2)
+    return obj, sway
+
+
+def motes_material(name, opacity, scale, seed):
+    """Small soft specks (dust, pollen) from a Voronoi texture; returns material and mapping Location socket."""
+    mat = new_material(name)
+    nt = mat.node_tree
+    coord = nt.nodes.new("ShaderNodeTexCoord")
+    mapping = nt.nodes.new("ShaderNodeMapping")
+    mapping.inputs["Scale"].default_value = (scale * 16 / 9, scale, 1)
+    vor = nt.nodes.new("ShaderNodeTexVoronoi")
+    vor.inputs["Scale"].default_value = 1.0
+    vor.inputs["Randomness"].default_value = 1.0
+    if "W" in vor.inputs:
+        vor.voronoi_dimensions = "4D"
+        vor.inputs["W"].default_value = seed
+    ramp = nt.nodes.new("ShaderNodeValToRGB")  # distance 0 -> opaque speck, fading to clear by 0.05
+    ramp.color_ramp.elements[0].position = 0.0
+    ramp.color_ramp.elements[0].color = (1, 1, 1, 1)
+    ramp.color_ramp.elements[1].position = 0.05
+    ramp.color_ramp.elements[1].color = (0, 0, 0, 1)
+    strength = nt.nodes.new("ShaderNodeMath")
+    strength.operation = "MULTIPLY"
+    strength.inputs[1].default_value = opacity
+    nt.links.new(coord.outputs["UV"], mapping.inputs["Vector"])
+    nt.links.new(mapping.outputs["Vector"], vor.inputs["Vector"])
+    nt.links.new(vor.outputs["Distance"], ramp.inputs["Fac"])
+    nt.links.new(ramp.outputs["Color"], strength.inputs[0])
+    finish_unlit(nt, (1.0, 0.95, 0.85), strength.outputs[0])
+    return mat, mapping.inputs["Location"]
+
+
+def glow_material(name):
+    """A soft round glow (a camera flash seen from afar); returns material and its strength socket."""
+    mat = new_material(name)
+    nt = mat.node_tree
+    coord = nt.nodes.new("ShaderNodeTexCoord")
+    grad = nt.nodes.new("ShaderNodeTexGradient")
+    grad.gradient_type = "SPHERICAL"
+    centre = nt.nodes.new("ShaderNodeMapping")  # move the gradient's centre to the plane's middle
+    centre.inputs["Location"].default_value = (-1, -1, 0)
+    centre.inputs["Scale"].default_value = (2, 2, 1)
+    strength = nt.nodes.new("ShaderNodeMath")
+    strength.operation = "MULTIPLY"
+    strength.inputs[1].default_value = 0.0
+    nt.links.new(coord.outputs["UV"], centre.inputs["Vector"])
+    nt.links.new(centre.outputs["Vector"], grad.inputs["Vector"])
+    nt.links.new(grad.outputs["Fac"], strength.inputs[0])
+    finish_unlit(nt, (1.0, 1.0, 1.0), strength.outputs[0])
+    return mat, strength.inputs[1]
+
+
+def add_shadow(i, layer, aspect, image_size):
+    """A soft contact shadow under a character's feet, on the ground just behind the character."""
+    depth = float(layer["depth"]) + 0.05
+    fx, _, fz = pixel_to_world(*layer["feet"], depth, image_size, aspect)
+    w = layer["width_px"] / image_size[0] * layer_size(depth, aspect)[0] * 0.95
+    mat, strength = glow_material(f"shadow_{i}")
+    nt = mat.node_tree
+    emit = next(n for n in nt.nodes if n.type == "EMISSION")
+    emit.inputs["Color"].default_value = (0, 0, 0, 1)
+    strength.default_value = layer.get("opacity", 0.45)
+    bpy.ops.mesh.primitive_plane_add(size=1, location=(fx, depth, fz), rotation=(math.pi / 2, 0, 0))
+    plane = bpy.context.active_object
+    plane.name = f"shadow_{i}"
+    plane.scale = (w, w * 0.16, 1)
+    plane.data.materials.append(mat)
+    return plane
+
+
+def add_puppet(i, layer, aspect, image_size):
+    """A character as one subdivided mesh that bends smoothly instead of hinging.
+
+    layer.puppet: {weights: .npy grid (rows bottom-to-top) of how much each vertex
+    follows the head, pivot: [px, py] (neck), feet: [px, py]}. Shape keys:
+    'bend' rotates each vertex around the neck by BEND_MAX_DEG x its weight;
+    'breathe' swells the body up from the feet.
+    """
+    pup = layer["puppet"]
+    depth = float(layer["depth"])
+    weights = np.load(pup["weights"])
+    rows, cols = weights.shape
+    w, h = layer_size(depth, aspect)
+    us = np.linspace(0, 1, cols)
+    vs = np.linspace(0, 1, rows)
+    # Local coordinates with the object at its depth: Eevee sorts see-through objects
+    # by origin, so an origin at the camera would draw the puppet over nearer layers.
+    verts = [((u - 0.5) * w, 0.0, (v - 0.5) * h) for v in vs for u in us]
+    faces = [(r * cols + c, r * cols + c + 1, (r + 1) * cols + c + 1, (r + 1) * cols + c)
+             for r in range(rows - 1) for c in range(cols - 1)]
+    mesh = bpy.data.meshes.new(f"puppet_{i}")
+    mesh.from_pydata(verts, [], faces)
+    uv = mesh.uv_layers.new(name="UVMap")
+    for poly in mesh.polygons:
+        for li in poly.loop_indices:
+            vi = mesh.loops[li].vertex_index
+            uv.data[li].uv = (us[vi % cols], vs[vi // cols])
+    obj = bpy.data.objects.new(layer.get("name", f"puppet_{i}"), mesh)
+    obj.location = (0.0, depth, 0.0)
+    bpy.context.scene.collection.objects.link(obj)
+    obj.data.materials.append(image_material(f"mat_{i}", layer["image"]))
+
+    nx, _, nz = pixel_to_world(*pup["pivot"], depth, image_size, aspect)
+    fx, _, fz = pixel_to_world(*pup["feet"], depth, image_size, aspect)
+    obj.shape_key_add(name="Basis")
+    bend = obj.shape_key_add(name="bend")
+    breathe = obj.shape_key_add(name="breathe")
+    th = math.radians(BEND_MAX_DEG)
+    flat = weights.reshape(-1)
+    for vi, (x, y, z) in enumerate(verts):
+        a = th * flat[vi]
+        dx, dz = x - nx, z - nz
+        bend.data[vi].co = (nx + dx * math.cos(a) - dz * math.sin(a), y, nz + dx * math.sin(a) + dz * math.cos(a))
+        breathe.data[vi].co = (fx + (x - fx) * 0.994, y, fz + (z - fz) * 1.02)
+    for key in (bend, breathe):
+        key.slider_min, key.slider_max = -2.0, 2.0
+    return obj, {"bend": bend, "breathe": breathe}
 
 
 def add_image_layer(i, layer, aspect, image_size):
@@ -171,16 +322,7 @@ class Shake:
 def check_edges(spec, aspect, frames):
     """Warn when the camera would see past the background painting's edge."""
     back = max(spec["layers"], key=lambda l: l["depth"])["depth"]
-    pw, ph = layer_size(back, aspect)
-    worst = 0.0
-    for t, pos, lens, pitch, yaw in frames:
-        dist = back - pos[1]
-        half_w = dist * (SENSOR_MM / 2) / lens
-        half_h = half_w / aspect
-        cx = pos[0] - dist * math.tan(math.radians(yaw))  # positive yaw turns left
-        cz = pos[2] + dist * math.tan(math.radians(pitch))
-        over = max(abs(cx) + half_w - pw / 2, abs(cz) + half_h - ph / 2)
-        worst = max(worst, over)
+    worst = max(edge_overshoot(back, aspect, pos, lens, pitch, yaw) for t, pos, lens, pitch, yaw in frames)
     if worst > 0:
         print(f"EDGE WARNING: the camera sees {worst:.2f} units past the background edge")
     else:
@@ -218,7 +360,18 @@ def main():
     depths = {}
     pivots = {}
     animated = []
+    puppets, winds = [], []
     for i, layer in enumerate(spec["layers"]):
+        if "puppet" in layer:
+            obj, shape_keys = add_puppet(i, layer, aspect, image_size)
+            depths[obj.name] = float(layer["depth"])
+            puppets.append((obj, shape_keys, layer.get("anim", {})))
+            continue
+        if "wind" in layer:
+            obj, sway = add_wind_layer(i, layer, aspect)
+            depths[obj.name] = float(layer["depth"])
+            winds.append((sway, layer["wind"], random.Random(i).uniform(0, 6.3)))
+            continue
         plane, piv = add_image_layer(i, layer, aspect, image_size)
         depths[plane.name] = float(layer["depth"])
         if piv is not None:
@@ -236,6 +389,35 @@ def main():
         mat, w_socket = fog_material(f"fog_{j}", fog["opacity"], fog.get("color", [0.82, 0.86, 0.9]))
         add_plane(f"fog_{j}", float(fog["depth"]), aspect, mat)
         fog_sockets.append((w_socket, fog.get("speed", 0.08)))
+
+    for j, sh in enumerate(spec.get("shadows", [])):
+        add_shadow(j, sh, aspect, image_size)
+
+    motes, flashes = [], []
+    for j, fx in enumerate(spec.get("effects", [])):
+        depth = float(fx["depth"])
+        if fx["type"] == "motes":
+            mat, loc = motes_material(f"motes_{j}", fx.get("opacity", 0.5), fx.get("scale", 26), j + 1)
+            add_plane(f"motes_{j}", depth, aspect, mat)
+            motes.append((loc, fx.get("drift", [0.02, -0.012])))
+        elif fx["type"] == "flashes":
+            rnd = random.Random(fx.get("seed", 5))
+            w, h = layer_size(depth, aspect)
+            for n in range(fx.get("count", 6)):
+                mat, strength = glow_material(f"flash_{j}_{n}")
+                size = w * rnd.uniform(0.05, 0.1)
+                bpy.ops.mesh.primitive_plane_add(size=1, location=(rnd.uniform(-0.4, 0.4) * w, depth,
+                                                                   rnd.uniform(-0.15, 0.3) * h),
+                                                 rotation=(math.pi / 2, 0, 0))
+                plane = bpy.context.active_object
+                plane.name = f"flash_{j}_{n}"
+                plane.scale = (size, size, 1)
+                plane.data.materials.append(mat)
+                t, events = rnd.uniform(0.2, 1.5), []
+                while t < spec["seconds"]:
+                    events.append(t)
+                    t += rnd.expovariate(fx.get("rate", 0.35))
+                flashes.append((strength, events, fx.get("peak", 0.9)))
 
     c = spec["camera"]
     keys = c["keys"]
@@ -277,9 +459,31 @@ def main():
                 b = anim["breathe"]
                 piv.scale = (1, 1, 1 + b["amp"] * math.sin(2 * math.pi * t / b["period"]))
                 piv.keyframe_insert("scale", frame=f)
+        for obj, shape_keys, anim in puppets:
+            if "bend" in anim:  # [[t, degrees counter-clockwise], ...]
+                shape_keys["bend"].value = keyed(anim["bend"], t) / BEND_MAX_DEG
+                shape_keys["bend"].keyframe_insert("value", frame=f)
+            b = anim.get("breathe")
+            if b:
+                shape_keys["breathe"].value = b["amp"] * math.sin(2 * math.pi * t / b["period"] + b.get("phase", 0))
+                shape_keys["breathe"].keyframe_insert("value", frame=f)
+            if "hop" in anim:  # [[t, scene units up], ...]
+                obj.location.z = keyed(anim["hop"], t)  # x and y stay at (0, depth)
+                obj.keyframe_insert("location", frame=f)
         for socket, speed in fog_sockets:
             socket.default_value = t * speed
             socket.keyframe_insert("default_value", frame=f)
+        for sway, wind, phase in winds:
+            p = wind.get("period", 3.2)
+            sway.value = wind.get("amp", 1.0) * (math.sin(2 * math.pi * t / p + phase)
+                                                 + 0.35 * math.sin(2 * math.pi * t / (p * 0.37) + 2 * phase))
+            sway.keyframe_insert("value", frame=f)
+        for loc, drift in motes:
+            loc.default_value = (drift[0] * t, drift[1] * t, 0)
+            loc.keyframe_insert("default_value", frame=f)
+        for strength, events, peak in flashes:
+            strength.default_value = peak * sum(math.exp(-(t - e) / 0.07) for e in events if 0 <= t - e < 0.5)
+            strength.keyframe_insert("default_value", frame=f)
         sampled.append((t, pos, lens, pitch, yaw))
 
     check_edges(spec, aspect, sampled)

@@ -7,9 +7,11 @@ is logged with its prompt in generation_log.jsonl, which also serves as the
 AI-disclosure record the film competition may ask for.
 """
 import base64
+import io
 import json
 import mimetypes
 import os
+import subprocess
 import time
 from datetime import datetime
 from pathlib import Path
@@ -32,6 +34,7 @@ TOKEN_PRICES = {  # USD per 1M tokens (input, output, cached input); dev.meta.ai
     "muse-wonder-1.0": (4.00, 20.00, 0.20),  # third-party listing; Meta's page not yet checked
 }
 IMAGE_TOKENS = 1600  # generous per-image input estimate, used only for the upfront reservation
+VIDEO_TOKENS_PER_FRAME = 1600  # same for each sampled video frame
 LEDGER = ROOT / "ledger.json"
 LOG = ROOT / "generation_log.jsonl"
 
@@ -82,14 +85,30 @@ def _reserve(model, n=1, cost=None):
         os.remove(lock)
 
 
+CONTEXT = {}  # e.g. {"film": "dodo", "shot": "s01"}: stamped on every log entry, for the disclosure report
+
+
 def _log(**entry):
     with LOG.open("a", encoding="utf-8") as f:
-        f.write(json.dumps({"time": datetime.now().isoformat(), **entry}, ensure_ascii=False) + "\n")
+        f.write(json.dumps({"time": datetime.now().isoformat(), **CONTEXT, **entry}, ensure_ascii=False) + "\n")
 
 
 def data_url(path):
     mime = mimetypes.guess_type(str(path))[0] or "image/png"
     return f"data:{mime};base64,{base64.b64encode(Path(path).read_bytes()).decode()}"
+
+
+def ref_data_url(path, max_side=1536):
+    """A reference image as a data URL, scaled down if large: Muse Image rejects big photos
+    ("image decode limit exceeded"), and references only guide the result."""
+    with Image.open(path) as im:
+        if max(im.size) <= max_side and Path(path).stat().st_size < 3_000_000:
+            return data_url(path)
+        im = im.convert("RGB")
+        im.thumbnail((max_side, max_side), Image.LANCZOS)
+        buf = io.BytesIO()
+        im.save(buf, "JPEG", quality=90)
+    return f"data:image/jpeg;base64,{base64.b64encode(buf.getvalue()).decode()}"
 
 
 def _client():
@@ -116,7 +135,7 @@ def image(prompt, out, size="1536x864", refs=()):
     body = {"model": model, "prompt": prompt, "n": 1, "size": size, "output_format": "png"}
     path = "/images/generations"
     if refs:
-        body["images"] = [{"image_url": data_url(r)} for r in refs]
+        body["images"] = [{"image_url": ref_data_url(r)} for r in refs]
         path = "/images/edits"
     _reserve(model)
     r = _post(path, body)
@@ -134,18 +153,24 @@ def chat(model, messages, schema=None, max_tokens=4000, reasoning_effort=None):
     {"type": "image_url", "image_url": {"url": <path>}} and are inlined here.
     The worst-case cost is reserved first, then settled to the billed usage.
     """
-    images = 0
+    images, video_frames, media_chars = 0, 0, 0
     for m in messages:
         if isinstance(m.get("content"), list):
             for part in m["content"]:
-                if part.get("type") == "image_url" and not part["image_url"]["url"].startswith(("data:", "http")):
-                    part["image_url"]["url"] = data_url(part["image_url"]["url"])
-                    images += 1
-    text_chars = len(json.dumps(messages)) - sum(
-        len(p["image_url"]["url"]) for m in messages if isinstance(m.get("content"), list)
-        for p in m["content"] if p.get("type") == "image_url")
+                kind = part.get("type")
+                if kind in ("image_url", "video_url"):
+                    src = part[kind]
+                    if not src["url"].startswith(("data:", "http")):
+                        local = src["url"]
+                        src["url"] = data_url(local) if kind == "video_url" else ref_data_url(local)
+                        if kind == "video_url":
+                            video_frames += _video_seconds(local) * (src.get("fps") or 2)
+                    images += kind == "image_url"
+                    media_chars += len(src["url"])
+    text_chars = len(json.dumps(messages)) - media_chars
     price_in, price_out, price_cached = TOKEN_PRICES[model]
-    est_in = text_chars / 3 + images * IMAGE_TOKENS + (len(json.dumps(schema)) / 3 if schema else 0)
+    est_in = (text_chars / 3 + images * IMAGE_TOKENS + video_frames * VIDEO_TOKENS_PER_FRAME
+              + (len(json.dumps(schema)) / 3 if schema else 0))
     reserved = (est_in * price_in + max_tokens * price_out) / 1e6
     _reserve(model, cost=reserved)
 
@@ -166,12 +191,18 @@ def chat(model, messages, schema=None, max_tokens=4000, reasoning_effort=None):
     content = choice["message"]["content"]
     _log(kind="chat", model=model, usage=u, cost_usd=round(billed, 6),
          prompt=[m["content"] if isinstance(m["content"], str) else
-                 [p.get("text", "<image>") for p in m["content"]] for m in messages],
+                 [p.get("text", f"<{p['type']}>") for p in m["content"]] for m in messages],
          reply=content)
     if content is None:  # reasoning tokens can use up the whole allowance before any answer
         raise RuntimeError(f"{model} gave no answer (finish_reason={choice.get('finish_reason')}, "
                            f"usage={u}); raise max_tokens or lower reasoning_effort")
     return json.loads(content) if schema else content
+
+
+def _video_seconds(path):
+    out = subprocess.run(["ffprobe", "-v", "error", "-show_entries", "format=duration", "-of", "csv=p=0",
+                          str(path)], capture_output=True, text=True).stdout.strip()
+    return float(out or 0)
 
 
 def segment(image_path, concept):

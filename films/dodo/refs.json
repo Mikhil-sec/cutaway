@@ -1,0 +1,14 @@
+{
+  "characters": {
+    "dodo": {"sheet": "refs/characters/dodo.png",
+             "description": "a plump grey-brown dodo with a large hooked dark beak, small white-grey wing feathers, curly tail tuft, yellow legs, round friendly eyes"}
+  },
+  "places": [
+    {"file": "refs/port_louis/unsplash_street_2C7ATUy4XQ0.jpg", "place": "downtown Port Louis street", "shows": "a wide downtown street with office towers, shops and pedestrians"},
+    {"file": "refs/port_louis/unsplash_chinatown_G0D9rRvn-Uk.jpg", "place": "Chinatown gate, Port Louis", "shows": "the ornate Chinatown gateway arch over a street"},
+    {"file": "refs/port_louis/unsplash_harbour_WX7iLclCnVI.jpg", "place": "Port Louis harbour", "shows": "container cranes and ships at dusk across the water"},
+    {"file": "refs/port_louis/unsplash_signalhill_IEheuRq4SyQ.jpg", "place": "Port Louis from Signal Hill", "shows": "dense hillside city seen from above"},
+    {"file": "refs/port_louis/unsplash_champdemars_R1Dfnqiajqo.jpg", "place": "Champ de Mars with Le Pouce and the Moka range", "shows": "the city and racecourse below the jagged Moka mountains"},
+    {"file": "refs/port_louis/wikimedia_caudan_cc0.jpg", "place": "Caudan Waterfront entrance", "shows": "a stone footbridge to an arched gate tower, palms and shopfronts"}
+  ]
+}

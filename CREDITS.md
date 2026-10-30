@@ -1,0 +1,22 @@
+# Credits and licences
+
+Reference photographs used as visual references for keyframe generation. They
+are repainted by Muse Image in the film's style and never appear as-is. The
+photo files themselves are not in this repository.
+
+| File (refs/port_louis/) | Shows | Author | Source | Licence |
+|---|---|---|---|---|
+| unsplash_street_2C7ATUy4XQ0.jpg | Downtown street | Talat Munshi | https://unsplash.com/photos/2C7ATUy4XQ0 | Unsplash License |
+| unsplash_signalhill_IEheuRq4SyQ.jpg | City from Signal Hill | Fabien TWB | https://unsplash.com/photos/IEheuRq4SyQ | Unsplash License |
+| unsplash_chinatown_G0D9rRvn-Uk.jpg | Chinatown gate | Ekaterina Antonova | https://unsplash.com/photos/G0D9rRvn-Uk | Unsplash License |
+| unsplash_harbour_WX7iLclCnVI.jpg | Harbour cranes at dusk | Yannick Sookree | https://unsplash.com/photos/WX7iLclCnVI | Unsplash License |
+| unsplash_champdemars_R1Dfnqiajqo.jpg | Champ de Mars, Le Pouce and the Moka range | Oosman Exptal. | https://unsplash.com/photos/R1Dfnqiajqo | Unsplash License |
+| wikimedia_caudan_cc0.jpg | Caudan Waterfront entrance | Benoît Prieur | https://commons.wikimedia.org/wiki/File:Caudan_Waterfront,_February_2020.jpg | CC0 1.0 |
+
+Photos contributed by a friend of the author (Caudan Waterfront) are used with their permission.
+
+## Software and models
+
+- Meta Muse Image, Muse Spark, Muse Wonder, SAM 3.1 (Meta Model API)
+- Blender (GPL), ffmpeg (LGPL/GPL)
+- meta-sam-parser (Meta), Pillow, NumPy, httpx, python-dotenv
