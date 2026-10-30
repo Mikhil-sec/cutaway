@@ -330,6 +330,29 @@ def check_edges(spec, aspect, frames):
     return worst
 
 
+def explode_camera(scene, cam, cam_data, spec):
+    """For the making-of: start on the film frame, then swing out to the side to reveal the layer stack."""
+    cam.animation_data_clear()
+    cam_data.animation_data_clear()
+    cam_data.dof.use_dof = False
+    cam_data.lens = REF_LENS_MM
+    depths = [l["depth"] for l in spec["layers"]]
+    target = bpy.data.objects.new("look_at", None)
+    scene.collection.objects.link(target)
+    target.location = (0.0, (min(depths) + max(depths)) / 2 * 0.6, 0.0)
+    track = cam.constraints.new("TRACK_TO")
+    track.target = target
+    track.track_axis, track.up_axis = "TRACK_NEGATIVE_Z", "UP_Y"
+    orbit = spec["exploded"].get("orbit", [24.0, -10.0, 7.0])
+    fps, end = scene.render.fps, scene.frame_end
+    for f in range(scene.frame_start, end + 1):
+        t = (f - 1) / fps
+        u = min(max((t - 1.2) / (spec["seconds"] - 2.4), 0.0), 1.0)
+        u = u * u * (3 - 2 * u)
+        cam.location = [o * u for o in orbit]
+        cam.keyframe_insert("location", frame=f)
+
+
 def main():
     spec, out_dir = parse_args()
     bpy.ops.wm.read_factory_settings(use_empty=True)
@@ -486,7 +509,10 @@ def main():
             strength.keyframe_insert("default_value", frame=f)
         sampled.append((t, pos, lens, pitch, yaw))
 
-    check_edges(spec, aspect, sampled)
+    if "exploded" in spec:
+        explode_camera(scene, cam, cam_data, spec)
+    else:
+        check_edges(spec, aspect, sampled)
     if "--check-only" in sys.argv:
         return
     out_dir.mkdir(parents=True, exist_ok=True)

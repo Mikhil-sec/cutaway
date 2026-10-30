@@ -11,3 +11,10 @@ generation_log.jsonl
 refs/
 films/*/shots/
 films/*/cut*.mp4
+assets/audio/
+films/*/*.mp4
+films/*/*.wav
+films/*/*.png
+films/*/*.log
+films/*/*.err
+films/*/music/

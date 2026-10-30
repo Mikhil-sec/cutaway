@@ -688,6 +688,38 @@ def cut(film, res=(960, 540)):
     return out, timeline
 
 
+def soundtrack(film, res=(960, 540)):
+    """Muse Spark writes the sound cue sheet from each shot's notes; code mixes it and muxes it onto the cut."""
+    from . import edit, sound
+    cut_path = film.root / f"cut_{res[0]}.mp4"
+    timeline = json.loads((film.root / "timeline.json").read_text(encoding="utf-8"))
+    cues_path = film.root / "sound_cues.json"
+    if not cues_path.exists():
+        meta.CONTEXT.pop("shot", None)
+        ids = [s["id"] for s in film.plan["shots"]]
+        notes = "\n".join(f"{s['id']}: {s['sound']} (scene: {(s['keyframe_prompt'] or s['end_card_text'])[:100]})"
+                          for s in film.plan["shots"])
+        r = meta.chat(SPARK, [
+            {"role": "system", "content":
+                "You are the sound designer of a wordless short film. For every shot choose the ambience bed "
+                "that fits the place (forest, city street, crowd, harbour, indoor room, wind, or silence), how loud "
+                "it sits (low, mid, high), and how many camera-shutter clicks are heard (0 unless people are taking "
+                "photos; 2-8 when they are). Music is handled separately; leave space for it in quiet, emotional "
+                "shots by choosing low levels or silence."},
+            {"role": "user", "content": notes},
+        ], schema=sound.cue_schema(ids), max_tokens=10000, reasoning_effort="low")
+        cues_path.write_text(json.dumps(r, indent=2), encoding="utf-8")
+    cues = {c["shot_id"]: c for c in json.loads(cues_path.read_text(encoding="utf-8"))["cues"]}
+    music = next(iter(sorted((film.root / "music").glob("*.*"))), None) if (film.root / "music").exists() else None
+    total = edit.duration(cut_path)
+    wav = sound.mix(timeline, cues, film.root / f"soundtrack_{res[0]}.wav", total, music)
+    out = film.root / f"film_{res[0]}.mp4"
+    edit.ff("-i", cut_path, "-i", wav, "-map", "0:v", "-map", "1:a", "-c:v", "copy", "-c:a", "aac", "-b:a", "192k",
+            "-shortest", out)
+    print(f"film with sound: {out} (music: {music.name if music else 'none yet'})")
+    return out
+
+
 def disclosure(film):
     """The AI-use record the MFDC rules ask for: tools, extent, what AI made and how, with every prompt."""
     entries = [json.loads(line) for line in meta.LOG.read_text(encoding="utf-8").splitlines()
@@ -730,6 +762,25 @@ def disclosure(film):
 
 # ---------------------------------------------------------------- review helpers
 
+def exploded(film, shot, res=(960, 540)):
+    """Making-of shot: the film frame, then the camera swings out to show the layers floating in depth."""
+    d = film.shot_dir(shot)
+    sp = json.loads(spec(film, shot, res).read_text())
+    sp.update(seconds=8.0, exploded={}, name=f"{shot['id']}_exploded")
+    sp["camera"]["shake"] = {"deg": 0.0, "units": 0.0, "hz": 0.5}
+    path = d / "spec_exploded.json"
+    path.write_text(json.dumps(sp, indent=2))
+    out = d / "frames_exploded"
+    r = subprocess.run([BLENDER, "-b", "--factory-startup", "-P", str(film.repo / "cutaway" / "blender_shot.py"),
+                        "--", str(path), str(out)], capture_output=True, text=True)
+    if r.returncode or "Traceback" in r.stdout:
+        raise RuntimeError(r.stdout[-2500:])
+    mp4 = d / "exploded.mp4"
+    subprocess.run(["ffmpeg", "-y", "-loglevel", "error", "-framerate", "24", "-i", str(out / "frame_%04d.png"),
+                    "-c:v", "libx264", "-pix_fmt", "yuv420p", "-crf", "18", str(mp4)], check=True)
+    return mp4
+
+
 def show(film):
     p = film.plan
     print(f"{p['title']}: {p['logline']}\nSTYLE: {p['style']}\n")
@@ -753,7 +804,8 @@ def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("film")
     ap.add_argument("stage", choices=["plan", "show", "keyframes", "layers", "specs", "render", "review",
-                                      "produce", "cut", "critique", "notes", "disclosure", "storyboard"])
+                                      "produce", "cut", "sound", "critique", "notes", "disclosure", "storyboard",
+                                      "exploded"])
     ap.add_argument("--shots", default="")
     ap.add_argument("--audio", help="notes: a recording of the director's spoken notes")
     ap.add_argument("--preview", action="store_true", help="render 3 stills per shot instead of the clip")
@@ -776,6 +828,8 @@ def main():
     res = (1920, 1080) if a.final else (960, 540)
     if a.stage == "cut":
         return cut(film, res)
+    if a.stage == "sound":
+        return soundtrack(film, res)
     if a.stage == "critique":
         out, timeline = cut(film, res)
         r = critique(film, out, timeline)
@@ -798,6 +852,8 @@ def main():
                 print(shot["id"], render(film, shot, res, stills=[1, n // 2, n] if a.preview else None))
             elif a.stage == "review":
                 review(film, shot, res)
+            elif a.stage == "exploded":
+                print(shot["id"], exploded(film, shot, res))
             elif a.stage == "produce":  # everything after the keyframe, for shots whose keyframe is approved
                 if shot["kind"] == "end_card" or not film.state(shot).get("keyframe_ok"):
                     continue
