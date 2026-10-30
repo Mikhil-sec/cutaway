@@ -369,6 +369,12 @@ def layers(film, shot):
 
 # ---------------------------------------------------------------- 4. specs
 
+def touches_border(image, band=6):
+    """Whether a layer's visible content reaches the frame border (its plane's edge would then show)."""
+    a = np.asarray(Image.open(image).getchannel("A")) > 127
+    return bool(a[:band].any() or a[-band:].any() or a[:, :band].any() or a[:, -band:].any())
+
+
 def atmosphere(kind, subject_depth):
     """Fog cards and effects for a shot's planned atmosphere. Every shot gets a little air."""
     fog = [{"depth": 28, "opacity": 0.12, "speed": 0.08}]
@@ -424,7 +430,16 @@ def spec(film, shot, resolution=(960, 540)):
 
     keys = camera.move_keys(shot["camera_move"], shot["intensity"], shot["duration_s"], (wx, wz), sdepth,
                             focus_name(shot["focus_from"]), focus_name(shot["focus_to"]))
-    keys, scale = camera.fit_keys(keys, BACK_DEPTH, ASPECT)
+    subject = None
+    if main:
+        bx0, by0, bx1, by1 = main["bbox"]
+        ax, _, az = camera.pixel_to_world(bx0, by1, main["depth"], image_size, ASPECT)  # bottom-left
+        bx, _, bz = camera.pixel_to_world(bx1, by0, main["depth"], image_size, ASPECT)  # top-right
+        subject = ((ax, az, bx, bz), main["depth"])
+    # Only the foreground needs its edges protected: the ground layer sits on the same painting it was
+    # cut from, so its edge reveals the same pavement behind it, while a cut-off character is obvious.
+    edge_depths = [L["foreground"]["depth"]] if L["foreground"] and touches_border(L["foreground"]["image"]) else []
+    keys, scale = camera.fit_keys(keys, BACK_DEPTH, ASPECT, subject, edge_depths)
     fog, effects = atmosphere(shot["atmosphere"], sdepth)
     sp = {"name": shot["id"], "fps": 24, "seconds": shot["duration_s"], "resolution": list(resolution),
           "image_size": image_size, "layers": spec_layers, "fog": fog, "shadows": shadows, "effects": effects,
@@ -591,6 +606,60 @@ def apply_critique(film, r):
             apply_changes(film, shot, changes, redo_keyframe=note["redo_keyframe"], why=[note["problem"]])
 
 
+NOTE_CHANGES = strict({
+    "understood": S,
+    "changes": arr(strict({
+        "shot_id": S,
+        "camera_move": enum(camera.MOVES + ["keep"]),
+        "intensity": enum(INTENSITIES + ["keep"]),
+        "action": enum(puppet.ACTIONS + ["keep"]),
+        "atmosphere": enum(ATMOSPHERES + ["keep"]),
+        "duration": enum(["keep", "shorter", "longer"]),
+        "redo_keyframe": B,
+        "keyframe_addition": S,
+    })),
+})
+
+
+def voice_notes(film, audio):
+    """The human director speaks; Muse Voice Transcribe hears it; Muse Spark turns it into shot changes."""
+    meta.CONTEXT.pop("shot", None)
+    words = {"Cutaway", "keyframe", "dolly zoom", "rack focus", *film.refs["characters"]}
+    for p in film.refs["places"]:
+        words.update(w.strip() for w in p["place"].replace(" with ", ",").replace(" and ", ",").split(","))
+    words.update(("Caudan", "Le Pouce", "Port Louis", "Champ de Mars", "Moka", "Dodo Park"))
+    text = meta.transcribe(audio, keywords=sorted(w for w in words if w))
+    print(f"heard: {text}")
+    shots = "\n".join(f"{s['id']}: {s['keyframe_prompt'][:120] or s['end_card_text']} | {s['camera_move']} "
+                      f"{s['intensity']}, {s['action']}, {s['atmosphere']}, {s['duration_s']} s"
+                      for s in film.plan["shots"])
+    r = meta.chat(SPARK, [
+        {"role": "system", "content":
+            "You are the assistant director. Turn the director's spoken notes into concrete changes to specific "
+            "shots, using only the allowed values ('keep' for anything not mentioned). Apply a general note to "
+            "every shot it concerns. keyframe_addition: extra words for the painted frame's prompt if the note "
+            "asks for different content (this redoes the keyframe), else ''. understood: one sentence restating "
+            "the notes."},
+        {"role": "user", "content": f"Shots:\n{shots}\n\nDirector's notes (transcribed speech):\n{text}"},
+    ], schema=NOTE_CHANGES, max_tokens=12000, reasoning_effort="medium")
+    print(f"understood: {r['understood']}")
+    by_id = {s["id"]: s for s in film.plan["shots"]}
+    for c in r["changes"]:
+        shot = by_id.get(c["shot_id"])
+        if not shot:
+            continue
+        changes = {k: c[k] for k in ("camera_move", "intensity", "action", "atmosphere") if c[k] not in ("keep", shot[k])}
+        if c["duration"] != "keep":
+            changes["duration_s"] = round(min(10, max(3, shot["duration_s"] * (0.8 if c["duration"] == "shorter" else 1.2))), 1)
+        redo = c["redo_keyframe"] or bool(c["keyframe_addition"])
+        if c["keyframe_addition"]:
+            changes["keyframe_prompt"] = shot["keyframe_prompt"] + " " + c["keyframe_addition"]
+        if changes or redo:
+            print(f"  {shot['id']}: {changes} redo_keyframe={redo}")
+            apply_changes(film, shot, changes, redo_keyframe=redo, why=[f"director's voice note: {text}"])
+    return r
+
+
 # ---------------------------------------------------------------- 7. cut and disclosure
 
 def cut(film, res=(960, 540)):
@@ -684,8 +753,9 @@ def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("film")
     ap.add_argument("stage", choices=["plan", "show", "keyframes", "layers", "specs", "render", "review",
-                                      "cut", "critique", "disclosure", "storyboard"])
+                                      "produce", "cut", "critique", "notes", "disclosure", "storyboard"])
     ap.add_argument("--shots", default="")
+    ap.add_argument("--audio", help="notes: a recording of the director's spoken notes")
     ap.add_argument("--preview", action="store_true", help="render 3 stills per shot instead of the clip")
     ap.add_argument("--final", action="store_true", help="1920x1080 instead of 960x540")
     a = ap.parse_args()
@@ -700,6 +770,9 @@ def main():
         return show(film)
     if a.stage == "disclosure":
         return disclosure(film)
+    if a.stage == "notes":
+        voice_notes(film, a.audio)
+        return print(f"spent ${meta.spent():.2f}")
     res = (1920, 1080) if a.final else (960, 540)
     if a.stage == "cut":
         return cut(film, res)
@@ -725,6 +798,18 @@ def main():
                 print(shot["id"], render(film, shot, res, stills=[1, n // 2, n] if a.preview else None))
             elif a.stage == "review":
                 review(film, shot, res)
+            elif a.stage == "produce":  # everything after the keyframe, for shots whose keyframe is approved
+                if shot["kind"] == "end_card" or not film.state(shot).get("keyframe_ok"):
+                    continue
+                layers(film, shot)
+                render(film, shot, res)
+                review(film, shot, res)
+                if not (film.shot_dir(shot) / f"shot_{res[0]}.mp4").exists():  # the review changed the shot
+                    if not film.state(shot).get("keyframe_ok"):
+                        keyframe(film, shot)
+                        layers(film, shot)
+                    render(film, shot, res)
+                print(f"  {shot['id']} produced; spent ${meta.spent():.2f}", flush=True)
         except meta.BudgetError as e:
             sys.exit(str(e))
     print(f"spent ${meta.spent():.2f}")

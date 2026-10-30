@@ -28,6 +28,7 @@ HARD_CAP_USD = 120.00  # never exceeded; .env may only lower it
 PRICES = {  # USD per call, rounded up so the ledger overestimates
     "muse-image-1.0": 0.01,
     "sam-3.1": 0.01,  # listed at $2.50 per 1,000 images; reserve 4x until billing confirms
+    "muse-voice-transcribe-1.0": 0.01,  # $0.18 per hour of audio; one call is at most 10 minutes
 }
 TOKEN_PRICES = {  # USD per 1M tokens (input, output, cached input); dev.meta.ai pricing page, 2026-10-30
     "muse-spark-1.3": (1.25, 4.25, 0.15),
@@ -197,6 +198,30 @@ def chat(model, messages, schema=None, max_tokens=4000, reasoning_effort=None):
         raise RuntimeError(f"{model} gave no answer (finish_reason={choice.get('finish_reason')}, "
                            f"usage={u}); raise max_tokens or lower reasoning_effort")
     return json.loads(content) if schema else content
+
+
+def transcribe(audio_path, keywords=()):
+    """Speech to text with Muse Voice Transcribe. Any audio format: converted to 16 kHz mono WAV first.
+
+    keywords bias recognition toward names the model would otherwise mishear (places, characters).
+    """
+    model = "muse-voice-transcribe-1.0"
+    wav = Path(audio_path).with_suffix(".16k.wav")
+    subprocess.run(["ffmpeg", "-y", "-loglevel", "error", "-i", str(audio_path), "-ac", "1", "-ar", "16000",
+                    "-c:a", "pcm_s16le", str(wav)], check=True)
+    _reserve(model)
+    settings = {"model": model, "audioEncoding": "WAV", "mode": "PUSH_TO_TALK"}
+    if keywords:
+        settings["keywords"] = list(keywords)
+    settings = json.dumps(settings)
+    with _client() as c, wav.open("rb") as f:
+        r = c.post("/asr/transcribe", headers={"Accept": "text/plain"},
+                   files={"request": (None, settings, "application/json"), "audio": (wav.name, f, "audio/wav")})
+    if r.status_code != 200:
+        raise RuntimeError(f"HTTP {r.status_code}: {r.text[:800]}")
+    text = r.text.strip()
+    _log(kind="transcribe", model=model, audio=str(audio_path), reply=text)
+    return text
 
 
 def _video_seconds(path):

@@ -79,16 +79,49 @@ def move_keys(move, intensity, seconds, subject_xz=(0.0, 0.0), subject_depth=12.
     return [a, b]
 
 
-def fit_keys(keys, back_depth, aspect, steps=48):
-    """Scale a move toward the reference pose until every sampled pose stays inside the plate.
+def subject_cut(box, depth, aspect, pos, lens, pitch=0.0, yaw=0.0, margin=0.04):
+    """How far (as a share of the frame) the subject's box sticks out of the view; <= 0 means fully in frame.
 
-    Returns (keys, scale applied). Linear sampling is enough: eased paths stay between their keys.
+    box: (x0, z0, x1, z1) in world units on the subject's plane at `depth`.
     """
-    def scaled(s):
+    dist = depth - pos[1]
+    if dist <= 0.5:
+        return 1.0
+    half_w = dist * (SENSOR_MM / 2) / lens
+    half_h = half_w / aspect
+    cx = pos[0] - dist * math.tan(math.radians(yaw))
+    cz = pos[2] + dist * math.tan(math.radians(pitch))
+    x0, z0, x1, z1 = box
+    lim_w, lim_h = half_w * (1 - margin), half_h * (1 - margin)
+    return max((cx - lim_w - x0) / half_w, (x1 - cx - lim_w) / half_w,
+               (cz - lim_h - z0) / half_h, (z1 - cz - lim_h) / half_h)
+
+
+def _poses(keys, steps):
+    for k0, k1 in zip(keys, keys[1:]):
+        for i in range(steps + 1):
+            u = i / steps
+            yield ([p0 + (p1 - p0) * u for p0, p1 in zip(k0["pos"], k1["pos"])],
+                   k0["lens"] + (k1["lens"] - k0["lens"]) * u,
+                   k0.get("pitch", 0) + (k1.get("pitch", 0) - k0.get("pitch", 0)) * u,
+                   k0.get("yaw", 0) + (k1.get("yaw", 0) - k0.get("yaw", 0)) * u)
+
+
+def fit_keys(keys, back_depth, aspect, subject=None, edge_depths=(), steps=48):
+    """Adjust a move until (1) the camera never sees past the background plate, nor past any layer in
+    `edge_depths` (layers whose content reaches the frame border, like foreground plants or a road),
+    and (2) the subject, if given as (box, depth), stays wholly in frame.
+
+    Tries the full move first, then shifts the whole path toward the subject and pulls it back,
+    then scales the move down; if the subject can't be framed without showing an edge, clean edges
+    win. Returns (keys, scale applied).
+    """
+    depths = [back_depth, *edge_depths]
+    def variant(s, shift, back):
         out = []
         for key in keys:
             k2 = dict(key)
-            k2["pos"] = [v * s for v in key["pos"]]
+            k2["pos"] = [key["pos"][0] * s + shift[0], key["pos"][1] * s - back, key["pos"][2] * s + shift[1]]
             k2["lens"] = REF_LENS_MM + (key.get("lens", REF_LENS_MM) - REF_LENS_MM) * s
             for ang in ("pitch", "yaw", "roll"):
                 if ang in key:
@@ -96,19 +129,26 @@ def fit_keys(keys, back_depth, aspect, steps=48):
             out.append(k2)
         return out
 
-    s = 1.0
-    while s > 0.05:
-        cand = scaled(s)
-        worst = -1.0
-        for (k0, k1) in zip(cand, cand[1:]):
-            for i in range(steps + 1):
-                u = i / steps
-                pos = [p0 + (p1 - p0) * u for p0, p1 in zip(k0["pos"], k1["pos"])]
-                lens = k0["lens"] + (k1["lens"] - k0["lens"]) * u
-                pitch = k0.get("pitch", 0) + (k1.get("pitch", 0) - k0.get("pitch", 0)) * u
-                yaw = k0.get("yaw", 0) + (k1.get("yaw", 0) - k0.get("yaw", 0)) * u
-                worst = max(worst, edge_overshoot(back_depth, aspect, pos, lens, pitch, yaw))
-        if worst <= -0.05 * back_depth / 40:  # keep a small margin for handheld shake
-            return cand, s
-        s *= 0.85
-    return scaled(0.0), 0.0
+    def ok(cand, framing=True):
+        for pos, lens, pitch, yaw in _poses(cand, steps):
+            if any(edge_overshoot(d, aspect, pos, lens, pitch, yaw) > -0.05 * d / 40 for d in depths):
+                return False
+            if framing and subject and subject_cut(subject[0], subject[1], aspect, pos, lens, pitch, yaw) > 0:
+                return False
+        return True
+
+    centre = (0.0, 0.0)
+    if subject:
+        (x0, z0, x1, z1), d = subject
+        # Shifting the camera by c moves the view at the subject's depth by c: aim part-way at the subject.
+        centre = ((x0 + x1) / 2, (z0 + z1) / 2)
+    for framing in (True, False):
+        s = 1.0
+        while s > 0.05:
+            for frac in (0.0, 0.35, 0.7):
+                for back in (0.0, 1.0, 2.0, 3.5, 5.0, 7.0):
+                    cand = variant(s, (centre[0] * frac, centre[1] * frac), back)
+                    if ok(cand, framing):
+                        return cand, s
+            s *= 0.85
+    return variant(0.0, (0.0, 0.0), 0.0), 0.0
