@@ -27,6 +27,11 @@ PRICES = {  # USD per call, rounded up so the ledger overestimates
     "muse-image-1.0": 0.01,
     "sam-3.1": 0.01,  # listed at $2.50 per 1,000 images; reserve 4x until billing confirms
 }
+TOKEN_PRICES = {  # USD per 1M tokens (input, output, cached input); dev.meta.ai pricing page, 2026-10-30
+    "muse-spark-1.3": (1.25, 4.25, 0.15),
+    "muse-wonder-1.0": (4.00, 20.00, 0.20),  # third-party listing; Meta's page not yet checked
+}
+IMAGE_TOKENS = 1600  # generous per-image input estimate, used only for the upfront reservation
 LEDGER = ROOT / "ledger.json"
 LOG = ROOT / "generation_log.jsonl"
 
@@ -51,7 +56,11 @@ def spent():
     return float(json.loads(LEDGER.read_text())["spent_usd"])
 
 
-def _reserve(model, n=1):
+def _reserve(model, n=1, cost=None):
+    """Add `cost` (or the model's per-call price x n) to the ledger, or refuse if over budget.
+
+    A negative cost settles an earlier over-reservation down to the billed amount.
+    """
     lock = LEDGER.with_suffix(".lock")
     for _ in range(100):
         try:
@@ -62,9 +71,10 @@ def _reserve(model, n=1):
     else:
         raise RuntimeError(f"Ledger lock {lock.name} stuck; delete it if nothing else is running.")
     try:
-        cost = PRICES[model] * n
-        total = round(spent() + cost, 4)
-        if total > BUDGET + 1e-9:
+        if cost is None:
+            cost = PRICES[model] * n
+        total = round(spent() + cost, 6)
+        if cost > 0 and total > BUDGET + 1e-9:
             raise BudgetError(f"Budget stop: spent ${spent():.2f}, call needs ${cost:.2f}, cap ${BUDGET:.2f}.")
         LEDGER.write_text(json.dumps({"spent_usd": total, "updated": datetime.now().isoformat()}, indent=2))
     finally:
@@ -115,6 +125,53 @@ def image(prompt, out, size="1536x864", refs=()):
     out.write_bytes(base64.b64decode(r.json()["data"][0]["b64_json"]))
     _log(kind="image", model=model, prompt=prompt, refs=[str(x) for x in refs], size=size, out=str(out))
     return out
+
+
+def chat(model, messages, schema=None, max_tokens=4000, reasoning_effort=None):
+    """Chat completion; with `schema`, the reply is forced to match it and returned parsed.
+
+    Messages use the OpenAI shape; image parts may give a local path as
+    {"type": "image_url", "image_url": {"url": <path>}} and are inlined here.
+    The worst-case cost is reserved first, then settled to the billed usage.
+    """
+    images = 0
+    for m in messages:
+        if isinstance(m.get("content"), list):
+            for part in m["content"]:
+                if part.get("type") == "image_url" and not part["image_url"]["url"].startswith(("data:", "http")):
+                    part["image_url"]["url"] = data_url(part["image_url"]["url"])
+                    images += 1
+    text_chars = len(json.dumps(messages)) - sum(
+        len(p["image_url"]["url"]) for m in messages if isinstance(m.get("content"), list)
+        for p in m["content"] if p.get("type") == "image_url")
+    price_in, price_out, price_cached = TOKEN_PRICES[model]
+    est_in = text_chars / 3 + images * IMAGE_TOKENS + (len(json.dumps(schema)) / 3 if schema else 0)
+    reserved = (est_in * price_in + max_tokens * price_out) / 1e6
+    _reserve(model, cost=reserved)
+
+    body = {"model": model, "messages": messages, "max_completion_tokens": max_tokens}
+    if reasoning_effort:
+        body["reasoning_effort"] = reasoning_effort
+    if schema:
+        body["response_format"] = {"type": "json_schema",
+                                   "json_schema": {"name": "reply", "strict": True, "schema": schema}}
+    r = _post("/chat/completions", body).json()
+    u = r.get("usage", {})
+    cached = (u.get("prompt_tokens_details") or {}).get("cached_tokens", 0)
+    billed = ((u.get("prompt_tokens", 0) - cached) * price_in + cached * price_cached
+              + u.get("completion_tokens", 0) * price_out) / 1e6
+    if billed < reserved:
+        _reserve(model, cost=billed - reserved)
+    choice = r["choices"][0]
+    content = choice["message"]["content"]
+    _log(kind="chat", model=model, usage=u, cost_usd=round(billed, 6),
+         prompt=[m["content"] if isinstance(m["content"], str) else
+                 [p.get("text", "<image>") for p in m["content"]] for m in messages],
+         reply=content)
+    if content is None:  # reasoning tokens can use up the whole allowance before any answer
+        raise RuntimeError(f"{model} gave no answer (finish_reason={choice.get('finish_reason')}, "
+                           f"usage={u}); raise max_tokens or lower reasoning_effort")
+    return json.loads(content) if schema else content
 
 
 def segment(image_path, concept):
