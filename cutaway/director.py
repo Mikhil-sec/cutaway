@@ -443,7 +443,9 @@ def spec(film, shot, resolution=(960, 540)):
     fog, effects = atmosphere(shot["atmosphere"], sdepth)
     sp = {"name": shot["id"], "fps": 24, "seconds": shot["duration_s"], "resolution": list(resolution),
           "image_size": image_size, "layers": spec_layers, "fog": fog, "shadows": shadows, "effects": effects,
-          "camera": {"fstop": 2.4, "shake": {"deg": 0.12, "units": 0.008, "hz": 0.5}, "keys": keys}}
+          # Scene units are metres and layers sit 5-40 m away, so a real f/2.4 blurs by under a pixel;
+          # f/0.35 gives the shallow focus of a long lens on a large sensor.
+          "camera": {"fstop": 0.35, "shake": {"deg": 0.12, "units": 0.008, "hz": 0.5}, "keys": keys}}
     path = d / f"spec_{resolution[0]}.json"
     path.write_text(json.dumps(sp, indent=2))
     film.state(shot)["camera_scale"] = scale
@@ -467,6 +469,15 @@ def render(film, shot, resolution=(960, 540), stills=None):
         mp4 = d / f"shot_{tag}.mp4"
         if mp4.exists():
             return mp4
+        # Frames from an older spec (or empty placeholders from an interrupted render) must not be reused.
+        stamp = out / ".spec"
+        current = sp.read_text()
+        stale = not stamp.exists() or stamp.read_text() != current
+        for f in out.glob("*.png"):
+            if stale or f.stat().st_size == 0:
+                f.unlink()
+        out.mkdir(parents=True, exist_ok=True)
+        stamp.write_text(current)
         args = [str(sp), str(out)]
     r = subprocess.run([BLENDER, "-b", "--factory-startup", "-P", str(film.repo / "cutaway" / "blender_shot.py"),
                         "--", *args], capture_output=True, text=True)

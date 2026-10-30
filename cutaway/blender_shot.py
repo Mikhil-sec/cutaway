@@ -71,13 +71,16 @@ def keyed(keys, t):
     return keys[-1][1]
 
 
-def new_material(name):
+def new_material(name, depth_aware=True):
+    """Unlit material shell. Dithered transparency writes depth, which depth of field needs to blur each
+    layer by its own distance; blended transparency writes none, so every layer would blur alike.
+    Effects that are only glow or haze (fog, motes, flashes) stay blended for smooth edges."""
     mat = bpy.data.materials.new(name)
     mat.use_nodes = True
     if hasattr(mat, "surface_render_method"):
-        mat.surface_render_method = "BLENDED"
+        mat.surface_render_method = "DITHERED" if depth_aware else "BLENDED"
     else:
-        mat.blend_method = "BLEND"
+        mat.blend_method = "HASHED" if depth_aware else "BLEND"
     mat.use_backface_culling = False
     mat.node_tree.nodes.clear()
     return mat
@@ -110,7 +113,7 @@ def image_material(name, path):
 
 def fog_material(name, opacity, color):
     """Soft animated noise; returns the material and the noise node's W socket to key."""
-    mat = new_material(name)
+    mat = new_material(name, depth_aware=False)
     nt = mat.node_tree
     coord = nt.nodes.new("ShaderNodeTexCoord")
     noise = nt.nodes.new("ShaderNodeTexNoise")
@@ -180,7 +183,7 @@ def add_wind_layer(i, layer, aspect):
 
 def motes_material(name, opacity, scale, seed):
     """Small soft specks (dust, pollen) from a Voronoi texture; returns material and mapping Location socket."""
-    mat = new_material(name)
+    mat = new_material(name, depth_aware=False)
     nt = mat.node_tree
     coord = nt.nodes.new("ShaderNodeTexCoord")
     mapping = nt.nodes.new("ShaderNodeMapping")
@@ -209,7 +212,7 @@ def motes_material(name, opacity, scale, seed):
 
 def glow_material(name):
     """A soft round glow (a camera flash seen from afar); returns material and its strength socket."""
-    mat = new_material(name)
+    mat = new_material(name, depth_aware=False)
     nt = mat.node_tree
     coord = nt.nodes.new("ShaderNodeTexCoord")
     grad = nt.nodes.new("ShaderNodeTexGradient")
@@ -368,6 +371,8 @@ def main():
     scene.view_settings.view_transform = "Standard"  # keep the painting's colours as painted
     scene.render.image_settings.file_format = "PNG"
     scene.render.filepath = str(out_dir / "frame_")
+    scene.render.use_overwrite = False  # an interrupted render resumes; changed shots have their frames deleted
+    scene.render.use_placeholder = True
     world = bpy.data.worlds.new("world")
     world.color = (0, 0, 0)
     scene.world = world

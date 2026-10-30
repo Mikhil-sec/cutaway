@@ -1,0 +1,235 @@
+"""The making-of: a demo video assembled from what the agent recorded while making a film.
+
+Every panel is built from the film's own artifacts (plan, per-shot state, keyframes, layers,
+reviews, critique, generation log), so the demo shows what actually happened.
+"""
+import json
+import textwrap
+from pathlib import Path
+
+from PIL import Image, ImageDraw, ImageFont, ImageOps
+
+from . import edit
+
+W, H = 1920, 1080
+BG = (14, 15, 18)
+INK = (236, 232, 224)
+DIM = (150, 150, 158)
+ACCENT = (232, 176, 92)
+FONT = edit.FONT
+MONO = Path("C:/Windows/Fonts/consola.ttf")
+
+
+def font(size, mono=False):
+    return ImageFont.truetype(str(MONO if mono and MONO.exists() else FONT), size)
+
+
+def canvas():
+    return Image.new("RGB", (W, H), BG)
+
+
+def fit(img, box):
+    """Paste-ready copy of img scaled to fit box (w, h)."""
+    return ImageOps.contain(img.convert("RGB"), box, Image.LANCZOS)
+
+
+def text_block(draw, xy, text, size=40, width=60, fill=INK, mono=False, gap=1.25):
+    x, y = xy
+    f = font(size, mono)
+    for para in text.split("\n"):
+        for line in textwrap.wrap(para, width) or [""]:
+            draw.text((x, y), line, font=f, fill=fill)
+            y += int(size * gap)
+    return y
+
+
+def card(title, body="", kicker=""):
+    img = canvas()
+    d = ImageDraw.Draw(img)
+    y = 380
+    if kicker:
+        d.text((160, y - 70), kicker.upper(), font=font(30), fill=ACCENT)
+    y = text_block(d, (160, y), title, 76, 34)
+    if body:
+        text_block(d, (160, y + 30), body, 40, 70, DIM)
+    return img
+
+
+def side_by_side(left, right, left_label, right_label, caption):
+    img = canvas()
+    d = ImageDraw.Draw(img)
+    for i, (src, label) in enumerate(((left, left_label), (right, right_label))):
+        pic = fit(Image.open(src), (900, 560))
+        x = 40 + i * 940 + (900 - pic.width) // 2
+        img.paste(pic, (x, 140))
+        d.text((40 + i * 940, 720), label, font=font(34), fill=ACCENT)
+    text_block(d, (40, 800), caption, 40, 90)
+    return img
+
+
+def picture_with_notes(src, title, notes, overlay=None):
+    img = canvas()
+    d = ImageDraw.Draw(img)
+    pic = fit(Image.open(src), (1150, 650))
+    if overlay is not None:
+        pic = Image.blend(pic, fit(overlay, pic.size).resize(pic.size), 0.45)
+    img.paste(pic, (40, 200))
+    d.text((40, 90), title, font=font(52), fill=INK)
+    y = 210
+    for n in notes:
+        y = text_block(d, (1240, y), n, 32, 34, DIM) + 24
+    return img
+
+
+def mask_overlay(shot_dir, layers):
+    """Characters in amber, ground in teal, foreground in violet: what SAM 3.1 cut."""
+    base = Image.open(shot_dir / "keyframe.png").convert("RGB")
+    over = Image.new("RGB", base.size, (0, 0, 0))
+    paint = [(s["image"], (232, 150, 40)) for s in layers["subjects"]]
+    if layers["ground"]:
+        paint.append((layers["ground"]["image"], (40, 190, 180)))
+    if layers["foreground"]:
+        paint.append((layers["foreground"]["image"], (150, 90, 230)))
+    for path, colour in paint:
+        a = Image.open(path).getchannel("A")
+        over.paste(Image.new("RGB", base.size, colour), (0, 0), a)
+    return over
+
+
+def still_clip(img, seconds, out, fade=0.4):
+    png = Path(out).with_suffix(".png")
+    img.save(png)
+    edit.ff("-loop", 1, "-t", seconds, "-i", png,
+            "-vf", f"fade=in:d={fade},fade=out:st={seconds - fade}:d={fade},format=yuv420p",
+            "-r", 24, "-c:v", "libx264", "-crf", 18, out)
+    return out
+
+
+def video_clip(src, out, start=0.0, seconds=None, caption=None):
+    """A piece of a rendered video, scaled to 1920x1080, with an optional caption bar."""
+    vf = f"scale={W}:{H}:force_original_aspect_ratio=decrease,pad={W}:{H}:(ow-iw)/2:(oh-ih)/2:color=0x0e0f12"
+    if caption:
+        png = Path(out).with_suffix(".caption.png")
+        bar = Image.new("RGBA", (W, H), (0, 0, 0, 0))
+        d = ImageDraw.Draw(bar)
+        d.rectangle((0, H - 120, W, H), fill=(0, 0, 0, 170))
+        d.text((60, H - 95), caption, font=font(44), fill=INK)
+        bar.save(png)
+        args = ["-ss", start, "-i", src, "-i", png]
+        if seconds:
+            args = ["-ss", start, "-t", seconds, "-i", src, "-i", png]
+        edit.ff(*args, "-filter_complex", f"[0:v]{vf}[v];[v][1:v]overlay=0:0,format=yuv420p",
+                "-an", "-r", 24, "-c:v", "libx264", "-crf", 18, out)
+    else:
+        args = ["-ss", start] + (["-t", seconds] if seconds else []) + ["-i", src]
+        edit.ff(*args, "-vf", vf + ",format=yuv420p", "-an", "-r", 24, "-c:v", "libx264", "-crf", 18, out)
+    return out
+
+
+LIST_PRICES = {"muse-image-1.0": 0.01, "sam-3.1": 0.0025, "muse-voice-transcribe-1.0": 0.003}
+
+
+def costs(film_root, log_path):
+    """Calls and spend for one film, from the generation log (token models carry their billed cost)."""
+    entries = [json.loads(line) for line in Path(log_path).read_text(encoding="utf-8").splitlines()
+               if f'"film": "{Path(film_root).name}"' in line]
+    by_model, total = {}, 0.0
+    for e in entries:
+        m = e.get("model", "?")
+        by_model[m] = by_model.get(m, 0) + 1
+        total += e.get("cost_usd", LIST_PRICES.get(m, 0.0))
+    return {"calls": len(entries), "by_model": by_model, "usd": total}
+
+
+def build(film, out_dir, film_cut, res_tag="960"):
+    """Assemble the making-of from the film's artifacts. film: a director.Film."""
+    out_dir = Path(out_dir)
+    out_dir.mkdir(parents=True, exist_ok=True)
+    shots = {s["id"]: s for s in film.plan["shots"]}
+    clips, n = [], 0
+
+    def add(clip_fn, *args, **kw):
+        nonlocal n
+        n += 1
+        clips.append((clip_fn(*args, out=out_dir / f"{n:02d}.mp4", **kw), "cut"))
+
+    def pick(pred):
+        return next((s for s in film.plan["shots"] if s["kind"] == "painted" and pred(s)), None)
+
+    # 1. Cold open on the film itself.
+    add(video_clip, film_cut, start=0.0, seconds=9.0)
+    add(still_clip, card("Cutaway", "An AI film crew that builds cinematic short films instead of generating them. "
+                                    "Made with Meta's Muse models, SAM 3.1 and Blender.", "Meta Global AI Hackathon"), 5)
+    add(still_clip, card("AI video is expensive, a few seconds long, and the character changes every shot.",
+                         "I needed 150 seconds, on a laptop, for Mauritius's national short film competition. "
+                         "So Cutaway doesn't generate video. It builds it.", "The problem"), 7)
+
+    # 2. Plan.
+    lines = "\n".join(f"{s['id']}  {s['camera_move']}/{s['intensity']}  {s['action']}  {s['atmosphere']}"
+                      for s in film.plan["shots"][:14])
+    img = canvas()
+    d = ImageDraw.Draw(img)
+    d.text((80, 70), "Muse Spark turns the story into a shot list", font=font(52), fill=INK)
+    text_block(d, (80, 170), "Every field comes from a JSON schema of what the renderer can actually do.", 34, 90, DIM)
+    text_block(d, (80, 260), lines, 30, 120, ACCENT, mono=True, gap=1.35)
+    add(still_clip, img, 7)
+
+    # 3. Real places: reference photo -> keyframe.
+    for s in [pick(lambda s: "chinatown" in "".join(s["place_refs"])), pick(lambda s: "caudan" in "".join(s["place_refs"]))]:
+        if s:
+            ref = film.ref_path(s["place_refs"][0])
+            add(still_clip, side_by_side(ref, film.shot_dir(s) / "keyframe.png", "Reference photo (free licence)",
+                                         "Keyframe by Muse Image",
+                                         "Real Port Louis, repainted in the film's style, with the dodo's character "
+                                         "sheet as a second reference so it stays the same bird."), 6)
+
+    # 4. Continuity supervisor catching a problem.
+    s = pick(lambda s: len(film.state(s).get("keyframe_attempts", [])) > 1)
+    if s:
+        att = film.state(s)["keyframe_attempts"]
+        notes = [f"Attempt {i + 1}: " + ("; ".join(a["verdict"]["problems"][:2]) or "approved")
+                 for i, a in enumerate(att)]
+        add(still_clip, picture_with_notes(film.shot_dir(s) / "keyframe.png",
+                                           "Muse Spark checks every keyframe and sends back fixes", notes), 8)
+
+    # 5. Layers: SAM masks, then the exploded view.
+    s = shots.get("s07_waterfront_pouce") or pick(lambda s: film.state(s).get("layers"))
+    L = film.state(s)["layers"]
+    add(still_clip, picture_with_notes(film.shot_dir(s) / "keyframe.png", "SAM 3.1 cuts the still into layers",
+                                       ["Amber: the dodo, as a bendable puppet", "Teal: the ground it stands on",
+                                        "Violet: foreground", "Muse Image paints a clean plate behind them, and SAM "
+                                        "checks the dodo is really gone."], overlay=mask_overlay(film.shot_dir(s), L)), 7)
+    exploded = film.shot_dir(s) / "exploded.mp4"
+    if exploded.exists():
+        add(video_clip, exploded, caption="Blender films the layers with a real camera: parallax, focus, shake")
+
+    # 6. Reviews.
+    s = pick(lambda s: film.state(s).get("reviews"))
+    if s:
+        r = film.state(s)["reviews"][-1]
+        mp4 = film.shot_dir(s) / f"shot_{res_tag}.mp4"
+        add(video_clip, mp4, caption=f"Muse Spark watches every shot: {r['score']}/10. {r['notes'][0][:70]}")
+    crit = film.root / "critique.json"
+    if crit.exists():
+        c = json.loads(crit.read_text(encoding="utf-8"))
+        img = canvas()
+        d = ImageDraw.Draw(img)
+        d.text((80, 80), f"Muse Wonder watches the whole cut: {c['score']}/10", font=font(52), fill=INK)
+        y = text_block(d, (80, 180), c["overall"], 36, 85, DIM)
+        for note in c["shots"][:5]:
+            y = text_block(d, (80, y + 20), f"{note['shot_id']}: {note['problem']}", 32, 95, ACCENT)
+        add(still_clip, img, 9)
+
+    # 7. The film.
+    add(still_clip, card("The Dodo Came Back", "What if the dodo returned to Mauritius?", "The film"), 3)
+    total = edit.duration(film_cut)
+    add(video_clip, film_cut, start=total * 0.55, seconds=30.0)
+
+    # 8. Numbers.
+    c = costs(film.root, film.repo / "generation_log.jsonl")
+    painted = sum(1 for s in film.plan["shots"] if s["kind"] == "painted")
+    add(still_clip, card(f"{total:.0f} seconds. {painted} shots. ${c['usd']:.2f} of API calls.",
+                         f"{c['calls']} model calls, every prompt and check logged, and an AI-disclosure report "
+                         "generated for the competition. Open source: github.com/Mikhil-sec/cutaway", "Result"), 8)
+    out, length = edit.assemble(clips, out_dir / "making_of.mp4")
+    return out, length

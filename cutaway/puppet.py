@@ -86,8 +86,10 @@ def motion(action, seconds, seed=0, facing=1):
         add(_gesture(min(0.8, seconds * 0.2), -9 * down, rise=0.5))
     elif action == "startle":
         t = min(0.7, seconds * 0.2)
-        add(_gesture(t, -8 * down, rise=0.12, overshoot=0.35, settle=0.25))
-        anim["hop"] = [[0.0, 0.0], [t, 0.0], [t + 0.12, 0.12], [t + 0.3, 0.0]]
+        add(_gesture(t, -12 * down, rise=0.1, overshoot=0.4, settle=0.3))
+        # A quick crouch, a jump and a landing that settles: big enough to read at film speed.
+        anim["hop"] = [[0.0, 0.0], [t - 0.12, 0.0], [t - 0.04, -0.06], [t + 0.12, 0.45], [t + 0.3, 0.0],
+                       [t + 0.38, -0.04], [t + 0.5, 0.0]]
         if seconds > 2.5:
             add(_gesture(t + 1.0, 2 * down, rise=0.5))
     else:
