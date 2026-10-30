@@ -381,10 +381,12 @@ def atmosphere(kind, subject_depth):
     effects = [{"type": "motes", "depth": subject_depth * 0.7, "opacity": 0.25, "scale": 22}]
     if kind == "mist":
         fog = [{"depth": 28, "opacity": 0.22, "speed": 0.14}, {"depth": 8, "opacity": 0.06, "speed": 0.2}]
-    elif kind in ("dust", "light_shafts"):  # light shafts not modelled yet: dust in the light stands in
+    elif kind in ("dust", "light_shafts"):
         effects = [{"type": "motes", "depth": subject_depth * 0.65, "opacity": 0.55, "scale": 20},
                    {"type": "motes", "depth": subject_depth * 1.6, "opacity": 0.35, "scale": 34,
                     "drift": [0.012, -0.006]}]
+        if kind == "light_shafts":
+            effects.append({"type": "shafts", "depth": subject_depth * 1.25, "opacity": 0.32})
     elif kind == "flashes":
         effects.append({"type": "flashes", "depth": subject_depth * 0.55, "count": 7, "rate": 0.3, "peak": 0.95})
     return fog, effects

@@ -22,6 +22,7 @@ Shot spec:
     fog: [{depth, opacity, speed, color?: [r, g, b]}]
     shadows: [{feet: [px, py], width_px, depth, opacity?}]   (contact shadows under characters)
     effects: [{type: "motes", depth, opacity?, scale?, drift?: [u/s, v/s]}
+              | {type: "shafts", depth, opacity?, angle?, colour?, drift?}
               | {type: "flashes", depth, count?, rate? (per second each), peak?, seed?}]
     camera: {keys: [{t, pos: [x, y, z], lens?, focus?: layer name, pitch?, yaw?, roll?}],
              fstop?, shake?: {deg, units, hz}}
@@ -207,6 +208,44 @@ def motes_material(name, opacity, scale, seed):
     nt.links.new(vor.outputs["Distance"], ramp.inputs["Fac"])
     nt.links.new(ramp.outputs["Color"], strength.inputs[0])
     finish_unlit(nt, (1.0, 0.95, 0.85), strength.outputs[0])
+    return mat, mapping.inputs["Location"]
+
+
+def shafts_material(name, opacity, angle_deg, colour):
+    """Soft diagonal beams of light that fade toward the bottom; returns material and drift socket."""
+    mat = new_material(name, depth_aware=False)
+    nt = mat.node_tree
+    coord = nt.nodes.new("ShaderNodeTexCoord")
+    mapping = nt.nodes.new("ShaderNodeMapping")
+    mapping.inputs["Rotation"].default_value = (0, 0, math.radians(angle_deg))
+    wave = nt.nodes.new("ShaderNodeTexWave")
+    wave.wave_type = "BANDS"
+    wave.inputs["Scale"].default_value = 1.5
+    wave.inputs["Distortion"].default_value = 6.0
+    wave.inputs["Detail"].default_value = 2.5
+    ramp = nt.nodes.new("ShaderNodeValToRGB")  # keep only the bright crests: a few separate beams
+    ramp.color_ramp.elements[0].position = 0.7
+    ramp.color_ramp.elements[1].position = 0.98
+    fade = nt.nodes.new("ShaderNodeTexGradient")  # strongest at the top of the frame
+    sep = nt.nodes.new("ShaderNodeSeparateXYZ")
+    falloff = nt.nodes.new("ShaderNodeMath")  # fade quickly toward the floor
+    falloff.operation = "POWER"
+    falloff.inputs[1].default_value = 2.5
+    mul = nt.nodes.new("ShaderNodeMath")
+    mul.operation = "MULTIPLY"
+    strength = nt.nodes.new("ShaderNodeMath")
+    strength.operation = "MULTIPLY"
+    strength.inputs[1].default_value = opacity
+    nt.links.new(coord.outputs["UV"], mapping.inputs["Vector"])
+    nt.links.new(mapping.outputs["Vector"], wave.inputs["Vector"])
+    nt.links.new(wave.outputs["Fac"], ramp.inputs["Fac"])
+    nt.links.new(coord.outputs["UV"], sep.inputs["Vector"])
+    nt.links.new(sep.outputs["Y"], fade.inputs["Vector"])
+    nt.links.new(ramp.outputs["Color"], mul.inputs[0])
+    nt.links.new(fade.outputs["Fac"], falloff.inputs[0])
+    nt.links.new(falloff.outputs[0], mul.inputs[1])
+    nt.links.new(mul.outputs[0], strength.inputs[0])
+    finish_unlit(nt, tuple(colour), strength.outputs[0])
     return mat, mapping.inputs["Location"]
 
 
@@ -428,6 +467,11 @@ def main():
             mat, loc = motes_material(f"motes_{j}", fx.get("opacity", 0.5), fx.get("scale", 26), j + 1)
             add_plane(f"motes_{j}", depth, aspect, mat)
             motes.append((loc, fx.get("drift", [0.02, -0.012])))
+        elif fx["type"] == "shafts":
+            mat, loc = shafts_material(f"shafts_{j}", fx.get("opacity", 0.3), fx.get("angle", 28),
+                                       fx.get("colour", [1.0, 0.9, 0.72]))
+            add_plane(f"shafts_{j}", depth, aspect, mat)
+            motes.append((loc, fx.get("drift", [0.01, 0.0])))  # same slow drift as motes
         elif fx["type"] == "flashes":
             rnd = random.Random(fx.get("seed", 5))
             w, h = layer_size(depth, aspect)
