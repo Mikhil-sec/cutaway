@@ -209,21 +209,46 @@ def build(film, out_dir, film_cut, res_tag="960"):
         r = film.state(s)["reviews"][-1]
         mp4 = film.shot_dir(s) / f"shot_{res_tag}.mp4"
         add(video_clip, mp4, caption=f"Muse Spark watches every shot: {r['score']}/10. {r['notes'][0][:70]}")
-    crit = film.root / "critique.json"
-    if crit.exists():
-        c = json.loads(crit.read_text(encoding="utf-8"))
+    first, latest = film.root / "critique_round1.json", film.root / "critique.json"
+    if first.exists() and latest.exists():
+        c1 = json.loads(first.read_text(encoding="utf-8"))
+        c2 = json.loads(latest.read_text(encoding="utf-8"))
         img = canvas()
         d = ImageDraw.Draw(img)
-        d.text((80, 80), f"Muse Wonder watches the whole cut: {c['score']}/10", font=font(52), fill=INK)
-        y = text_block(d, (80, 180), c["overall"], 36, 85, DIM)
-        for note in c["shots"][:5]:
-            y = text_block(d, (80, y + 20), f"{note['shot_id']}: {note['problem']}", 32, 95, ACCENT)
-        add(still_clip, img, 9)
+        d.text((80, 70), f"Muse Wonder watches every cut:  {c1['score']}/10  →  {c2['score']}/10",
+               font=font(56), fill=INK)
+        y = text_block(d, (80, 170), "First cut: " + c1["overall"], 32, 100, DIM)
+        for note in c1["shots"][:3]:
+            y = text_block(d, (110, y + 10), f"{note['shot_id']}: {note['problem']}", 28, 110, ACCENT)
+        y = text_block(d, (80, y + 40), "Now, strengths it names:", 32, 100, DIM)
+        for s in c2.get("strengths", [])[:3]:
+            y = text_block(d, (110, y + 10), s, 28, 110, INK)
+        add(still_clip, img, 12)
+        img = canvas()
+        d = ImageDraw.Draw(img)
+        d.text((80, 80), "Two models must agree before work is thrown away", font=font(52), fill=INK)
+        text_block(d, (80, 190),
+                   "When Muse Wonder asks for a repaint, Muse Spark looks at the frame and the note and must agree "
+                   "that a new painting would fix it. A critique round may change at most five shots, and the "
+                   "director can lock a keyframe. When a critique diagnoses well but prescribes badly, the "
+                   "director keeps the notes and overrules the fixes.", 36, 80, DIM)
+        add(still_clip, img, 8)
+
+    # 6b. Director's voice notes.
+    img = canvas()
+    d = ImageDraw.Draw(img)
+    d.text((80, 80), "Direct it by voice: Muse Voice Transcribe", font=font(52), fill=INK)
+    y = text_block(d, (80, 190), "“The forest shots at the start should linger a little longer. In the Caudan "
+                                 "umbrella scenes, make the camera move stronger. And the Dodo Park reveal needs "
+                                 "more camera flashes.”", 38, 75, ACCENT)
+    text_block(d, (80, y + 40), "Transcribed with the film's place names as keyword bias, then turned by Muse Spark "
+                                "into concrete changes to specific shots.", 34, 85, DIM)
+    add(still_clip, img, 7)
 
     # 7. The film.
     add(still_clip, card("The Dodo Came Back", "What if the dodo returned to Mauritius?", "The film"), 3)
     total = edit.duration(film_cut)
-    add(video_clip, film_cut, start=total * 0.55, seconds=30.0)
+    add(video_clip, film_cut, start=max(0.0, total - 52.0), seconds=50.0)  # the reveal to the end card
 
     # 8. Numbers.
     c = costs(film.root, film.repo / "generation_log.jsonl")

@@ -109,7 +109,9 @@ def mix(timeline, cues, out, total, music=None, seed=1):
                        f"afade=t=in:d=3,afade=t=out:st={total - 6:.2f}:d=6[s{n}]")
         labels.append(f"[s{n}]")
         n += 1
+    # Pad with silence to the cut's full length: the last shots may be silent by design, and a short soundtrack
+    # would make the mux cut the film (and its end card) short.
     filters.append(f"{''.join(labels)}amix=inputs={len(labels)}:normalize=0:duration=longest,"
-                   f"atrim=0:{total:.2f},alimiter=limit=0.9[mix]")
+                   f"apad=whole_dur={total:.2f},atrim=0:{total:.2f},alimiter=limit=0.9[mix]")
     ff(*inputs, "-filter_complex", ";".join(filters), "-map", "[mix]", "-ar", SR, "-ac", 2, out)
     return out
