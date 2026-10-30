@@ -44,6 +44,10 @@ class Film:
         self.refs = json.loads((self.root / "refs.json").read_text(encoding="utf-8"))
         self.plan_path = self.root / "plan.json"
         self.plan = json.loads(self.plan_path.read_text(encoding="utf-8")) if self.plan_path.exists() else None
+        if self.plan:  # each shot's revisions are the source of truth: parallel runs may overwrite plan.json
+            for shot in self.plan["shots"]:
+                for rev in self.state(shot).get("revisions", []):
+                    shot.update(rev["changes"])
 
     def save(self):
         """Writes the plan itself; per-shot progress lives in shots/<id>/state.json (see state())."""
@@ -60,7 +64,8 @@ class Film:
         """A shot's progress, in its own file so stages can run on different shots in parallel."""
         if "_state" not in shot:
             path = self.shot_dir(shot) / "state.json"
-            shot["_state"] = json.loads(path.read_text(encoding="utf-8")) if path.exists() else shot.get("state", {})
+            shot["_state"] = (json.loads(path.read_text(encoding="utf-8-sig")) if path.exists()
+                              else shot.get("state", {}))
         return shot["_state"]
 
     def save_state(self, shot):
@@ -326,7 +331,7 @@ def layers(film, shot):
             with Image.open(plate) as p:
                 if p.size != (W, H):
                     p.convert("RGB").resize((W, H), Image.LANCZOS).save(plate)
-            leftovers = [m for p_, _, _ in instances for c, m in meta.segment(plate, p_)
+            leftovers = [m for p_ in sorted({p for p, _, _ in instances}) for c, m in meta.segment(plate, p_)
                          if c >= 0.5 and (m & occupied).sum() > 0.3 * m.sum()]
             if not leftovers:
                 break
@@ -433,21 +438,42 @@ def spec(film, shot, resolution=(960, 540)):
     keys = camera.move_keys(shot["camera_move"], shot["intensity"], shot["duration_s"], (wx, wz), sdepth,
                             focus_name(shot["focus_from"]), focus_name(shot["focus_to"]))
     subject = None
-    if main:
-        bx0, by0, bx1, by1 = main["bbox"]
+    if main:  # frame all the characters, not only the main one (the reveal has four dodos)
+        bx0 = min(s["bbox"][0] for s in L["subjects"])
+        by0 = min(s["bbox"][1] for s in L["subjects"])
+        bx1 = max(s["bbox"][2] for s in L["subjects"])
+        by1 = max(s["bbox"][3] for s in L["subjects"])
         ax, _, az = camera.pixel_to_world(bx0, by1, main["depth"], image_size, ASPECT)  # bottom-left
         bx, _, bz = camera.pixel_to_world(bx1, by0, main["depth"], image_size, ASPECT)  # top-right
         subject = ((ax, az, bx, bz), main["depth"])
     # Only the foreground needs its edges protected: the ground layer sits on the same painting it was
     # cut from, so its edge reveals the same pavement behind it, while a cut-off character is obvious.
     edge_depths = [L["foreground"]["depth"]] if L["foreground"] and touches_border(L["foreground"]["image"]) else []
-    keys, scale = camera.fit_keys(keys, BACK_DEPTH, ASPECT, subject, edge_depths)
+    # Less margin (overscan) means less room for the move but less of the painting's edge cropped:
+    # step it down until the characters stay in frame.
+    for overscan in (1.25, 1.12, 1.05):
+        camera.use_overscan(overscan)
+        if subject:
+            (x0, z0, x1, z1), sd = subject
+            # The box was computed at the default margin; layer sizes scale with the margin.
+            k = overscan / 1.25
+            fitted_subject = ((x0 * k, z0 * k, x1 * k, z1 * k), sd)
+        else:
+            fitted_subject = None
+        keys_o = [dict(k_) for k_ in keys]
+        fitted, scale, framed = camera.fit_keys(keys_o, BACK_DEPTH, ASPECT, fitted_subject, edge_depths)
+        if framed:
+            break
+    keys = fitted
+    camera.use_overscan(1.25)
     fog, effects = atmosphere(shot["atmosphere"], sdepth)
     sp = {"name": shot["id"], "fps": 24, "seconds": shot["duration_s"], "resolution": list(resolution),
           "image_size": image_size, "layers": spec_layers, "fog": fog, "shadows": shadows, "effects": effects,
           # Scene units are metres and layers sit 5-40 m away, so a real f/2.4 blurs by under a pixel;
           # f/0.35 gives the shallow focus of a long lens on a large sensor.
           "camera": {"fstop": 0.35, "shake": {"deg": 0.12, "units": 0.008, "hz": 0.5}, "keys": keys}}
+    if overscan != 1.25:  # only when it differs, so unchanged shots keep their spec (and their frames)
+        sp["overscan"] = overscan
     path = d / f"spec_{resolution[0]}.json"
     path.write_text(json.dumps(sp, indent=2))
     film.state(shot)["camera_scale"] = scale
@@ -514,13 +540,13 @@ def shot_brief(film, shot):
             f"{shot['action']}. Atmosphere: {shot['atmosphere']}.")
 
 
-def review(film, shot, res=(960, 540)):
+def review(film, shot, res=(960, 540), force=False):
     """Muse Spark watches the rendered shot; if it falls short, apply its changes once and re-render."""
     if shot["kind"] != "painted":
         return
     st = film.state(shot)
     mp4 = film.shot_dir(shot) / f"shot_{res[0]}.mp4"
-    if st.get("reviewed") or not mp4.exists():
+    if (st.get("reviewed") and not force) or not mp4.exists():
         return
     meta.CONTEXT["shot"] = shot["id"]
     r = meta.chat(SPARK, [
@@ -542,8 +568,11 @@ def review(film, shot, res=(960, 540)):
     if r["duration"] != "keep":
         changes["duration_s"] = round(min(10, max(3, shot["duration_s"] * (0.8 if r["duration"] == "shorter" else 1.2))), 1)
     print(f"  {shot['id']} review {r['score']}/10 {r['notes'][:1]} changes={changes} redo_keyframe={r['redo_keyframe']}")
-    if r["score"] < 7 and (changes or r["redo_keyframe"]):
-        apply_changes(film, shot, changes, redo_keyframe=r["redo_keyframe"] and r["score"] <= 4, why=r["notes"])
+    redo = r["redo_keyframe"] and r["score"] <= 4  # repainting is costly: only for clearly failed frames
+    if r["score"] < 7 and (changes or redo):
+        apply_changes(film, shot, changes, redo_keyframe=redo, why=r["notes"])
+    elif r["score"] < 7 and r["redo_keyframe"]:
+        st["repaint_suggested"] = r["notes"]  # kept for a human or a later round to decide
     film.save_state(shot)
 
 
@@ -559,9 +588,10 @@ def apply_changes(film, shot, changes, redo_keyframe=False, why=()):
     for frames in d.glob("frames_*"):
         for f in frames.glob("*.png"):
             f.unlink()
-    if redo_keyframe:
+    if redo_keyframe:  # a new painting deserves a fresh review
         st.pop("keyframe_ok", None)
         st.pop("layers", None)
+        st.pop("reviewed", None)
         (d / "keyframe.png").unlink(missing_ok=True)
     film.save_state(shot)
 
@@ -821,6 +851,7 @@ def main():
                                       "exploded"])
     ap.add_argument("--shots", default="")
     ap.add_argument("--audio", help="notes: a recording of the director's spoken notes")
+    ap.add_argument("--force", action="store_true", help="review: review again even if already reviewed")
     ap.add_argument("--preview", action="store_true", help="render 3 stills per shot instead of the clip")
     ap.add_argument("--final", action="store_true", help="1920x1080 instead of 960x540")
     a = ap.parse_args()
@@ -864,12 +895,13 @@ def main():
                 n = int(shot["duration_s"] * 24)
                 print(shot["id"], render(film, shot, res, stills=[1, n // 2, n] if a.preview else None))
             elif a.stage == "review":
-                review(film, shot, res)
+                review(film, shot, res, force=a.force)
             elif a.stage == "exploded":
                 print(shot["id"], exploded(film, shot, res))
-            elif a.stage == "produce":  # everything after the keyframe, for shots whose keyframe is approved
-                if shot["kind"] == "end_card" or not film.state(shot).get("keyframe_ok"):
+            elif a.stage == "produce":  # everything from the keyframe on; a no-op for finished shots
+                if shot["kind"] == "end_card":
                     continue
+                keyframe(film, shot)
                 layers(film, shot)
                 render(film, shot, res)
                 review(film, shot, res)

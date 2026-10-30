@@ -37,6 +37,7 @@ import bpy
 import numpy as np
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
+from cutaway import camera as camera_geometry  # noqa: E402
 from cutaway.camera import REF_LENS_MM, SENSOR_MM, edge_overshoot, layer_size, pixel_to_world  # noqa: E402
 
 BEND_MAX_DEG = 10.0  # the bend shape key at value 1; keyed values scale it
@@ -397,6 +398,7 @@ def explode_camera(scene, cam, cam_data, spec):
 
 def main():
     spec, out_dir = parse_args()
+    camera_geometry.use_overscan(spec.get("overscan", 1.25))
     bpy.ops.wm.read_factory_settings(use_empty=True)
     scene = bpy.context.scene
     set_engine(scene)
@@ -412,6 +414,13 @@ def main():
     scene.render.filepath = str(out_dir / "frame_")
     scene.render.use_overwrite = False  # an interrupted render resumes; changed shots have their frames deleted
     scene.render.use_placeholder = True
+    # Working renders trade a little smoothness for speed; final (1080p) renders keep full quality.
+    eevee = scene.eevee
+    final = w >= 1920
+    if hasattr(eevee, "taa_render_samples"):
+        eevee.taa_render_samples = spec.get("samples", 64 if final else 24)
+    if hasattr(eevee, "bokeh_max_size"):
+        eevee.bokeh_max_size = 100.0 if final else 40.0
     world = bpy.data.worlds.new("world")
     world.color = (0, 0, 0)
     scene.world = world

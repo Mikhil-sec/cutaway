@@ -8,7 +8,14 @@ import math
 
 SENSOR_MM = 36.0
 REF_LENS_MM = 35.0
-OVERSCAN = 1.25  # every layer is this much larger than the reference frame
+OVERSCAN = 1.25  # every layer is this much larger than the reference frame; set per shot with use_overscan()
+
+
+def use_overscan(value):
+    """Set the margin for the shot being built: more margin = more room to move, but the reference
+    frame crops more of the painting's edges (a character near an edge needs less)."""
+    global OVERSCAN
+    OVERSCAN = value
 
 MOVES = ["push_in", "pull_out", "truck_left", "truck_right", "crane_up", "crane_down",
          "drift", "dolly_zoom", "orbit_left", "orbit_right"]
@@ -79,7 +86,7 @@ def move_keys(move, intensity, seconds, subject_xz=(0.0, 0.0), subject_depth=12.
     return [a, b]
 
 
-def subject_cut(box, depth, aspect, pos, lens, pitch=0.0, yaw=0.0, margin=0.04):
+def subject_cut(box, depth, aspect, pos, lens, pitch=0.0, yaw=0.0, margin=0.12):
     """How far (as a share of the frame) the subject's box sticks out of the view; <= 0 means fully in frame.
 
     box: (x0, z0, x1, z1) in world units on the subject's plane at `depth`.
@@ -114,7 +121,7 @@ def fit_keys(keys, back_depth, aspect, subject=None, edge_depths=(), steps=48):
 
     Tries the full move first, then shifts the whole path toward the subject and pulls it back,
     then scales the move down; if the subject can't be framed without showing an edge, clean edges
-    win. Returns (keys, scale applied).
+    win. Returns (keys, scale applied, whether the subject stays framed).
     """
     depths = [back_depth, *edge_depths]
     def variant(s, shift, back):
@@ -149,6 +156,6 @@ def fit_keys(keys, back_depth, aspect, subject=None, edge_depths=(), steps=48):
                 for back in (0.0, 1.0, 2.0, 3.5, 5.0, 7.0):
                     cand = variant(s, (centre[0] * frac, centre[1] * frac), back)
                     if ok(cand, framing):
-                        return cand, s
+                        return cand, s, framing or not subject
             s *= 0.85
-    return variant(0.0, (0.0, 0.0), 0.0), 0.0
+    return variant(0.0, (0.0, 0.0), 0.0), 0.0, False
