@@ -938,6 +938,12 @@ def main():
     ap.add_argument("--preview", action="store_true", help="render 3 stills per shot instead of the clip")
     ap.add_argument("--final", action="store_true", help="1920x1080 instead of 960x540")
     a = ap.parse_args()
+    if sys.platform == "win32" and a.stage in ("keyframes", "layers", "render", "produce", "exploded"):
+        # Keep the machine awake while this process works (long renders died when the laptop slept);
+        # Windows drops the request when the process exits, and no power settings are changed.
+        import ctypes
+        ES_CONTINUOUS, ES_SYSTEM_REQUIRED = 0x80000000, 0x00000001
+        ctypes.windll.kernel32.SetThreadExecutionState(ES_CONTINUOUS | ES_SYSTEM_REQUIRED)
     film = Film(a.film)
     meta.CONTEXT["film"] = film.root.name
     only = set(filter(None, a.shots.split(",")))
