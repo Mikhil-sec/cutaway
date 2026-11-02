@@ -15,120 +15,120 @@
   "s03_wake_city",
   9.675,
   18.091667,
-  "Muted cinematic anime with painterly 2D backgrounds and soft natural light. Wide shot of modern downtown Port Louis street with office tower [text card: \"Port Louis. Today.\"]"
+  "Wide shot of a modern downtown Port Louis street in early morning light. On the pavement, in a small roadside garden bed edged with low conc [text card: \"Port Louis. Today.\"]"
  ],
  [
   "s04_startle_close",
   18.091667,
   21.883334,
-  "Muted cinematic anime with painterly 2D backgrounds and soft natural light. Close medium shot of the dodo in centre third, full body visible"
+  "Close medium shot of the dodo, full body visible, standing on its mossy rock in the small roadside garden bed from the reference, ferns arou"
  ],
  [
   "s05_downtown_search",
   21.883334,
-  27.466667,
-  "Muted cinematic anime with painterly 2D backgrounds and soft natural light. Medium wide shot of busy downtown Port Louis street, the dodo in"
+  26.925001,
+  "Medium shot of a narrow back street in Port Louis Chinatown, old two-storey shopfronts with wooden shutters and red lanterns, the dodo in ce"
  ],
  [
   "s06_chinatown_gate",
-  27.466667,
-  32.508334000000005,
+  26.925001,
+  31.966668000000002,
   "Muted cinematic anime with painterly 2D backgrounds and soft natural light. Medium wide shot under the ornate Chinatown gateway arch in Port"
  ],
  [
   "s07_waterfront_pouce",
-  32.508334000000005,
-  40.92500100000001,
-  "Muted cinematic anime with painterly 2D backgrounds and soft natural light. Wide shot of Caudan waterfront canal with stone footbridge and s"
+  31.966668000000002,
+  37.383335,
+  "Wide shot of the Caudan Waterfront canal in Port Louis as in the reference photograph: still water between a long stone quay with a covered "
  ],
  [
   "s08_own_image",
-  40.92500100000001,
-  48.13300900000001,
+  37.383335,
+  44.591668,
   "Muted cinematic anime with painterly 2D backgrounds and soft natural light. Medium shot of a shop wall with generic dodo mural and plush sou"
  ],
  [
   "s09_see_mountains",
-  47.433009000000006,
-  54.141017000000005,
+  43.891667999999996,
+  48.60000099999999,
   "Muted cinematic anime with painterly 2D backgrounds and soft natural light. Wide high shot from a hilltop overlook over Port Louis toward Ch"
  ],
  [
   "s10_umbrellas_noticed",
-  54.141017000000005,
-  59.72435,
+  48.600001,
+  54.183334,
   "Muted cinematic anime with painterly 2D backgrounds and soft natural light. Medium wide shot at Caudan Waterfront under colourful hanging um"
  ],
  [
   "s11_surrounded",
-  59.72435,
-  66.932683,
+  54.183334,
+  61.391667,
   "Muted cinematic anime with painterly 2D backgrounds and soft natural light. Close medium shot of the dodo in centre third, full body visible"
  ],
  [
   "s12_crowd_wide",
-  66.932683,
-  71.72435,
-  "High wide shot looking down on the Caudan Waterfront plaza under colourful hanging umbrellas: a dense ring of tourists stands shoulder to sh"
+  61.391667,
+  66.183334,
+  "High wide shot looking down on the Caudan Waterfront walkway: rows of colourful umbrellas hang suspended on wires high overhead, exactly as "
+ ],
+ [
+  "s12b_crate_closed",
+  66.183334,
+  70.975001,
+  "Close shot on a waterfront walkway under colourful umbrellas hanging overhead: a wooden slatted crate stands on the paving with the dodo sta"
  ],
  [
   "s13_crate_harbour",
-  71.02435,
-  79.441017,
+  70.275001,
+  76.691668,
   "Muted cinematic anime with painterly 2D backgrounds and soft natural light. Medium shot of the dodo in centre third, full body visible stand"
  ],
  [
   "s14_park_arrival",
-  78.741017,
-  87.157684,
+  75.991668,
+  84.40833500000001,
   "Muted cinematic anime with painterly 2D backgrounds and soft natural light. Medium wide shot of a modern park enclosure entrance with generi"
  ],
  [
   "s15_many_behind_glass",
-  87.157684,
-  94.157684,
-  "Wide interior shot through a large glass wall into a bare enclosure with a sandy floor: five plump grey-brown dodos, each whole body clearly [text card: \"It was not the only one.\"]"
+  84.40833500000001,
+  91.40833500000001,
+  "Wide interior shot through a large glass wall into a bare enclosure with a sandy floor, five plump grey-brown dodos inside, each whole body  [text card: \"It was not the only one.\"]"
  ],
  [
   "s16_phones_flashes",
-  94.157684,
-  97.94935100000001,
+  91.40833500000001,
+  93.24134300000001,
   "Muted cinematic anime with painterly 2D backgrounds and soft natural light. Medium shot of the dodo in centre third, full body visible stand"
  ],
  [
   "s17_mural_wall",
-  97.249351,
-  104.249351,
-  "Muted cinematic anime with painterly 2D backgrounds and soft natural light. Wide shot of enclosure back wall with a large faded painted mura"
+  92.54134300000001,
+  96.04134300000001,
+  "Wide shot of the enclosure back wall with the same large faded, peeling painted forest mural as the reference: the same painted trees, flaki"
  ],
  [
   "s18_walk_to_mural",
-  104.249351,
-  109.83235900000001,
-  "Muted cinematic anime with painterly 2D backgrounds and soft natural light. Medium shot facing the faded forest mural wall, the dodo in cent"
+  96.04134300000001,
+  101.62467600000001,
+  "Wide shot of the enclosure: the dodo, full body visible, walking slowly across the sandy floor toward the same large faded, peeling painted "
  ],
  [
   "s19_press_mural",
-  109.83235900000001,
-  116.83235900000001,
+  101.62467600000001,
+  108.62467600000001,
   "Muted cinematic anime with painterly 2D backgrounds and soft natural light. Close medium shot of the dodo in right third, full body visible "
  ],
  [
-  "s20_alone_vast",
-  116.83235900000001,
-  123.83235900000001,
-  "Muted cinematic anime with painterly 2D backgrounds and soft natural light. Wide shot of vast empty enclosure with huge faded forest mural, "
- ],
- [
   "s21_sleep_again",
-  123.13235900000001,
-  131.132359,
-  "Muted cinematic anime with painterly 2D backgrounds and soft natural light. Medium shot mirroring the opening, the dodo in centre third, ful"
+  107.924676,
+  115.924676,
+  "Medium shot mirroring the opening, the dodo in centre third, full body visible, crouching low on the sandy enclosure floor to sleep, head lo"
  ],
  [
   "s22_end_card",
-  131.132359,
-  139.21569200000002,
+  115.924676,
+  124.008009,
   "end card: The dodo came back. Its home didn't."
  ]
 ]

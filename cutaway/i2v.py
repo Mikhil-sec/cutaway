@@ -60,6 +60,18 @@ MODELS = {
 }
 
 
+# Audio, through the same ledger. `media` is where the file is in fal's result. ElevenLabs Music lists $0.60 a
+# minute; until a usage record shows whether part-minutes are billed whole, a whole minute is reserved.
+AUDIO = {
+    "music_el": {"endpoint": "fal-ai/elevenlabs/music", "usd_per_s": 0.01, "media": "audio",
+                 "reserve": lambda s: 0.60 * math.ceil(s / 60) * 1.25},
+    "sfx_el": {"endpoint": "fal-ai/elevenlabs/sound-effects/v2", "usd_per_s": 0.002, "media": "audio",
+               "reserve": lambda s: 0.002 * math.ceil(s) * 2},
+    "mmaudio": {"endpoint": "fal-ai/mmaudio-v2", "usd_per_s": 0.001, "media": "video",
+                "reserve": lambda s: 0.001 * math.ceil(s) * 2},
+}
+
+
 class BudgetError(RuntimeError):
     pass
 
@@ -163,30 +175,53 @@ def generate(model, image, prompt, out, seconds=5, limit=None, timeout_s=1800, r
     if "durations" in m and seconds not in m["durations"]:
         raise ValueError(f"{model} takes durations {m['durations']}, not {seconds}")
     out = Path(out)
+    if out.with_suffix(".pending.json").exists():
+        return _run(out)
+    resolution = resolution or m.get("resolution")
+    price, reserved = quote(model, seconds, resolution)
+    body = m["args"](image_data_url(image), prompt, seconds, resolution)
+    return _run(out, model, m["endpoint"], body, price, reserved, limit, timeout_s, "video",
+                {"prompt": prompt, "image": str(image), "seconds": seconds})
+
+
+def audio(model, body, out, seconds, limit=None, timeout_s=1800):
+    """Generate audio with one of AUDIO (body: the endpoint's own input). `seconds` sets the price. A data URL
+    may stand in for any input file. Returns fal's result dict."""
+    m = AUDIO[model]
+    out = Path(out)
+    if out.with_suffix(".pending.json").exists():
+        return _run(out)
+    return _run(out, model, m["endpoint"], body, m["usd_per_s"] * seconds, m["reserve"](seconds), limit,
+                timeout_s, m["media"], {"prompt": body.get("prompt") or body.get("text") or "", "seconds": seconds,
+                                         "kind": "audio"})
+
+
+def _run(out, model=None, endpoint=None, body=None, price=None, reserved=None, limit=None, timeout_s=1800,
+         media="video", record=None):
+    """Reserve, submit, wait, download and settle one paid request (or, with only `out`, collect the request an
+    earlier run left in <out>.pending.json)."""
     pending = out.with_suffix(".pending.json")
     headers = {"Authorization": f"Key {_key()}"}
     if pending.exists():  # already submitted and reserved by an earlier run: just collect it
         job = json.loads(pending.read_text(encoding="utf-8"))
         print(f"  resuming fal request {job['request_id']} for {out.name}", flush=True)
     else:
-        resolution = resolution or m.get("resolution")
-        price, reserved = quote(model, seconds, resolution)
-        body = m["args"](image_data_url(image), prompt, seconds, resolution)
+        record = record or {}
         reconcile()
         bal = balance()
         if bal is not None and bal < price:
             raise BudgetError(f"fal balance ${bal:.2f} is below this clip's ${price:.2f}; top up or stop.")
         _reserve(reserved, limit)
-        r = httpx.post(f"{QUEUE}/{m['endpoint']}", json=body, headers=headers, timeout=120)
+        r = httpx.post(f"{QUEUE}/{endpoint}", json=body, headers=headers, timeout=120)
         if r.status_code in (400, 401, 403, 404, 422):  # rejected before any work: not billed
             _reserve(-reserved)
             raise RuntimeError(f"fal rejected {model}: HTTP {r.status_code}: {r.text[:600]}")
         r.raise_for_status()
         sub = r.json()
         job = {"request_id": sub["request_id"], "status_url": sub["status_url"], "response_url": sub["response_url"],
-               "model": model, "endpoint": m["endpoint"], "prompt": prompt, "image": str(image), "seconds": seconds,
-               "price": price, "reserved": reserved,
-               "args": {k: v for k, v in body.items() if "image" not in k}}
+               "model": model, "endpoint": endpoint, "prompt": record.get("prompt", ""), "image": record.get("image"),
+               "seconds": record.get("seconds"), "price": price, "reserved": reserved, "media": media, "kind": record.get("kind", "video"),
+               "args": {k: v for k, v in body.items() if not (isinstance(v, str) and v.startswith("data:"))}}
         out.parent.mkdir(parents=True, exist_ok=True)
         pending.write_text(json.dumps(job, indent=2, ensure_ascii=False), encoding="utf-8")
     rid = job["request_id"]
@@ -204,21 +239,21 @@ def generate(model, image, prompt, out, seconds=5, limit=None, timeout_s=1800, r
             if st is not None:
                 waited += 5
             if waited > timeout_s or errors > 360:
-                raise TimeoutError(f"{model} request {rid} still {st}; kept in {pending.name} for the next run")
+                raise TimeoutError(f"{job['model']} request {rid} still {st}; kept in {pending.name} for the next run")
             time.sleep(5)
         res = c.get(job["response_url"])
         if res.status_code != 200:  # fal does not bill failed requests
             _reserve(-job["reserved"])
             pending.unlink()
-            raise RuntimeError(f"{model} request {rid} failed: HTTP {res.status_code}: {res.text[:600]}")
+            raise RuntimeError(f"{job['model']} request {rid} failed: HTTP {res.status_code}: {res.text[:600]}")
         result = res.json()
-        with c.stream("GET", result["video"]["url"], timeout=600) as v:
+        with c.stream("GET", result[job.get("media", "video")]["url"], timeout=600) as v:
             v.raise_for_status()
             with out.open("wb") as f:
                 for chunk in v.iter_bytes():
                     f.write(chunk)
     _reserve(job["price"] - job["reserved"])
-    meta._log(kind="video", model=model, endpoint=job["endpoint"], request_id=rid, prompt=job["prompt"],
+    meta._log(kind=job.get("kind", "video"), model=job["model"], endpoint=job["endpoint"], request_id=rid, prompt=job["prompt"],
               args=job["args"], image=job["image"], seconds=job["seconds"], cost_usd=round(job["price"], 4),
               out=str(out), expanded_prompt=result.get("expanded_prompt") or result.get("actual_prompt"))
     pending.unlink()

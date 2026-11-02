@@ -26,7 +26,7 @@ SPARK = "muse-spark-1.3"
 MODEL = "wan30"
 # fal ledger total. 2026-11-01: $4.45 tests + production, raised from 30.50 at the user's request to use
 # what is loaded ($35) and stop cleanly at it; the $45 hard cap in i2v.py sits above.
-PRODUCTION_CEILING_USD = 34.50
+PRODUCTION_CEILING_USD = 44.00
 WAN_TAKES = 2    # per shot; then the fallback model (the user's call, 2026-11-01)
 FALLBACK = "kling26"  # Kling 2.6 Pro: the most faithful in the bake-off, $0.07/s exact, native 1080p
 FALLBACK_TAKES = 2

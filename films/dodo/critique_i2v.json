@@ -1,100 +1,60 @@
 {
-  "overall": "Clear, moving premise and a legible emotional arc from home, through exposure and captivity, to a painted substitute forest, but static holds, missing causal links, and several continuity breaks weaken the climax.",
-  "pacing": [
-    "strengths",
-    "weaknesses"
-  ],
-  "score": 6,
+  "can_hear_audio": true,
+  "overall": "A clear, moving wordless fable whose central irony — the dodo as beloved icon but homeless animal — lands without explanation. The opening sleep / city wake-up and the closing painted-forest sleep bookend beautifully, though the middle search repeats one beat and the capture-to-park continuity loses the protagonist for a few shots.",
+  "score": 7,
   "shots": [
     {
-      "fix": "Retake with the light grading steadily from pink-gold to blue dusk as it settles.",
-      "problem": "The dodo settles in still-bright evening light, so sleep and the passage of centuries are not visually established.",
+      "fix": "Retake with the light grading down to blue dusk and the dodo's eyes closing by the final second.",
+      "problem": "The light stays pink-gold and the dodo only lowers its head, so the fall-asleep-and-centuries-pass transition into the city is not yet fully read.",
       "shot_id": "s02_settle_sleep"
     },
     {
-      "fix": "Retake with the dodo starting curled on the pavement in the same screen position before it lifts its head.",
-      "problem": "The dodo is already standing alert in traffic, so the intended waking moment and centuries-long sleep transition are missing.",
-      "shot_id": "s03_wake_city"
-    },
-    {
-      "fix": "Retake with a locked-off beak, stable eye size, and a smaller startle movement.",
-      "problem": "The beak, eyes, and neck morph and swell, making the protagonist briefly go off-model.",
-      "shot_id": "s04_startle_close"
-    },
-    {
-      "fix": "Trim the shot to the dodo entering and crossing before the foreground figures appear.",
-      "problem": "This repeats the street geography and traffic setup of s03 while blurred foreground figures pop in around a largely static dodo.",
+      "fix": "Retake with a hurried scuttling gait and one clear glance back over its shoulder.",
+      "problem": "After the bus startle the dodo ambles calmly and looks around curiously, losing the fright and flee established in s04_startle_close.",
       "shot_id": "s05_downtown_search"
     },
     {
-      "fix": "Trim to the clearest head-turn toward Le Pouce and end on that look.",
-      "problem": "The long, nearly static hold lets water, foliage, and the dodo's outline shimmer without advancing the search.",
+      "fix": "Trim to about three seconds, holding only the settle and the look toward Le Pouce.",
+      "problem": "The dodo stands nearly motionless at the frame edge for the full shot, stalling the search montage between the gate and the souvenir wall.",
       "shot_id": "s07_waterfront_pouce"
     },
     {
-      "fix": "Trim s10 to begin after this establishing view so the high shot reads as the geographic destination.",
-      "problem": "Cutting directly from the hilltop back to Caudan gives no sense of decision or journey toward the mountains glimpsed in s09.",
+      "fix": "Repainted keyframe with the dodo at believable scale on the overlook rock and the city unobstructed behind it.",
+      "problem": "The dodo is scaled so large against the city and racecourse below that it reads as a giant hovering over Port Louis rather than standing on a hilltop.",
       "shot_id": "s09_see_mountains"
     },
     {
-      "fix": "Repaint the keyframe with the same suspended umbrellas and plaza layout established in s10 and s11.",
-      "problem": "The umbrellas change from hanging overhead to a floor-level field and the plaza geography changes, breaking continuity.",
+      "fix": "Repainted keyframe muting the umbrella canopy to the pastel range of s10_umbrellas_noticed.",
+      "problem": "The overhead umbrellas jump to saturated primary orange, blue and lime, breaking the muted palette and making this feel like a different location from the shots either side.",
       "shot_id": "s12_crowd_wide"
     },
     {
-      "fix": "Retake with a hard cut from s12 and the crate shown being carried past the cranes by implied off-screen handlers.",
-      "problem": "No capture or carrying action connects the crowd to the dodo suddenly standing inside a crate at the harbour.",
-      "shot_id": "s13_crate_harbour"
-    },
-    {
-      "fix": "Retake with the keeper locked still behind the booth glass and the gate signage held unchanged.",
-      "problem": "The keeper flickers between blurred and solid while the entrance sign and gate details wobble.",
+      "fix": "Trim the blurred guard's walk-through and hold on the dodo beside the open crate and gated sign.",
+      "problem": "The dodo is already free beside an open crate with no release beat, and the guard smears across the booth in a morphing blur, so arrival at the park does not connect to the harbour crate.",
       "shot_id": "s14_park_arrival"
     },
     {
-      "fix": "Retake with varied poses, spacing, scale, and head directions for the five dodos.",
-      "problem": "Five identical dodos stand in an evenly spaced clone row, making the reveal look stamped rather than inhabited.",
-      "shot_id": "s15_many_behind_glass"
-    },
-    {
-      "fix": "Reorder this shot immediately after s15 as the protagonist's reaction inside the glass before cutting to the mural.",
-      "problem": "It is unclear whether this single dodo is the protagonist, one of the revealed group, or a sixth animal.",
+      "fix": "Trim s16_phones_flashes out entirely so the reveal cuts straight to the mural wall.",
+      "problem": "At under two seconds this single-dodo flash shot interrupts the many-dodos reveal before it can register and duplicates the phone motif already clear in s15_many_behind_glass.",
       "shot_id": "s16_phones_flashes"
-    },
-    {
-      "fix": "Repaint the keyframe to match the mural design, peeling pattern, and wall proportions used in s19.",
-      "problem": "The mural's trees, damage, and wall scale differ from the mural shown in s18 through s20.",
-      "shot_id": "s17_mural_wall"
-    },
-    {
-      "fix": "Retake with a continuous left-to-right walk that ends at the mural surface.",
-      "problem": "The dodo mostly stands and turns its head instead of clearly walking to the mural.",
-      "shot_id": "s18_walk_to_mural"
-    },
-    {
-      "fix": "Trim the shot to a brief two-second scale beat immediately after the press in s19.",
-      "problem": "This distant static hold repeats the loneliness already conveyed more powerfully by s19 and stalls the ending.",
-      "shot_id": "s20_alone_vast"
-    },
-    {
-      "fix": "Repaint the keyframe to show the bare enclosure floor and faded mural wall behind the sleeping dodo.",
-      "problem": "The background becomes a lush real forest, confusingly suggesting the dodo's home has returned and contradicting the end card.",
-      "shot_id": "s21_sleep_again"
     }
   ],
+  "sound": [
+    "Gentle solo piano with forest birdsong in s01_forest_dawn and s02_settle_sleep establishes the 1681 calm and carries unbroken across the dissolve into traffic noise in s03_wake_city, making the time jump legible before the card is read.",
+    "The bus whoosh and traffic swell are synced to the dodo's flinch and open-beaked alarm in s04_startle_close, the one true startle sound cue in the film.",
+    "Crowd murmur builds through s10_umbrellas_noticed and s11_surrounded and cuts to the wooden lid thud in s12b_crate_closed, after which the harbour ambience in s13_crate_harbour keeps the crated journey present without showing it.",
+    "The dodo's few soft coos are well placed — a small call at the souvenir wall in s08_own_image and a longer, lower sequence as it settles by the mural in s19_press_mural and s21_sleep_again — and the score thins to near-silence under both so they read as its only voice."
+  ],
   "strengths": [
-    "The opening and closing sleep motif gives the film an intelligible bookend, established by the rock in s01_forest_dawn and s02_settle_sleep and recalled in s21_sleep_again.",
-    "The location journey is recognisable and varied, moving from downtown Port Louis in s03_wake_city through s06_chinatown_gate, s07_waterfront_pouce, and the Champ de Mars overlook in s09_see_mountains.",
-    "s08_own_image delivers the sharpest wordless irony: the living dodo confronts its mural and souvenir likenesses while finding no real forest.",
-    "The reveal in s15_many_behind_glass is clearly staged through glass, silhouetted visitors, phone lights, and the restrained card 'It was not the only one.'",
-    "s19_press_mural provides a simple, readable emotional peak as the dodo closes its eyes against the painted forest."
+    "The match from the mossy rock in s01_forest_dawn through s02_settle_sleep to the same rock marooned in a pavement garden bed in s03_wake_city is the film's best editorial idea: place, prop and posture carry three centuries in one cut, reinforced by the correctly placed and sparing cards.",
+    "s08_own_image delivers the theme in a single image — the living dodo studying its own mural above a row of plush dodos — with no card needed, and the generic unbranded souvenirs keep it inside the brief.",
+    "The reveal in s15_many_behind_glass, shot from the visitors' side with phone screens raised in silhouette, reframes the protagonist's loneliness as a whole species' captivity, and the card 'It was not the only one.' arrives exactly on the wide shot.",
+    "The closing movement from the peeling mural in s17_mural_wall through the slow approach in s18_walk_to_mural to the mirrored sleep in s21_sleep_again earns the end card; the dodo's design, grey-brown body and white wing patch, stays recognisably on-model throughout."
   ],
   "weaknesses": [
-    "The search and mural sections drag because several long shots rely on minor head movements, especially s07_waterfront_pouce, s17_mural_wall, s18_walk_to_mural, and s20_alone_vast.",
-    "The story's key causal step is absent between the crowd in s12_crowd_wide and the crated dodo in s13_crate_harbour, so 'taken' feels like a location jump rather than an action.",
-    "Place continuity is unstable: the Caudan umbrellas and plaza change in s12_crowd_wide, while the enclosure mural changes design and condition across s17_mural_wall, s18_walk_to_mural, s19_press_mural, and s20_alone_vast.",
-    "The protagonist is not visually distinguished from the identical dodos in s15_many_behind_glass, leaving its placement in s16_phones_flashes ambiguous.",
-    "Crowds, phones, vehicles, and background figures frequently flicker or morph, notably in s03_wake_city, s05_downtown_search, s11_surrounded, and s14_park_arrival.",
-    "s21_sleep_again replaces the enclosure with real forest, undercutting the final message before s22_end_card states that the dodo's home did not return."
+    "The search section s05_downtown_search to s09_see_mountains is five consecutive static wide shots in which the dodo mostly stands and looks, so the wandering reads as a location slideshow rather than a growing desperation.",
+    "Protagonist continuity breaks at the climax: the dodo is shut in the crate in s12b_crate_closed and crated at the harbour in s13_crate_harbour, then simply standing free in s14_park_arrival, and inside the group in s15_many_behind_glass it is impossible to tell which of the five dodos is ours.",
+    "Crowd animation is the weakest visual element: in s11_surrounded the people are faceless phone-holding cut-outs whose hands and devices flicker and morph, and the disembodied oversized hands closing the crate in s12b_crate_closed undercut the capture's gravity.",
+    "Geography is evocative but occasionally muddled — Le Pouce appears behind the canal in s07_waterfront_pouce and again dominating s09_see_mountains over Champ de Mars — so the dodo's sighting of distant mountains does not clearly motivate the move to Caudan that follows."
   ]
 }

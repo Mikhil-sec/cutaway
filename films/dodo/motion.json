@@ -16,27 +16,35 @@
       "revised_by": "director (author's direction 2026-11-01): evening, cut on action"
     },
     {
-      "ends_on": "The dodo stands blinking in the middle of the road as traffic flows around it.",
-      "motion_prompt": "The camera pulls back slowly to widen the street as buses roll past, pedestrians hurry along sidewalks and dust shimmers in heat. The dodo blinks awake, lifts its head, turns left and right in confusion, steps back and fluffs its feathers. Its beak opens slightly as traffic flows continuously around it.",
+      "ends_on": "The dodo has lifted its head on its rock and stares, blinking and confused, at the city street around it as a bus passes.",
+      "motion_prompt": "The camera stays fixed on the mossy rock in the street median. The dodo blinks awake, lifts its head slowly, turns left and right in confusion and fluffs its neck feathers with beak parting slightly. Behind it blurred pedestrians drift along sidewalks, distant buses roll past softly out of focus, palm leaves stir and heat haze shimmers while it stares blinking at the city as a bus passes.",
       "shot_id": "s03_wake_city",
-      "transition_in": "crossfade"
+      "transition_in": "crossfade",
+      "previous_prompts": [
+        "The camera pulls back slowly to widen the street as buses roll past, pedestrians hurry along sidewalks and dust shimmers in heat. The dodo blinks awake, lifts its head, turns left and right in confusion, steps back and fluffs its feathers. Its beak opens slightly as traffic flows continuously around it."
+      ],
+      "revised_by": "Muse Spark, after reviews: These keyframes were just repainted. Wan 3.0 exaggerates camera moves and invents scenery, so keep the camera nearly loc"
     },
     {
-      "ends_on": "The dodo freezes with neck stretched tall, staring sharply toward the passing bus.",
-      "motion_prompt": "The camera holds close with a subtle tightening push as the bus rumbles past behind and pedestrians blur in motion. The dodo jerks its head upward, eyes widen, beak parts, neck stretches tall and feathers puff. It freezes, breathing quickly, then tilts its head sharply toward the passing noise.",
+      "ends_on": "The dodo freezes on its rock, neck stretched tall, staring after the bus.",
+      "motion_prompt": "The camera stays locked on the mossy traffic island. A blurred city bus roars past behind without legible markings, stirring dust and fern leaves. The startled dodo jolts upright on its rock, feet gripping moss, neck stretching tall, eyes widening and beak parting. Its feathers puff and tremble, then it freezes, breathing fast, staring after the bus.",
       "shot_id": "s04_startle_close",
-      "transition_in": "cut"
+      "transition_in": "cut",
+      "previous_prompts": [
+        "The camera holds close with a subtle tightening push as the bus rumbles past behind and pedestrians blur in motion. The dodo jerks its head upward, eyes widen, beak parts, neck stretches tall and feathers puff. It freezes, breathing quickly, then tilts its head sharply toward the passing noise."
+      ],
+      "revised_by": "Muse Spark, after reviews: These keyframes were just repainted. Keep the camera nearly locked off (Wan 3.0 invents scenery on camera moves) and put"
     },
     {
-      "ends_on": "The dodo pauses on the sidewalk, looking anxiously between buildings and crowd.",
-      "motion_prompt": "The camera tracks gently left along the sidewalk as pedestrians stream past in both directions and a scooter glides down the road. The dodo turns its head side to side, takes hesitant steps forward, pauses, looks up at the buildings, then back to the crowd. Its tail feathers twitch nervously.",
+      "ends_on": "The dodo hurries on toward the bright end of the street, still glancing back.",
+      "motion_prompt": "The camera holds nearly locked on the sunlit alley and distant arch. The dodo hurries fearfully along the right wall with quick shuffling steps, body low, tail feathers twitching, glancing back over its shoulder with wide eyes. Overhead lanterns sway faintly, leaves flutter, dust drifts in light shafts and blurred distant figures amble while it presses on toward the bright end still glancing back.",
       "shot_id": "s05_downtown_search",
       "transition_in": "cut",
-      "trim": [
-        0.0,
-        2.75
+      "trim_why": "Muse Wonder critique (2026-11-02), trims approved by the author: keep the crossing; end before the foreground figures pop in",
+      "previous_prompts": [
+        "The camera tracks gently left along the sidewalk as pedestrians stream past in both directions and a scooter glides down the road. The dodo turns its head side to side, takes hesitant steps forward, pauses, looks up at the buildings, then back to the crowd. Its tail feathers twitch nervously."
       ],
-      "trim_why": "Muse Wonder critique (2026-11-02), trims approved by the author: keep the crossing; end before the foreground figures pop in"
+      "revised_by": "Muse Spark, after reviews: These keyframes were just repainted. Wan 3.0 exaggerates camera moves and invents scenery, so keep the camera nearly loc"
     },
     {
       "ends_on": "The dodo stands under the gateway, beak raised studying the arch.",
@@ -45,15 +53,15 @@
       "transition_in": "cut"
     },
     {
-      "ends_on": "The dodo rests on the stones looking toward the mountain as water keeps flowing.",
-      "motion_prompt": "The camera rises gently upward over the canal as water ripples, reflections shimmer, palm fronds sway and clouds drift. The dodo remains on the stones, turning its head, tilting curiously, shifting its feet and looking from bridge to mountain. A light breeze ruffles its feathers while the water continues flowing.",
+      "ends_on": "The dodo stares toward Le Pouce across the canal.",
+      "motion_prompt": "The camera remains fixed on the canal overlook. Canal water ripples and shimmers with soft reflections while riverside flowers tremble faintly and thin mist drifts around Le Pouce. The dodo stands steady on the stone quay and slowly turns its head toward the peak, beak lifting slightly, settling into a lingering stare toward Le Pouce across the canal.",
       "shot_id": "s07_waterfront_pouce",
       "transition_in": "cut",
-      "trim": [
-        3.0,
-        8.4
+      "trim_why": "Muse Wonder critique (2026-11-02), trims approved by the author: end on the look toward Le Pouce",
+      "previous_prompts": [
+        "The camera rises gently upward over the canal as water ripples, reflections shimmer, palm fronds sway and clouds drift. The dodo remains on the stones, turning its head, tilting curiously, shifting its feet and looking from bridge to mountain. A light breeze ruffles its feathers while the water continues flowing."
       ],
-      "trim_why": "Muse Wonder critique (2026-11-02), trims approved by the author: end on the look toward Le Pouce"
+      "revised_by": "Muse Spark, after reviews: These keyframes were just repainted. Keep the camera nearly locked off (Wan 3.0 invents scenery on camera moves) and put"
     },
     {
       "ends_on": "The dodo leans toward the painted wall, head tilted in quiet recognition.",
@@ -65,7 +73,12 @@
       "ends_on": "The dodo holds its gaze fixed on the distant peaks as wind moves its feathers.",
       "motion_prompt": "The camera orbits slowly left around the dodo as grasses and bushes sway, thin haze drifts over the city and clouds move across the peaks. The dodo stands steady on the rock, turns its head toward the distant mountains, lifts its beak slightly and holds its gaze. Its feathers stir gently in the wind.",
       "shot_id": "s09_see_mountains",
-      "transition_in": "crossfade"
+      "transition_in": "crossfade",
+      "trim": [
+        0.0,
+        4.7
+      ],
+      "trim_why": "Muse Wonder critique of v3 (2026-11-02): the hilltop hold was too long"
     },
     {
       "ends_on": "The dodo turns uncertainly in place as tourists close in with raised phones.",
@@ -89,13 +102,25 @@
     },
     {
       "ends_on": "The dodo stands bowed and motionless alone at the center of the closed circle.",
-      "motion_prompt": "The camera remains almost completely still, holding the wide plaza, umbrellas, harbour and full crowd circle unchanged. At the center the dodo stays the same small size, lowering its head and bowing its neck, shifting one foot before growing motionless. Around it the existing circle holds position with only slight weight shifts, umbrella shadows drifting faintly across the stones and palm leaves stirring.",
+      "motion_prompt": "The camera stays locked high above the umbrella courtyard. At center the small dodo lowers its head and bows its neck, shifts one foot then grows still and bowed. Around it the closed crowd circle holds its position with only faint weight shifts and trembling phones, umbrella shadows drift softly across stones and palm fronds stir while it stands motionless alone.",
       "shot_id": "s12_crowd_wide",
       "transition_in": "cut",
       "previous_prompts": [
-        "The camera descends slowly over the plaza as umbrella shadows drift across stones and the encircling crowd shuffles, adjusting phones and shifting weight. The dodo stands motionless at the center, head hanging low, body drooping. It shifts one foot, tucks its neck slightly and remains bowed under the surrounding gaze."
+        "The camera descends slowly over the plaza as umbrella shadows drift across stones and the encircling crowd shuffles, adjusting phones and shifting weight. The dodo stands motionless at the center, head hanging low, body drooping. It shifts one foot, tucks its neck slightly and remains bowed under the surrounding gaze.",
+        "The camera remains almost completely still, holding the wide plaza, umbrellas, harbour and full crowd circle unchanged. At the center the dodo stays the same small size, lowering its head and bowing its neck, shifting one foot before growing motionless. Around it the existing circle holds position with only slight weight shifts, umbrella shadows drifting faintly across the stones and palm leaves stirring."
       ],
-      "revised_by": "Muse Spark, after reviews: This video model (Wan 3.0) exaggerates camera moves: any truck, crane, orbit or wide pull-out makes it invent new buildi"
+      "revised_by": "Muse Spark, after reviews: These keyframes were just repainted. Wan 3.0 exaggerates camera moves and invents scenery, so keep the camera nearly loc"
+    },
+    {
+      "shot_id": "s12b_crate_closed",
+      "transition_in": "cut",
+      "ends_on": "The crate lid has swung shut over the dodo, which looks out between the slats.",
+      "motion_prompt": "The camera stays fixed on the wooden crate on wet stones. The slatted lid swings down slowly and shuts over the dodo, which flinches, ducks slightly and then lifts its eyes to peer out between the slats. Around it blurred onlookers hold trembling phones steady, overhead umbrellas sway faintly and reflections shimmer across the puddled pavement.",
+      "added_by": "director (2026-11-02)",
+      "previous_prompts": [
+        "The camera holds still. The lid lowers onto the crate and the dodo flaps in alarm."
+      ],
+      "revised_by": "Muse Spark, after reviews: These keyframes were just repainted. Wan 3.0 exaggerates camera moves and invents scenery, so keep the camera nearly loc"
     },
     {
       "ends_on": "The dodo lowers its gaze inside the crate as harbour light dims.",
@@ -105,7 +130,12 @@
       "previous_prompts": [
         "The camera slides gently left past the wooden slats as water ripples, distant ships glide slowly and dusk clouds drift. Inside the crate straw stirs and the dodo shifts its feet, turns its head to follow the harbour view, blinks and lowers its gaze. Mist curls around the wood as the light dims."
       ],
-      "revised_by": "Muse Spark, after reviews: This video model (Wan 3.0) exaggerates camera moves: any truck, crane, orbit or wide pull-out makes it invent new buildi"
+      "revised_by": "Muse Spark, after reviews: This video model (Wan 3.0) exaggerates camera moves: any truck, crane, orbit or wide pull-out makes it invent new buildi",
+      "trim": [
+        0.0,
+        6.4
+      ],
+      "trim_why": "Muse Wonder v3, v5 and v6: static too long; end on the look toward the cranes"
     },
     {
       "ends_on": "The dodo stands still by the empty crate, breathing heavily at the gates.",
@@ -118,14 +148,15 @@
       "revised_by": "Muse Spark, after reviews: This video model (Wan 3.0) exaggerates camera moves: any truck, crane, orbit or wide pull-out makes it invent new buildi"
     },
     {
-      "ends_on": "The five dodos stand blinking under flickering flashes behind the glass.",
-      "motion_prompt": "The camera holds nearly locked off with only an imperceptible drift, keeping the glass enclosure and all five dodos fixed in frame. The dodos stay spaced apart at the same size, shifting weight slightly, blinking, turning heads faintly and ruffling feathers. In front phone screens glow steadily and flashbulbs flicker softly, dust drifts in the enclosure air while reflections shimmer faintly on the glass.",
+      "ends_on": "The dodos stir in their different poses as flashes flicker across the glass.",
+      "motion_prompt": "The camera remains nearly locked on the glass enclosure holding all five dodos in frame. Each keeps its own pose without marching in step, one sitting blinking, one pecking faintly, one turned away, two touching beaks, with only small weight shifts, head tilts and feather ruffles. Phone screens glow in the foreground, flash flickers softly and reflections shimmer as they stir in place.",
       "shot_id": "s15_many_behind_glass",
       "transition_in": "cut",
       "previous_prompts": [
-        "The camera pushes in slowly toward the glass as phone screens glow, flashbulbs flicker and visitor silhouettes sway. The five dodos stand spaced apart, shifting weight, blinking, turning heads slightly and ruffling feathers. Dust drifts in the enclosure air while reflections slide across the glass surface."
+        "The camera pushes in slowly toward the glass as phone screens glow, flashbulbs flicker and visitor silhouettes sway. The five dodos stand spaced apart, shifting weight, blinking, turning heads slightly and ruffling feathers. Dust drifts in the enclosure air while reflections slide across the glass surface.",
+        "The camera holds nearly locked off with only an imperceptible drift, keeping the glass enclosure and all five dodos fixed in frame. The dodos stay spaced apart at the same size, shifting weight slightly, blinking, turning heads faintly and ruffling feathers. In front phone screens glow steadily and flashbulbs flicker softly, dust drifts in the enclosure air while reflections shimmer faintly on the glass."
       ],
-      "revised_by": "Muse Spark, after reviews: This video model (Wan 3.0) exaggerates camera moves: any truck, crane, orbit or wide pull-out makes it invent new buildi"
+      "revised_by": "Muse Spark, after reviews: These keyframes were just repainted. Wan 3.0 exaggerates camera moves and invents scenery, so keep the camera nearly loc"
     },
     {
       "ends_on": "The dodo hunches back from the glass, blinking under pulsing flashes.",
@@ -135,27 +166,39 @@
       "previous_prompts": [
         "The camera drifts subtly sideways as bright flashes pulse, background hands waver holding phones and dust floats through spotlights. The dodo flinches, steps back, jerks its head toward the glass, blinks rapidly and hunches its shoulders. Its feathers puff slightly while scattered leaves stir on the sandy floor."
       ],
-      "revised_by": "Muse Spark, after reviews: This video model (Wan 3.0) exaggerates camera moves: any truck, crane, orbit or wide pull-out makes it invent new buildi"
+      "revised_by": "Muse Spark, after reviews: This video model (Wan 3.0) exaggerates camera moves: any truck, crane, orbit or wide pull-out makes it invent new buildi",
+      "trim": [
+        0.0,
+        1.8
+      ],
+      "trim_why": "Muse Wonder v4 and v6: repeats s15; a short reaction insert"
     },
     {
       "ends_on": "The dodo steps toward the mural, gaze rising across the painted trees.",
-      "motion_prompt": "The camera holds almost perfectly still, keeping the full mural wall and dodo framing unchanged. The dodo stays the same scale on the left, lifting its head with widening eyes and rising beak, taking a small hesitant step forward while its gaze travels up across the painted trees and tail feathers tremble slightly. Dust motes float in dim light and a faint glow shifts gently across the paint.",
+      "motion_prompt": "The camera stays almost perfectly still on the peeling mural wall. The dodo holds scale at left, lifts its head with widening eyes, raises its beak and takes a small hesitant step toward the paint while its gaze rises across the painted trees and tail feathers tremble. Dust motes drift in dim light and a faint glow shifts gently as it stares upward.",
       "shot_id": "s17_mural_wall",
       "transition_in": "crossfade",
       "previous_prompts": [
-        "The camera tracks gently right along the wall as dust motes float in dim light and a faint glow shifts across the paint. The dodo lifts its head toward the mural, eyes widening, beak rising slowly. It takes a hesitant step forward, turning its gaze across the painted trees while its tail feathers tremble."
+        "The camera tracks gently right along the wall as dust motes float in dim light and a faint glow shifts across the paint. The dodo lifts its head toward the mural, eyes widening, beak rising slowly. It takes a hesitant step forward, turning its gaze across the painted trees while its tail feathers tremble.",
+        "The camera holds almost perfectly still, keeping the full mural wall and dodo framing unchanged. The dodo stays the same scale on the left, lifting its head with widening eyes and rising beak, taking a small hesitant step forward while its gaze travels up across the painted trees and tail feathers tremble slightly. Dust motes float in dim light and a faint glow shifts gently across the paint."
       ],
-      "revised_by": "Muse Spark, after reviews: This video model (Wan 3.0) exaggerates camera moves: any truck, crane, orbit or wide pull-out makes it invent new buildi"
+      "revised_by": "Muse Spark, after reviews: These keyframes were just repainted. Wan 3.0 exaggerates camera moves and invents scenery, so keep the camera nearly loc",
+      "trim": [
+        0.0,
+        3.5
+      ],
+      "trim_why": "Muse Wonder v4 and v5: s17 and s18 repeat the same approach; s17 becomes a brief mural reveal"
     },
     {
       "ends_on": "The dodo stands close beneath the light shaft, gazing intently upward.",
-      "motion_prompt": "The camera stays nearly locked off, preserving the mural, light shaft and dodo scale without revealing new wall. The dodo holds its central position facing the wall, head raised high, chest rising with breath, tilting its head and shuffling its feet slightly before holding still and gazing intently upward. The shaft glows softly, dust sparkles within it and dry grass trembles faintly at the edges.",
+      "motion_prompt": "The camera stays nearly locked on the weathered mural wall. The dodo walks slowly and steadily left to right across the dusty ground with distinct heavy steps, body swaying and tail bobbing. Dust sparkles in the soft light shaft and dry grasses tremble faintly. It slows, stops close beneath the shaft, plants its feet, lifts its head and gazes intently upward.",
       "shot_id": "s18_walk_to_mural",
       "transition_in": "cut",
       "previous_prompts": [
-        "The camera pushes in slowly as the shaft of light brightens and dust sparkles within it, dry grass trembling at the edges. The dodo stands facing the wall, head raised high, chest rising with breath. It tilts its head, takes small shuffling steps closer and holds still, gazing upward intently."
+        "The camera pushes in slowly as the shaft of light brightens and dust sparkles within it, dry grass trembling at the edges. The dodo stands facing the wall, head raised high, chest rising with breath. It tilts its head, takes small shuffling steps closer and holds still, gazing upward intently.",
+        "The camera stays nearly locked off, preserving the mural, light shaft and dodo scale without revealing new wall. The dodo holds its central position facing the wall, head raised high, chest rising with breath, tilting its head and shuffling its feet slightly before holding still and gazing intently upward. The shaft glows softly, dust sparkles within it and dry grass trembles faintly at the edges."
       ],
-      "revised_by": "Muse Spark, after reviews: This video model (Wan 3.0) exaggerates camera moves: any truck, crane, orbit or wide pull-out makes it invent new buildi"
+      "revised_by": "Muse Spark, after reviews: These keyframes were just repainted. Keep the camera nearly locked off (Wan 3.0 invents scenery on camera moves) and put"
     },
     {
       "ends_on": "The dodo rests its beak against the peeling paint with eyes half closed.",
@@ -171,16 +214,18 @@
       "ends_on": "The dodo sits tiny and bowed alone in the vast empty enclosure.",
       "motion_prompt": "The camera remains almost completely still, holding the vast enclosure, mural and tiny dodo fixed without widening further. In the center the dodo stays tiny and bowed, head lowered, shifting weight barely before settling motionless. Long shadows hold steady, dust hangs in cold light, faint mist swirls softly across the floor and the dim light holds around its small still silhouette.",
       "shot_id": "s20_alone_vast",
-      "transition_in": "cut",
+      "transition_in": "crossfade",
       "previous_prompts": [
         "The camera pulls back slowly to reveal the empty space as long shadows creep, dust hangs in cold light and faint mist swirls. The dodo remains tiny and still in the center, head bowed, barely shifting weight. Its small silhouette holds against the vast wall while the light dims around it."
       ],
       "revised_by": "Muse Spark, after reviews: This video model (Wan 3.0) exaggerates camera moves: any truck, crane, orbit or wide pull-out makes it invent new buildi",
       "trim": [
         0.0,
-        3.0
+        2.5
       ],
-      "trim_why": "Muse Wonder critique (2026-11-02), trims approved by the author: a short scale beat after the press in s19"
+      "trim_why": "Muse Wonder critique of v3 (2026-11-02): restated the loneliness after the press; shorter, and dissolved in",
+      "omit": true,
+      "omit_why": "Muse Wonder critique of v4 (2026-11-02): repeated the loneliness after the press, flagged twice; cut"
     },
     {
       "ends_on": "The dodo sleeps against the painted wall as the last light fades.",

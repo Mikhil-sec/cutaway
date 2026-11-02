@@ -70,7 +70,7 @@
       "ground": "concrete pavement",
       "id": "s03_wake_city",
       "intensity": "medium",
-      "keyframe_prompt": "Muted cinematic anime with painterly 2D backgrounds and soft natural light. Wide shot of modern downtown Port Louis street with office towers and shops, the dodo in centre third, full body visible standing on concrete pavement, waking confused, blurred buses and hurrying passers-by around with no close-up faces, harsh morning light and dust, no legible text or logos.",
+      "keyframe_prompt": "Wide shot of a modern downtown Port Louis street in early morning light. On the pavement, in a small roadside garden bed edged with low concrete, sits the same mossy rock as the reference, and on it the dodo, in centre third, full body visible, lying curled asleep with its head tucked down and eyes closed, exactly as it fell asleep in the forest. Around the garden bed: concrete pavement, office towers and shops, buses on the road beyond the kerb, blurred hurrying passers-by with no close-up faces, dust in the air. No legible text or logos.",
       "kind": "painted",
       "place_refs": [
         "refs/port_louis/unsplash_street_2C7ATUy4XQ0.jpg"
@@ -79,7 +79,10 @@
       "subjects": [
         "dodo"
       ],
-      "transition_in": "crossfade"
+      "transition_in": "crossfade",
+      "match_shots": [
+        "s02_settle_sleep"
+      ]
     },
     {
       "action": "startle",
@@ -97,16 +100,17 @@
       "ground": "concrete pavement",
       "id": "s04_startle_close",
       "intensity": "subtle",
-      "keyframe_prompt": "Muted cinematic anime with painterly 2D backgrounds and soft natural light. Close medium shot of the dodo in centre third, full body visible standing on concrete pavement, head jerked up startled with round eyes wide, blurred bus and city facades behind, bright daylight, tense mood, no legible text or logos.",
+      "keyframe_prompt": "Close medium shot of the dodo, full body visible, standing on its mossy rock in the small roadside garden bed from the reference, ferns around it, neck stretched up and head jerked high, eyes wide in fright. Right behind it a city bus rushes past on the road, blurred with motion and with no lettering. Bright morning light, tense mood, no legible text or logos.",
       "kind": "painted",
-      "place_refs": [
-        "refs/port_louis/unsplash_street_2C7ATUy4XQ0.jpg"
-      ],
+      "place_refs": [],
       "sound": "horn blast, gasp of crowd, heartbeat pulse",
       "subjects": [
         "dodo"
       ],
-      "transition_in": "cut"
+      "transition_in": "cut",
+      "match_shots": [
+        "s03_wake_city"
+      ]
     },
     {
       "action": "look_around",
@@ -124,10 +128,10 @@
       "ground": "asphalt sidewalk",
       "id": "s05_downtown_search",
       "intensity": "subtle",
-      "keyframe_prompt": "Muted cinematic anime with painterly 2D backgrounds and soft natural light. Medium wide shot of busy downtown Port Louis street, the dodo in right third, full body visible standing on asphalt sidewalk looking around, pedestrians hurrying past with blurred faces, colonial shopfronts and office towers, overcast soft daylight, lonely mood, no legible text or logos.",
+      "keyframe_prompt": "Medium shot of a narrow back street in Port Louis Chinatown, old two-storey shopfronts with wooden shutters and red lanterns, the dodo in centre third, full body visible, hurrying along close to the wall with its feathers puffed and neck held low, glancing back over its shoulder in fear, a few blurred passers-by far behind with no faces, dappled late-morning light, anxious mood, no legible text or logos.",
       "kind": "painted",
       "place_refs": [
-        "refs/port_louis/unsplash_street_2C7ATUy4XQ0.jpg"
+        "refs/port_louis/unsplash_chinatown_G0D9rRvn-Uk.jpg"
       ],
       "sound": "street chatter, footsteps, motorbikes, wistful woodwinds",
       "subjects": [
@@ -170,7 +174,7 @@
       "characters": [
         "dodo"
       ],
-      "duration_s": 8.4,
+      "duration_s": 5.4,
       "end_card_text": "",
       "focus_from": "subject",
       "focus_to": "subject",
@@ -178,16 +182,17 @@
       "ground": "stone embankment",
       "id": "s07_waterfront_pouce",
       "intensity": "subtle",
-      "keyframe_prompt": "Muted cinematic anime with painterly 2D backgrounds and soft natural light. Wide shot of Caudan waterfront canal with stone footbridge and shopfronts, Le Pouce mountain rising behind buildings, the dodo in left third, full body visible standing on stone embankment tilting head, palms and water reflections, clear afternoon light, searching mood, no legible text or logos. The dodo stands fully inside the frame on the embankment in the left third, its whole body clearly visible with space around it, well away from the frame edge.",
+      "keyframe_prompt": "Wide shot of the Caudan Waterfront canal in Port Louis as in the reference photograph: still water between a long stone quay with a covered colonnade on the left and modern terraced buildings on the right, a low bridge in the distance, and the sharp peak of Le Pouce rising beyond the city. The dodo stands on the stone quay in the left third, full body visible, looking toward the distant mountain. Soft overcast daylight, longing mood, no legible text or logos.",
       "kind": "painted",
       "place_refs": [
-        "refs/port_louis/wikimedia_caudan_cc0.jpg"
+        "refs/port_louis/WhatsApp Image 2026-10-30 at 22.17.32.jpeg"
       ],
       "sound": "water lapping, gulls, soft guitar",
       "subjects": [
         "dodo"
       ],
-      "transition_in": "cut"
+      "transition_in": "cut",
+      "match_shots": []
     },
     {
       "action": "head_tilt",
@@ -312,16 +317,47 @@
       "ground": "cobbled plaza",
       "id": "s12_crowd_wide",
       "intensity": "medium",
-      "keyframe_prompt": "High wide shot looking down on the Caudan Waterfront plaza under colourful hanging umbrellas: a dense ring of tourists stands shoulder to shoulder in a closed circle, all facing inward, many holding up phones. In the empty circle of cobblestones at the exact centre of the ring stands the dodo, alone, whole body visible, head lowered. The stone arch gate tower and palms are behind. Overwhelming, trapped mood. No legible text or logos.",
+      "keyframe_prompt": "High wide shot looking down on the Caudan Waterfront walkway: rows of colourful umbrellas hang suspended on wires high overhead, exactly as in the reference photograph and the previous shot. A dense ring of tourists stands shoulder to shoulder in a closed circle on the paving, all facing inward, many holding up phones, faces too small to read. In the empty circle at the exact centre stands the dodo, alone, whole body visible, head lowered. Overwhelming, trapped mood. No legible text or logos.",
       "kind": "painted",
       "place_refs": [
-        "refs/port_louis/wikimedia_caudan_cc0.jpg"
+        "refs/port_louis/WhatsApp Image 2026-10-30 at 22.17.32 (1).jpeg"
       ],
       "sound": "crowd swell, whispers, low brass",
       "subjects": [
         "dodo"
       ],
-      "transition_in": "cut"
+      "transition_in": "cut",
+      "match_shots": [
+        "s11_surrounded"
+      ]
+    },
+    {
+      "action": "startle",
+      "atmosphere": "dust",
+      "beat": 4,
+      "camera_move": "static",
+      "characters": [
+        "dodo"
+      ],
+      "duration_s": 4.8,
+      "end_card_text": "",
+      "focus_from": "subject",
+      "focus_to": "subject",
+      "foreground": "hanging umbrella edge",
+      "ground": "cobbled plaza",
+      "id": "s12b_crate_closed",
+      "intensity": "medium",
+      "keyframe_prompt": "Close shot on a waterfront walkway under colourful umbrellas hanging overhead: a wooden slatted crate stands on the paving with the dodo standing inside it, whole body visible through the wide gaps between the planks, looking up at the open lid above. Blurred people's legs and raised phones around, no faces. Grey overcast light. The dodo must match the character reference sheet exactly. No legible text or logos.",
+      "kind": "painted",
+      "place_refs": [],
+      "sound": "wooden crate knocks, lid scrapes shut, muffled crowd, phone shutters",
+      "subjects": [
+        "dodo"
+      ],
+      "transition_in": "cut",
+      "match_shots": [
+        "s11_surrounded"
+      ]
     },
     {
       "action": "idle",
@@ -391,7 +427,7 @@
       "ground": "sandy enclosure floor",
       "id": "s15_many_behind_glass",
       "intensity": "subtle",
-      "keyframe_prompt": "Wide interior shot through a large glass wall into a bare enclosure with a sandy floor: five plump grey-brown dodos, each whole body clearly visible and roughly the same size, standing spaced apart in a row across the middle of the frame from left to right, none hidden or overlapping. In the dark foreground, silhouettes of visitors seen from behind hold up glowing phones toward the glass. Flash-lit night interior, cold light, a shocking reveal. No legible text or logos.",
+      "keyframe_prompt": "Wide interior shot through a large glass wall into a bare enclosure with a sandy floor, five plump grey-brown dodos inside, each whole body visible and each different: one sitting low near the front, one pecking at the sand, one standing facing away toward the back wall, and two huddled together at the side, at different distances from the glass. In the dark foreground, silhouettes of visitors seen from behind hold up glowing phones toward the glass. Cold artificial light, a shocking reveal. No legible text or logos.",
       "kind": "painted",
       "place_refs": [],
       "sound": "crowd oohs, endless shutters, cold synth pulse",
@@ -444,14 +480,17 @@
       "ground": "sandy enclosure floor",
       "id": "s17_mural_wall",
       "intensity": "subtle",
-      "keyframe_prompt": "Muted cinematic anime with painterly 2D backgrounds and soft natural light. Wide shot of enclosure back wall with a large faded painted mural of ancient ebony forest and mist, the dodo in left third, full body visible standing on sandy enclosure floor looking up at the mural, dim indoor light with dust, melancholy mood, no legible text or logos.",
+      "keyframe_prompt": "Wide shot of the enclosure back wall with the same large faded, peeling painted forest mural as the reference: the same painted trees, flaking paint and stained concrete. The dodo in left third, full body visible, standing on the sandy enclosure floor looking up at the mural, dim cold light with dust in the air, melancholy mood, no legible text or logos.",
       "kind": "painted",
       "place_refs": [],
       "sound": "hushed room tone, distant crowd muffled, lonely piano",
       "subjects": [
         "dodo"
       ],
-      "transition_in": "crossfade"
+      "transition_in": "crossfade",
+      "match_shots": [
+        "s19_press_mural"
+      ]
     },
     {
       "action": "look_around",
@@ -469,14 +508,17 @@
       "ground": "sandy enclosure floor",
       "id": "s18_walk_to_mural",
       "intensity": "subtle",
-      "keyframe_prompt": "Muted cinematic anime with painterly 2D backgrounds and soft natural light. Medium shot facing the faded forest mural wall, the dodo in centre third, full body visible standing on sandy enclosure floor facing the painted ebony trees, head raised, soft shaft of light falling on paint, quiet hopeful mood, no legible text or logos.",
+      "keyframe_prompt": "Wide shot of the enclosure: the dodo, full body visible, walking slowly across the sandy floor toward the same large faded, peeling painted forest mural as the reference, the same painted trees, flaking paint and stained concrete wall. Dim cold light, dust in the air, quiet longing mood, no legible text or logos.",
       "kind": "painted",
       "place_refs": [],
       "sound": "soft steps in sand, breath, tender strings",
       "subjects": [
         "dodo"
       ],
-      "transition_in": "cut"
+      "transition_in": "cut",
+      "match_shots": [
+        "s17_mural_wall"
+      ]
     },
     {
       "action": "idle",

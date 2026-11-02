@@ -12,6 +12,7 @@ photo files themselves are not in this repository.
 | unsplash_harbour_WX7iLclCnVI.jpg | Harbour cranes at dusk | Yannick Sookree | https://unsplash.com/photos/WX7iLclCnVI | Unsplash License |
 | unsplash_champdemars_R1Dfnqiajqo.jpg | Champ de Mars, Le Pouce and the Moka range | Oosman Exptal. | https://unsplash.com/photos/R1Dfnqiajqo | Unsplash License |
 | wikimedia_caudan_cc0.jpg | Caudan Waterfront entrance | Benoît Prieur | https://commons.wikimedia.org/wiki/File:Caudan_Waterfront,_February_2020.jpg | CC0 1.0 |
+| Private photos (not in the repository) | Caudan Waterfront umbrella walkway and canal | A friend of the author | Private | Used with the photographer's permission (2026-11-02) |
 
 Photos contributed by a friend of the author (Caudan Waterfront) are used with their permission.
 

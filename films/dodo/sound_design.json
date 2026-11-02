@@ -1,0 +1,233 @@
+{
+  "calls": [
+    {
+      "at_s": 2.5,
+      "description": "Low soft throaty waking grunt like a large drowsy pigeon, short chesty puff with beak barely open.",
+      "seconds": 1.0,
+      "shot_id": "s03_wake_city"
+    },
+    {
+      "at_s": 0.6,
+      "description": "Sharp startled throaty squawk-coo like a frightened large pigeon, brief rising chesty burst.",
+      "seconds": 0.8,
+      "shot_id": "s04_startle_close"
+    },
+    {
+      "at_s": 2.0,
+      "description": "Soft questioning throaty coo like a curious large Nicobar pigeon, two low rolling notes tilting upward.",
+      "seconds": 1.6,
+      "shot_id": "s08_own_image"
+    },
+    {
+      "at_s": 1.0,
+      "description": "Long sad low throaty coo like a mourning large pigeon, slow trembling breathy note held against paint.",
+      "seconds": 3.0,
+      "shot_id": "s19_press_mural"
+    },
+    {
+      "at_s": 1.5,
+      "description": "A soft, low, sleepy two-note coo from a large drowsy pigeon settling down to sleep, fading out; clearly a bird's voice, not a breath or a human sigh.",
+      "seconds": 2.2,
+      "shot_id": "s21_sleep_again",
+      "previous_description": "Sleepy sighing throaty exhale like a drowsy large pigeon settling, soft low deflating breath.",
+      "revised_by": "Muse Wonder critique of v3: the sigh read as human (2026-11-02)"
+    }
+  ],
+  "music": {
+    "negative_global_styles": [
+      "no vocals, no choir, no spoken words",
+      "no electronic dance, no rock, no brass fanfare, no pop brightness",
+      "no abrupt tempo shifts, no genre breaks"
+    ],
+    "positive_global_styles": [
+      "solo piano, soft strings, muted ravanne heartbeat and breathy bamboo flute",
+      "slow tender minimalist cinematic mood, melancholic and gentle",
+      "acoustic intimate dynamics evolving without genre change"
+    ],
+    "sections": [
+      {
+        "level": "low",
+        "negative_local_styles": [
+          "no percussion, no tension, no urban noise"
+        ],
+        "positive_local_styles": [
+          "warm solo piano lullaby with soft strings and evening air, very slow and calm"
+        ],
+        "section_name": "Ancient Forest Lullaby",
+        "starts_at_shot": "s01_forest_dawn"
+      },
+      {
+        "level": "mid",
+        "negative_local_styles": [
+          "no loud drums, no bright melody"
+        ],
+        "positive_local_styles": [
+          "same piano theme fractured with uneasy strings and faint ravanne pulse, anxious"
+        ],
+        "section_name": "Concrete Awakening",
+        "starts_at_shot": "s03_wake_city"
+      },
+      {
+        "level": "low",
+        "negative_local_styles": [
+          "no crowd clamour, no heavy percussion"
+        ],
+        "positive_local_styles": [
+          "wistful bamboo flute over soft piano and strings, wandering slow pace"
+        ],
+        "section_name": "Lonely Search",
+        "starts_at_shot": "s05_downtown_search"
+      },
+      {
+        "level": "mid",
+        "negative_local_styles": [
+          "no festive brass, no loud drums"
+        ],
+        "positive_local_styles": [
+          "plucked piano with quickening strings and light ravanne taps, curious then tense"
+        ],
+        "section_name": "Gathering Eyes",
+        "starts_at_shot": "s10_umbrellas_noticed"
+      },
+      {
+        "level": "mid",
+        "negative_local_styles": [
+          "no flute lightness, no fast rhythm"
+        ],
+        "positive_local_styles": [
+          "mournful low strings with sparse piano and deep muted ravanne heartbeat, slow heavy"
+        ],
+        "section_name": "Crate and Harbour Lament",
+        "starts_at_shot": "s13_crate_harbour"
+      },
+      {
+        "level": "low",
+        "negative_local_styles": [
+          "no percussion, no crowd energy, no resolution"
+        ],
+        "positive_local_styles": [
+          "bare solo piano elegy with fading strings and breath silence, very soft and still"
+        ],
+        "section_name": "Painted Forest Elegy",
+        "starts_at_shot": "s17_mural_wall"
+      }
+    ]
+  },
+  "shots": [
+    {
+      "level": "low",
+      "shot_id": "s01_forest_dawn",
+      "sound": "Soft evening breeze moves through ebony leaves with faint distant forest birds settling low under the canopy."
+    },
+    {
+      "level": "low",
+      "shot_id": "s02_settle_sleep",
+      "sound": "Fading birdsong thins into still blue-dusk air with gentle leaf rustle settling toward quiet."
+    },
+    {
+      "level": "mid",
+      "shot_id": "s03_wake_city",
+      "sound": "Early morning traffic rumbles with bus brakes hissing and hurried footsteps washing over the pavement garden."
+    },
+    {
+      "level": "high",
+      "shot_id": "s04_startle_close",
+      "sound": "A loud bus horn blasts past with rushing air and blurred pedestrian footsteps pounding close behind."
+    },
+    {
+      "level": "mid",
+      "shot_id": "s05_downtown_search",
+      "sound": "Quick light shuffling on stone echoes in the alley with distant motorbike putters and faint market chatter."
+    },
+    {
+      "level": "low",
+      "shot_id": "s06_chinatown_gate",
+      "sound": "Murmuring street crowd hums beneath the gateway with soft wind in leaves and faint distant drumming."
+    },
+    {
+      "level": "low",
+      "shot_id": "s07_waterfront_pouce",
+      "sound": "Canal water laps softly against stone with drifting gull cries and palm fronds rustling in light breeze."
+    },
+    {
+      "level": "low",
+      "shot_id": "s08_own_image",
+      "sound": "Low market hum buzzes around the shop wall with a hanging lamp creaking faintly and leaves trembling outside."
+    },
+    {
+      "level": "low",
+      "shot_id": "s09_see_mountains",
+      "sound": "High hilltop wind whistles through grasses with the city rumbling very far below in soft haze."
+    },
+    {
+      "level": "mid",
+      "shot_id": "s10_umbrellas_noticed",
+      "sound": "Excited crowd murmurs rise in the plaza with rapid phone camera clicks and soft shoe shuffles on stone."
+    },
+    {
+      "level": "high",
+      "shot_id": "s11_surrounded",
+      "sound": "Tight crowd shuffling closes in with rising anxious murmurs and many overlapping phone shutters clicking."
+    },
+    {
+      "level": "mid",
+      "shot_id": "s12_crowd_wide",
+      "sound": "Broad crowd swell holds in a tense hushed circle with faint whispers shifting under hanging umbrellas."
+    },
+    {
+      "level": "high",
+      "shot_id": "s12b_crate_closed",
+      "sound": "Wooden slats knock and scrape as the heavy lid swings shut with muffled crowd movement outside."
+    },
+    {
+      "level": "mid",
+      "shot_id": "s13_crate_harbour",
+      "sound": "Truck engine drones low with metal harbour clanks and deep ship horns rolling across water through slats."
+    },
+    {
+      "level": "mid",
+      "shot_id": "s14_park_arrival",
+      "sound": "Iron gates squeak open with gravel crunching under wheels and soft approaching footsteps in muted open air."
+    },
+    {
+      "level": "mid",
+      "shot_id": "s15_many_behind_glass",
+      "sound": "Muffled visitor murmurs blend with awe-filled gasps and endless phone shutters clicking against glass."
+    },
+    {
+      "level": "high",
+      "shot_id": "s16_phones_flashes",
+      "sound": "Rapid camera shutters burst in quick succession with harsh electronic pops amid restless murmurs."
+    },
+    {
+      "level": "low",
+      "shot_id": "s17_mural_wall",
+      "sound": "Hushed indoor room tone breathes softly with distant muffled crowd and faint air hum."
+    },
+    {
+      "level": "low",
+      "shot_id": "s18_walk_to_mural",
+      "sound": "Soft feet shuffle slowly in dry sand with faint rustle echoing lightly off the painted wall."
+    },
+    {
+      "level": "low",
+      "shot_id": "s19_press_mural",
+      "sound": "Deep near-silence holds with only a faint dusty scrape as feathers brush the peeling painted wall."
+    },
+    {
+      "level": "low",
+      "shot_id": "s20_alone_vast",
+      "sound": "Vast empty enclosure echoes faintly with low lingering air hum and soft distant reverberation."
+    },
+    {
+      "level": "low",
+      "shot_id": "s21_sleep_again",
+      "sound": "Warm still air hangs quietly with faint dust drifting and a very soft room settle fading toward silence."
+    },
+    {
+      "level": "silent",
+      "shot_id": "s22_end_card",
+      "sound": "Complete silence holds with no place or action sound remaining."
+    }
+  ]
+}

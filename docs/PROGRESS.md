@@ -87,6 +87,13 @@ Last updated: 2026-11-02.
   - Free fixes it names: trim s05, s07 and s20. The rest are retakes or repaints (fal money, user's call).
 - **Hackathon demo draft v1:** `films/dodo/makingof/making_of_i2v.mp4` (2:42, no sound), built by `experiments/build_makingof.py` with `makingof.build_i2v` (`--blender` builds the old one). It shows: cold open, problem, motion plan, photo vs keyframe, keyframe check, take comparisons (s09, s03), Wan vs Kling (s06), the s01-s02 flow fix, spend, the Muse Wonder critique, and the film from s15 to the end card (about 52 s). Sent to the user.
 - `docs/SUBMISSION.md` and `docs/X_POST.md` are rewritten for the video pipeline.
+- **2026-11-02, after the user's answers:**
+  - s21 repainted in the enclosure (the real forest was a mistake), with `match_shots: [s19_press_mural]`; Wan take 1 scored 8/10 ($0.80). fal real spend is now $32.80; the card holds $2.20.
+  - Free trims in `motion.json` (`trim: [in_s, out_s]`, applied by `cut`): s05 0–2.75 s, s07 3.0–8.4 s, s20 0–3.0 s. The film is now 129.4 s.
+  - The demo shows the last ~40 s of the film (`build_i2v(excerpt_s=40)`: from s17 to the end card). The user approved about 40 s.
+  - Committed and pushed as 9e14094 (with the user's go-ahead). `films/*/makingof/` is gitignored, so no film footage is in the repo.
+  - Film v2 and demo v2 were sent to the user.
+  - Sound plan, proposed and not yet approved: Muse Spark writes the music brief and ElevenLabs Music composes it (about $1.40). MMAudio adds synced sound effects (about $0.15). A few sad dodo calls from ElevenLabs sound effects, modelled on the Nicobar pigeon (its closest living relative). The audio models must go through the fal ledger cap first. The user's own voice is suggested for the demo voice-over.
 - **Next:**
   1. The user's verdict on s05, s11, the third text card, the demo draft, how much film the public demo may show (MFDC prior publication), and a voice-over or not.
   2. `sound --final`: ambience now; music waits for the user's licensed track in `films/dodo/music/`.
@@ -94,6 +101,60 @@ Last updated: 2026-11-02.
   4. Disclosure: add Wan/Kling and fal, and the text cards.
   5. Making-of and hackathon demo; the hackathon is due Nov 4, 9 PM ET.
 - **Next:** upscale test; build `director` stage `i2v`, with Muse Spark writing motion prompts and reviewing takes, plus end-frame continuity; show the first few shots before the full run.
+
+## 2026-11-02 (later): rounds 2-4, sound, versions
+
+- **Budget:** the user topped up $12 (card total $47 loaded) but the cap stays **$45**. fal real spend is **$44.21**; nothing more is to be spent without the user's go-ahead. `PRODUCTION_CEILING_USD` is 44.00. One s12b retake was run with an explicit `limit=44.95`, inside the $45 cap.
+- **Versions** live in `films/dodo/versions/` (gitignored): v1 (rough, 6/10), v2 (trims, s21 fixed), v3 (sound, 6/10, `critique_i2v.json` inside). Keep every version; a round can make things worse.
+- **The user's friend approved use of their Caudan photos** (`refs/port_louis/WhatsApp ...`). They are used for s12, s12b (umbrella street) and s07 (canal). `refs/` stays out of git. Credit them in the disclosure, without a name unless the user gives one.
+- **Picture changes:**
+  - s03: the dodo wakes on its own forest rock, now in a roadside garden bed (the city grew around it).
+  - s04: the startle happens on that rock.
+  - s05: a frightened escape through a Chinatown back street, toward the gate.
+  - s12: the umbrellas hang overhead.
+  - **s12b_crate_closed (new):** a keeper's hands close the crate lid. The take was chosen by hand: take 2, tied 8/10.
+  - s15: five varied dodos.
+  - s17 and s18: the mural matches s19.
+  - s07: the real Caudan canal with Le Pouce.
+  - Trims are in `motion.json`: s09, s16 and s20, with a dissolve into s20.
+- **Muse Image's filter** refused the capture six times, inconsistently. The same prompt passed with the s11 keyframe as a reference.
+- **Sound (`cutaway/score.py`, stage `score`):**
+  - Muse Spark designs it (`sound_design.json`).
+  - ElevenLabs Music composes it from a composition plan whose section durations come from the timeline: `music/score_v1.mp3`, $1.80 (billed per whole minute).
+  - MMAudio makes each shot's synced effects (`shots/*/sfx.wav`).
+  - ElevenLabs sound effects make 5 dodo calls, modelled on the Nicobar pigeon (`sound/calls/`). call_05 was regenerated because the sigh read as human.
+  - The mix is loudness-normalised to -16 LUFS.
+  - `score.conform()` re-edits the score to a new timeline, so trims don't need a new score.
+- **The critique now hears the sound:** it reports `can_hear_audio`, and it said true with accurate notes.
+
+### Versions and critiques (all in `films/dodo/versions/`)
+
+| Version | Length | Muse Wonder | What changed |
+|---|---|---|---|
+| v1 | 2:19 | 6/10 | First full video cut, silent |
+| v2 | 2:09 | – | s21 in the enclosure; trims |
+| v3 | 2:16 | 6/10 | Sound; capture shot; s03 on its rock; s05 Chinatown escape; s12, s15, s17 repainted |
+| v4 | 2:11 | 7/10 | s04 on the rock; s07 real Caudan canal; s18 mural; keeper's hands; softer last call |
+| v5 | 2:10 | 7/10 | s16 moved before s15; s20 cut |
+| v6 | 2:07 | 7/10 ("competition-ready") | s15 back before s16; s17 shortened |
+| **v7** | **2:04** | **7/10** | s13 and s16 trimmed. **Current film.** |
+
+- The score levelled off at 7, and the critic flips on some notes (the s15/s16 order), so the loop was stopped at v7. `pacing` was removed from the critique schema because it kept coming back degenerate; a malformed reply is retried.
+- **Remaining notes, all needing paid retakes after a top-up:**
+  - s05 should scurry more.
+  - s04's neck stretches too far.
+  - s12's umbrellas are too saturated against s10/s11.
+  - s14: the crate is too small, and the keeper smears.
+  - s15: our dodo can't be told apart from the other five.
+  - s19 should press clearly against the painted forest.
+  - s02 should fall into blue dusk.
+  - s09: the dodo looks giant.
+- **Free notes not yet acted on:** trim s07 to about 3 s; cut s16 entirely (the critic contradicts itself on this).
+- **Next:**
+  1. Update `AI_DISCLOSURE.md`: Wan/Kling/fal, ElevenLabs Music and SFX, MMAudio, the friend's photos, the text cards.
+  2. Rebuild the making-of with sound and the v7 film, and add the new story: the sound design and the critique loop with versions.
+  3. Commit and push (ask the user).
+  4. Submit the hackathon by Nov 4, 9 PM ET.
 
 ## Decision in progress: switch to image-to-video (background)
 

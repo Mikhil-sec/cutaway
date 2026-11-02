@@ -417,7 +417,7 @@ def build_i2v(film, out_dir, film_cut, excerpt_s=40):
     c = costs(film.root, log)
     entries = [json.loads(line) for line in log.read_text(encoding="utf-8").splitlines()
                if f'"film": "{film.root.name}"' in line]
-    muse = sum(e.get("cost_usd", LIST_PRICES.get(e.get("model"), 0.0)) for e in entries if e.get("kind") != "video")
+    muse = sum(e.get("cost_usd", LIST_PRICES.get(e.get("model"), 0.0)) for e in entries if e.get("kind") not in ("video", "audio"))
     accepted = sum(1 for s in painted for t in film.state(s).get("i2v_takes", [])
                    if t["take"] == film.state(s).get("i2v_choice") and t["review"]["score"] >= 7)
     add(still_clip, card(f"{total:.0f} seconds. {len(painted)} shots. {accepted} rated 7/10 or better.",

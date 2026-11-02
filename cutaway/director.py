@@ -677,7 +677,8 @@ I2V_REVIEW = strict({
     "overall": S,
     "strengths": arr(S),
     "weaknesses": arr(S),
-    "pacing": arr(S),
+    "can_hear_audio": B,
+    "sound": arr(S),
     "shots": arr(strict({"shot_id": S, "problem": S, "fix": S})),
 })
 
@@ -688,13 +689,21 @@ def critique_i2v(film, cut, timeline):
     from . import edit
     meta.CONTEXT.pop("shot", None)
     proxy = Path(cut).with_name("critique_proxy.mp4")  # a small copy: the whole film goes up as one data URL
-    edit.ff("-i", cut, "-vf", "scale=960:-2", "-c:v", "libx264", "-crf", 30, "-preset", "slow", "-an", proxy)
+    edit.ff("-i", cut, "-vf", "scale=960:-2", "-c:v", "libx264", "-crf", 30, "-preset", "slow", "-c:a", "aac",
+            "-b:a", "96k", proxy)
+    has_sound = bool(edit.subprocess.run(["ffprobe", "-v", "error", "-select_streams", "a", "-show_entries",
+                                          "stream=index", "-of", "csv=p=0", str(proxy)],
+                                         capture_output=True, text=True).stdout.strip())
     lines = "\n".join(f"{t0:6.1f}-{t1:6.1f} s  {sid}: {desc}" for sid, t0, t1, desc in timeline)
     messages = [
         {"role": "system", "content":
             "You are a film director and editor giving notes on the cut of a wordless animated short. Each shot "
             "began as a painted keyframe that an image-to-video model animated; sparse text cards stand in for "
-            "narration, and there is no sound yet. Watch the whole cut and judge story clarity, emotional arc, "
+            "narration. " + ("It has a soundtrack: an instrumental score, synced sound effects and a few calls "
+            "from the dodo. can_hear_audio: whether you actually received and heard the audio track; only if "
+            "true, judge the sound in sound (at least three observations citing shot ids), and include sound "
+            "in the score. " if has_sound else "There is no sound yet; set can_hear_audio false and leave sound "
+            "empty. ") + "Watch the whole cut and judge story clarity, emotional arc, "
             "flow between shots, pacing, continuity of the character and places, and visual quality (morphing, "
             "flicker, off-model frames). score is an integer from 0 to 10. strengths and weaknesses: at least "
             "three specific observations each, citing shot ids from the timeline. In shots, list only shots "
@@ -707,8 +716,13 @@ def critique_i2v(film, cut, timeline):
         ]},
     ]
     for effort in ("medium", "high"):
-        r = meta.chat("muse-wonder-1.0", json.loads(json.dumps(messages)), schema=I2V_REVIEW, max_tokens=24000,
-                      reasoning_effort=effort)
+        try:  # a runaway answer (tens of thousands of lines) arrives as broken JSON: retry deeper
+            r = meta.chat("muse-wonder-1.0", json.loads(json.dumps(messages)), schema=I2V_REVIEW,
+                          max_tokens=24000, reasoning_effort=effort)
+        except json.JSONDecodeError:
+            print(f"  critique came back malformed at {effort} effort; retrying")
+            r = {"score": -1, "strengths": [], "weaknesses": [], "shots": [], "overall": ""}
+            continue
         if 0 <= r["score"] <= 10 and len(r["strengths"]) >= 2 and len(r["weaknesses"]) >= 2:
             break
         print(f"  critique rejected (score {r['score']}, {len(r['weaknesses'])} weaknesses); retrying deeper")
@@ -835,6 +849,8 @@ def cut(film, res=(960, 540), source="render"):
     clips, timeline, t = [], [], 0.0
     for shot in film.plan["shots"]:
         d = film.shot_dir(shot)
+        if source == "i2v" and motion.get(shot["id"], {}).get("omit"):  # an editor's cut; the shot is kept
+            continue
         trans = motion.get(shot["id"], {}).get("transition_in", shot["transition_in"])
         if shot["kind"] == "end_card":
             clip = edit.end_card(shot["end_card_text"], shot["duration_s"], d / f"end_{res[0]}.mp4", res)
@@ -1004,7 +1020,7 @@ def main():
     ap.add_argument("film")
     ap.add_argument("stage", choices=["plan", "show", "keyframes", "layers", "specs", "render", "review",
                                       "produce", "cut", "sound", "critique", "notes", "disclosure", "storyboard",
-                                      "exploded", "motion", "i2v", "upscale"])
+                                      "exploded", "motion", "i2v", "upscale", "score"])
     ap.add_argument("--source", choices=["render", "i2v"], default="render",
                     help="cut/sound/critique: Blender renders or the chosen video-model takes")
     ap.add_argument("--shots", default="")
@@ -1013,8 +1029,10 @@ def main():
     ap.add_argument("--preview", action="store_true", help="render 3 stills per shot instead of the clip")
     ap.add_argument("--final", action="store_true", help="1920x1080 instead of 960x540")
     a = ap.parse_args()
+    if hasattr(sys.stdout, "reconfigure"):  # model text can hold any script; the Windows console is cp1252
+        sys.stdout.reconfigure(encoding="utf-8", errors="replace")
     if sys.platform == "win32" and a.stage in ("keyframes", "layers", "render", "produce", "exploded", "i2v",
-                                               "upscale"):
+                                               "upscale", "score"):
         # Keep the machine awake while this process works (long renders died when the laptop slept);
         # Windows drops the request when the process exits, and no power settings are changed.
         import ctypes
@@ -1047,12 +1065,23 @@ def main():
         return cut(film, res, a.source)
     if a.stage == "sound":
         return soundtrack(film, res)
+    if a.stage == "score":  # the i2v cut's sound: Muse Spark designs it, fal's audio models make it
+        from . import i2v, score
+        try:
+            score.make(film, force=a.force)
+        except i2v.BudgetError as e:
+            print(f"STOP: {e}")
+        return score.mix(film, res)
     if a.stage == "critique":
         out, timeline = cut(film, res, a.source)
         if a.source == "i2v":
+            from . import score
+            if (film.root / "sound_design.json").exists():  # critique the film as it will be seen and heard
+                out = score.mix(film, res)
             r = critique_i2v(film, out, timeline)
             print(f"Muse Wonder: {r['score']}/10{' (UNRELIABLE)' if r.get('unreliable') else ''}. {r['overall']}")
-            for label in ("strengths", "weaknesses", "pacing"):
+            print(f" can hear audio: {r.get('can_hear_audio')}")
+            for label in ("strengths", "weaknesses", "pacing", "sound"):
                 for p in r.get(label, []):
                     print(f" {label}: {p}")
             for n in r["shots"]:
