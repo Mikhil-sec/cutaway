@@ -302,25 +302,60 @@ def _note(take, n=1):
     return "; ".join(p.rstrip(".") for p in (take["review"].get("problems") or [])[:n])
 
 
+def soundtrack(video, clips, sounds, film_cut, score, out, bed_from=0.0, bed_db=-7.0, fade=0.4):
+    """Lay sound under the assembled making-of. sounds[i] is clip i's: ("film", start) plays the film's own
+    sound for that stretch; ("bed",) or ("bed", call, at_s) plays the score, picking up where it left off, so
+    the panels between film excerpts hear the music continue (with a dodo call at at_s into the panel)."""
+    inputs, graph, parts, t, cursor = ["-i", video, "-i", film_cut, "-i", score], [], [], 0.0, bed_from
+    bed_end = edit.duration(score)
+    for i, ((path, _), s) in enumerate(zip(clips, sounds)):
+        d = edit.duration(path)
+        if s[0] == "film":
+            src, a = 1, s[1]
+        else:
+            if cursor + d > bed_end:  # the score ran out: start it again after the cold open
+                cursor = bed_from
+            src, a, cursor = 2, cursor, cursor + d
+        gain = 0.0 if s[0] == "film" else bed_db
+        graph.append(f"[{src}:a]atrim={a:.3f}:{a + d:.3f},asetpts=PTS-STARTPTS,volume={gain}dB,"
+                     f"afade=in:d={fade},afade=out:st={max(d - fade, 0):.3f}:d={fade},adelay={t * 1000:.0f}:all=1[p{i}]")
+        parts.append(f"[p{i}]")
+        if len(s) == 3:  # a dodo call over the bed
+            inputs += ["-i", s[1]]
+            k = len(inputs) // 2 - 1
+            graph.append(f"[{k}:a]volume=-2dB,adelay={(t + s[2]) * 1000:.0f}:all=1[c{i}]")
+            parts.append(f"[c{i}]")
+        t += d
+    graph.append("".join(parts) + f"amix=inputs={len(parts)}:normalize=0:duration=longest,"
+                 f"atrim=0:{t:.3f},loudnorm=I=-16:TP=-1.5:LRA=11,aresample=48000[a]")
+    edit.ff(*inputs, "-filter_complex", ";".join(graph), "-map", "0:v", "-map", "[a]", "-c:v", "copy",
+            "-c:a", "aac", "-b:a", "192k", "-shortest", out)
+    return out
+
+
 def build_i2v(film, out_dir, film_cut, excerpt_s=40):
     """The making-of for the image-to-video pipeline: Muse models direct, video models animate. It shows
     only the last ~excerpt_s seconds of the film, from a shot boundary: the demo is public before the
-    competition film is."""
+    competition film is. film_cut: the film with its sound (film_<w>.mp4)."""
+    from . import i2v
     out_dir = Path(out_dir)
     out_dir.mkdir(parents=True, exist_ok=True)
+    timeline_rows = json.loads((film.root / "timeline.json").read_text(encoding="utf-8"))
+    timeline = {sid: (t0, t1) for sid, t0, t1, _ in timeline_rows}
     painted = [s for s in film.plan["shots"] if s["kind"] == "painted"]
     by_id = {s["id"]: s for s in painted}
-    timeline = {sid: (t0, t1) for sid, t0, t1, _ in
-                json.loads((film.root / "timeline.json").read_text(encoding="utf-8"))}
-    clips, n = [], 0
+    in_film = [s for s in painted if s["id"] in timeline]
+    clips, sounds, n = [], [], 0
 
-    def add(clip_fn, *args, **kw):
+    def add(clip_fn, *args, sound=("bed",), **kw):
         nonlocal n
         n += 1
         clips.append((clip_fn(*args, out=out_dir / f"i2v_{n:02d}.mp4", **kw), "cut"))
+        sounds.append(sound)
 
     # 1. Cold open: the forest, the first text card, the cut into the dodo settling.
-    add(video_clip, film_cut, start=0.0, seconds=timeline["s02_settle_sleep"][1])
+    cold_open = timeline["s02_settle_sleep"][1]
+    add(video_clip, film_cut, start=0.0, seconds=cold_open, sound=("film", 0.0))
     add(still_clip, card("Cutaway", "An AI film crew for a 2-minute animated short. Meta's Muse models plan, "
                                     "paint, direct and critique; video models do the camera work.",
                          "Meta Global AI Hackathon"), 5)
@@ -381,47 +416,89 @@ def build_i2v(film, out_dir, film_cut, excerpt_s=40):
         "Shots must flow like a movie. Muse Image repainted the second shot from the first one's keyframe, and "
         "the first shot now ends mid-movement so the cut lands on action.")
 
-    # 7. Spend: the user's own money, under a hard cap.
-    fal = json.loads((film.repo / "ledger_fal.json").read_text(encoding="utf-8"))["spent_usd"]
-    takes = sum(len(film.state(s).get("i2v_takes", [])) for s in painted)
-    add(still_clip, card(f"${fal:.2f} of video, under a hard $45 cap.",
-                         f"{takes} takes for {len(painted)} shots. Every clip's worst-case cost is reserved before "
-                         "it is sent, and the ledger is checked against fal's own bill after each one. When the "
-                         "laptop hibernated mid-clip, the paid request was saved and collected on the next run.",
-                         "Spend"), 8)
+    # 7. Sound: Muse Spark designs it, audio models perform it, and a dodo call is heard over the panel.
+    design = json.loads((film.root / "sound_design.json").read_text(encoding="utf-8"))
+    img = canvas()
+    d = ImageDraw.Draw(img)
+    d.text((80, 60), "Muse Spark designs the sound; audio models perform it", font=font(52), fill=INK)
+    y = text_block(d, (80, 150), "The score: one composition plan, its sections timed to the cut "
+                                 "(ElevenLabs Music)", 32, 110, INK)
+    for sec in [s for s in design["music"]["sections"] if s.get("starts_at_shot") in timeline][:4]:
+        y = text_block(d, (110, y + 8), f"{sec['section_name']}: " + "; ".join(sec["positive_local_styles"]),
+                       26, 125, DIM)
+    y = text_block(d, (80, y + 26), "Every shot's effects, generated from its own video (MMAudio)", 32, 110, INK)
+    y = text_block(d, (80, y + 26), "The dodo's voice, modelled on its closest living relative, the Nicobar "
+                                    "pigeon (ElevenLabs SFX)", 32, 110, INK)
+    i, call = next((i, c) for i, c in enumerate(design["calls"], start=1) if c["shot_id"] == "s19_press_mural")
+    y = text_block(d, (110, y + 8), "Listen: " + call["description"], 26, 125, ACCENT)
+    call_file = film.root / "sound" / "calls" / f"call_{i:02d}.mp3"  # score.make's numbering
+    add(still_clip, img, 12, sound=("bed", call_file, 7.0))
 
-    # 8. Muse Wonder watches the whole film.
+    # 8. Muse Wonder watches and hears the whole film; seven cuts, every one kept.
     crit = film.root / "critique_i2v.json"
     if crit.exists():
         c = json.loads(crit.read_text(encoding="utf-8"))
         img = canvas()
         d = ImageDraw.Draw(img)
-        d.text((80, 70), f"Muse Wonder watches the whole film:  {c['score']}/10", font=font(56), fill=INK)
+        d.text((80, 70), f"Muse Wonder watches and hears the whole film:  {c['score']}/10", font=font(52),
+               fill=INK)
         y = text_block(d, (80, 170), c["overall"], 32, 100, DIM)
-        y = text_block(d, (80, y + 30), "Strengths it names:", 32, 100, INK)
-        for x in c["strengths"][:2]:
+        y = text_block(d, (80, y + 30), "What it heard:", 32, 100, INK)
+        for x in c.get("sound", [])[-1:]:
             y = text_block(d, (110, y + 8), x, 28, 110, ACCENT)
         y = text_block(d, (80, y + 30), "Notes for the next cut:", 32, 100, INK)
         for x in c["weaknesses"][:2]:
             y = text_block(d, (110, y + 8), x, 28, 110, DIM)
-        add(still_clip, img, 12)
+        add(still_clip, img, 13)
+    versions = sorted((film.root / "versions").glob("v*"), key=lambda p: int(p.name[1:]))
+    if versions:  # a version cut without a new critique shows a dash
+        scores = [(p.name, json.loads((p / "critique_i2v.json").read_text(encoding="utf-8")).get("score")
+                   if (p / "critique_i2v.json").exists() else None) for p in versions]
+        img = canvas()
+        d = ImageDraw.Draw(img)
+        d.text((80, 70), "Critique, fix, critique again: seven cuts, every one kept", font=font(52), fill=INK)
+        x0 = 120
+        for v, s in scores:
+            d.text((x0, 220), v, font=font(40), fill=DIM)
+            d.text((x0, 280), f"{s}/10" if s else "–", font=font(56), fill=ACCENT if s and s >= 7 else INK)
+            x0 += 240
+        text_block(d, (80, 420),
+                   "Muse Wonder's notes became retakes, repaints and trims: a capture scene, a keeper's hands on "
+                   "the crate, the real Caudan canal, sound. The author's notes went in alongside them. The loop "
+                   "stopped when the score held at 7 and the critic began to contradict itself, and the author "
+                   "chose the cut. Each version and its critique is kept, in case a fix makes things worse.",
+                   34, 95, DIM)
+        add(still_clip, img, 10)
 
-    # 9. The end of the film, from the shot boundary nearest excerpt_s before the end.
+    # 9. Spend: the user's own money, under a hard cap.
+    fal = i2v.real_spent() or json.loads((film.repo / "ledger_fal.json").read_text(encoding="utf-8"))["spent_usd"]
+    takes = sum(len(film.state(s).get("i2v_takes", [])) + sum(len(p["takes"]) for p in film.state(s).get(
+        "i2v_takes_prev", [])) for s in painted)
+    add(still_clip, card(f"${fal:.2f} of video and sound, under a hard $45 cap.",
+                         f"{takes} takes for {len(in_film)} shots. Every clip's worst-case cost is reserved before "
+                         "it is sent, and the ledger is checked against fal's own bill after each one. When the "
+                         "laptop hibernated mid-clip, the paid request was saved and collected on the next run.",
+                         "Spend"), 8)
+
+    # 10. The end of the film, from the shot boundary nearest excerpt_s before the end, with its sound.
     add(still_clip, card("The Dodo Came Back", "What if the dodo returned to Mauritius?", "The film"), 3)
     total = edit.duration(film_cut)
     start = min((t0 for t0, _ in timeline.values()), key=lambda t0: abs(total - t0 - excerpt_s))
-    add(video_clip, film_cut, start=start, seconds=total - start)
+    add(video_clip, film_cut, start=start, seconds=total - start, sound=("film", start))
 
-    # 10. Numbers.
+    # 11. Numbers.
     log = film.repo / "generation_log.jsonl"
     c = costs(film.root, log)
     entries = [json.loads(line) for line in log.read_text(encoding="utf-8").splitlines()
                if f'"film": "{film.root.name}"' in line]
     muse = sum(e.get("cost_usd", LIST_PRICES.get(e.get("model"), 0.0)) for e in entries if e.get("kind") not in ("video", "audio"))
-    accepted = sum(1 for s in painted for t in film.state(s).get("i2v_takes", [])
-                   if t["take"] == film.state(s).get("i2v_choice") and t["review"]["score"] >= 7)
-    add(still_clip, card(f"{total:.0f} seconds. {len(painted)} shots. {accepted} rated 7/10 or better.",
-                         f"${fal:.2f} of video and ${muse:.2f} of Meta model calls. {c['calls']} calls in all, "
-                         "every prompt, take and review logged, and an AI-disclosure report generated for the "
-                         "competition. Open source: github.com/Mikhil-sec/cutaway", "Result"), 8)
-    return edit.assemble(clips, out_dir / "making_of_i2v.mp4")
+    accepted = sum(1 for s in in_film for t in film.state(s).get("i2v_takes", [])
+                   if t["take"] == film.state(s).get("i2v_choice") and (t.get("review") or {}).get("score", 0) >= 7)
+    add(still_clip, card(f"{total:.0f} seconds. {len(in_film)} shots. {accepted} rated 7/10 or better.",
+                         f"${fal:.2f} of video and sound, ${muse:.2f} of Meta model calls. {c['calls']} calls in "
+                         "all, every prompt, take and review logged, and an AI-disclosure report generated for the "
+                         "competition. Open source: github.com/Mikhil-sec/cutaway", "Result"), 8, sound=("bed",))
+    silent, _ = edit.assemble(clips, out_dir / "making_of_i2v_silent.mp4")
+    score = sorted((film.root / "music").glob("score_v*.mp3"), key=lambda p: p.stat().st_mtime)[-1]
+    out = soundtrack(silent, clips, sounds, film_cut, score, out_dir / "making_of_i2v.mp4", bed_from=cold_open)
+    return out, edit.duration(out)

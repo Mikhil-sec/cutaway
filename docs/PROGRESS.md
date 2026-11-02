@@ -2,22 +2,23 @@
 
 Last updated: 2026-11-02.
 
-## Status
+## Status (2026-11-02, end of day)
 
-**Built and working (all pushed):**
-- The full 2.5D pipeline:
-  - Muse Spark plans the film; Muse Image paints keyframes; SAM 3.1 cuts layers; code fits the camera.
-  - Blender Eevee renders with puppets, depth of field, fog and flashes.
-  - Muse Spark reviews each shot; Muse Wonder critiques the cut.
-  - Voice notes, sound mix, AI disclosure and a making-of.
-- Finished outputs (not in git):
-  - `films/dodo/film_1920.mp4` (139.5 s, 1080p), with the preview `film_1080_preview.mp4`.
-  - `films/dodo/makingof/making_of.mp4` (2:38).
-  - Neither has music yet.
-- Muse Wonder critique score: 3/10 in round 1, 6/10 after round 2. Round 3 made things worse and was reverted.
-- Meta API spend: about **$6.29 of the $150** credit. The code cap is `HARD_CAP` in `cutaway/meta.py`.
+- **The film is locked: v7** (2:04, with sound; Muse Wonder 7/10). The user showed it to friends, who liked it and found the ending moving. File: `films/dodo/film_1920.mp4`, also in `films/dodo/versions/v7/`.
+- **Code and docs are pushed** (commit 9b4fcc0 "Sound design and score..." plus the follow-up for the disclosure and demo).
+- **AI disclosure regenerated** for the video pipeline (`films/dodo/AI_DISCLOSURE.md`, `generation_records.jsonl`). `disclosure()` now builds it from the timeline in film order: the extent of AI use, authorship (with the author's direction notes), the models with costs (fal billed $44.21), the sound design, and for each shot the keyframe prompt, motion plan, takes with Muse Spark scores, the take chosen, trims and sound. `CREDITS.md` lists all the fal models as commercial-licensed (checked 2026-11-02) and Real-ESRGAN.
+- **Hackathon demo built with sound:** `films/dodo/makingof/making_of_i2v.mp4` (2:53, -16 LUFS), with a phone copy at `demo_share.mp4`, sent to the user.
+  - New panels: sound design, with a dodo call heard over it; Muse Wonder "watches and hears"; seven cuts v1–v7.
+  - `makingof.soundtrack()` plays the film's own sound under film excerpts and continues the score under the panels.
+  - The excerpt is the last ~40 s, from s15.
+- **Docs:** `docs/SUBMISSION.md` was rewritten (124 s, 18 of 21 shots ≥7, sound, Who it's for, $44.21). `docs/X_POST.md` has a long version and a version under 280 characters.
+- **Spend:** fal $44.21 of the $45 cap, with about $2.79 on the card. No more fal spending without the user's go-ahead. The Meta API has used about $8.3 of $150.
+- s12b take 2's Muse Spark review (8/10) was restored into its state from `generation_log.jsonl`; it had been logged but not saved.
 
-**User's verdict (2026-10-31):** the film is "far too static, does not look animated at all … just a sideshow". 2.5D camera moves over still paintings cannot win the film competition. The content and story are good.
+### Hackathon rules (from third-party write-ups of the official waiver; the user should check the Cerebral Valley page)
+- Submit on the Cerebral Valley portal (`cerebralvalley.ai/e/meta-ai-developer-hackathon/hackathon/submit`) by **Nov 4, 9:00 PM ET (EST, 02:00 UTC Nov 5)**. Required: the project, with a working demo and a demo video. Our notes say the video is 3 minutes at most.
+- Judging: Impact 30%, Use of Meta AI tooling 25%, Demo (including video quality) 25%, Technical depth 20%. Indie lens: creativity, technical ambition, does it work.
+- Bonus prizes may include community vote and most viral. The X post helps there.
 
 ## 2026-11-01: image-to-video bake-off done
 
@@ -150,11 +151,12 @@ Last updated: 2026-11-02.
   - s02 should fall into blue dusk.
   - s09: the dodo looks giant.
 - **Free notes not yet acted on:** trim s07 to about 3 s; cut s16 entirely (the critic contradicts itself on this).
-- **Next:**
-  1. Update `AI_DISCLOSURE.md`: Wan/Kling/fal, ElevenLabs Music and SFX, MMAudio, the friend's photos, the text cards.
-  2. Rebuild the making-of with sound and the v7 film, and add the new story: the sound design and the critique loop with versions.
-  3. Commit and push (ask the user).
-  4. Submit the hackathon by Nov 4, 9 PM ET.
+- **Next (hackathon, by Nov 4, 9 PM ET):**
+  1. The user watches the demo draft and says what to change.
+  2. Optionally, a voice-over in the user's own voice: record it over `making_of_i2v_silent.mp4`, or re-time the panels to it.
+  3. Upload the demo (YouTube unlisted or similar), add the link to `docs/SUBMISSION.md`, and submit on the Cerebral Valley portal.
+  4. Post on X with the demo attached, then add the post link if the portal asks for it.
+- **MFDC (by Nov 13, 4 PM Mauritius):** submit `film_1920.mp4` plus `AI_DISCLOSURE.md`. Check the official submission page for the file format and the T&Cs on prior publication; the public demo shows only the last 40 s.
 
 ## Decision in progress: switch to image-to-video (background)
 
@@ -199,13 +201,10 @@ Advice given to the user:
 
 ## Open items waiting on the user
 
-- Music tracks to drop into `films/dodo/music/` (licensed). Then run `sound --final` and rebuild the making-of.
-- An optional voice-over for the hackathon demo.
-- A review of the director decisions the assistant made on the user's behalf, listed in `films/dodo/AI_DISCLOSURE.md`.
-- A check of the MFDC full Terms & Conditions on prior publication. Until then, keep the hackathon demo film separate from the competition film.
-- The friend's permission for their Port Louis photos.
-- Optional new shots: the capture, and our dodo among the five at the reveal.
-- Hackathon submission (by Nov 4, 9 PM ET): use `docs/SUBMISSION.md` and `docs/X_POST.md`, record the demo video, and post on X.
+- Feedback on the demo draft, and a decision on the voice-over.
+- Review the AI disclosure, especially "Human and AI authorship" and the director decisions made on their behalf.
+- Fill in the Cerebral Valley form (it needs the user's login) and post on X.
+- The MFDC entry form and the T&Cs on prior publication.
 
 ## Key facts for a fresh session
 

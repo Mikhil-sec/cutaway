@@ -7,12 +7,24 @@ I built Cutaway for the Meta Global AI Hackathon: an AI film crew where Meta's M
 • Muse Spark plans every shot and how it cuts into the next
 • Muse Image paints them from real Port Louis photos
 • Muse Spark watches every take, rejects the ones that melt, and asks again
-• Muse Wonder critiques the whole film
+• Muse Spark designs the sound, down to a dodo voice modelled on its closest living relative
+• Muse Wonder watches and hears the whole film, and its notes drive seven cuts
 
-2 minutes 19, one consistent dodo, on a student budget.
+Two minutes, one consistent dodo, on a student budget.
 
 Open source: github.com/Mikhil-sec/cutaway
 
+@AIatMeta #MetaHackathon
+
+---
+
+Short version (fits 280 characters without X Premium):
+
+What if the dodo came back to Mauritius? 🦤
+
+I built Cutaway for the Meta hackathon, an AI film crew: Meta's Muse models plan, paint, direct, score and critique a 2-minute short; video models do the camera work.
+
+github.com/Mikhil-sec/cutaway
 @AIatMeta #MetaHackathon
 
 ---

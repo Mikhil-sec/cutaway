@@ -18,6 +18,15 @@ Photos contributed by a friend of the author (Caudan Waterfront) are used with t
 
 ## Sound
 
+All sound in the film is AI-generated through fal.ai, which lists each model as licensed for commercial use
+(checked 2026-11-02):
+
+- Score: ElevenLabs Music (`fal-ai/elevenlabs/music`)
+- Per-shot sound effects: MMAudio v2 (`fal-ai/mmaudio-v2`)
+- The dodo's calls: ElevenLabs Sound Effects v2 (`fal-ai/elevenlabs/sound-effects/v2`)
+
+The recordings below were used only by the earlier Blender version of the film. They are not in the final film.
+
 | File (assets/audio/) | What | Author | Source | Licence |
 |---|---|---|---|---|
 | birdsong_blackbird_ccby.ogg | Common blackbird song | Diana Tudor (via xeno-canto 1059970) | https://commons.wikimedia.org/wiki/File:Common_Blackbird_song_(Turdus_merula).ogg | CC BY 4.0 |
@@ -31,5 +40,8 @@ Photos contributed by a friend of the author (Caudan Waterfront) are used with t
 ## Software and models
 
 - Meta Muse Image, Muse Spark, Muse Wonder, SAM 3.1 (Meta Model API)
-- Blender (GPL), ffmpeg (LGPL/GPL)
+- Video: Wan 3.0 image-to-video (`alibaba/wan-3.0/image-to-video`) and Kling 2.6 Pro
+  (`fal-ai/kling-video/v2.6/pro/image-to-video`), via fal.ai, both listed as licensed for commercial use
+- Real-ESRGAN, model realesr-animevideov3 (BSD-3-Clause), for the 1080p upscale
+- Blender (GPL; earlier version of the film only), ffmpeg (LGPL/GPL)
 - meta-sam-parser (Meta), Pillow, NumPy, httpx, python-dotenv
