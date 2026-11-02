@@ -1,0 +1,123 @@
+{
+  "overall": "The cut tells the premise but loses clarity and emotional force at two hinges: the public discovery and the arrival at the enclosure. Several backgrounds do not read as their named places, the crowd climax does not visually surround the bird, and the closing mural beat is underplayed. Use the cuttable montage to protect the stronger dialogue-free beats and restore geography, then give the press-the-mural moment more stillness.",
+  "pacing": [
+    "s05_downtown_search",
+    "s10_umbrellas_noticed",
+    "s18_walk_to_mural"
+  ],
+  "score": 3,
+  "shots": [
+    {
+      "action": "keep",
+      "duration": "shorter",
+      "intensity": "medium",
+      "problem": "Start is clean and readable as the home forest, but several later returns to a forest image can be confused with this opening unless the painted wall is unmistakably artificial.",
+      "redo_keyframe": true,
+      "shot_id": "s01_forest_dawn"
+    },
+    {
+      "action": "keep",
+      "duration": "shorter",
+      "intensity": "medium",
+      "problem": "The sleep pose gives a useful mirror for the end, yet holding it longer than the opening would flatten the surprise of waking in the city.",
+      "redo_keyframe": false,
+      "shot_id": "s02_settle_sleep"
+    },
+    {
+      "action": "keep",
+      "duration": "longer",
+      "intensity": "medium",
+      "problem": "The move from moss to pavement is the central shock; the bird needs one beat of stillness so a first-time viewer understands this is the same bird in a new place, not a montage of different places.",
+      "redo_keyframe": false,
+      "shot_id": "s03_wake_city"
+    },
+    {
+      "action": "keep",
+      "duration": "shorter",
+      "intensity": "medium",
+      "problem": "The close startle is wordless enough, but its effect depends on s03 being quiet first; do not inflate it into a separate gag.",
+      "redo_keyframe": true,
+      "shot_id": "s04_startle_close"
+    },
+    {
+      "action": "startle",
+      "duration": "shorter",
+      "intensity": "medium",
+      "problem": "The image is readable, yet as a separate shot it risks reading as another street portrait rather than a search; audience should feel forward wandering past recognisable city texture.",
+      "redo_keyframe": true,
+      "shot_id": "s05_downtown_search"
+    },
+    {
+      "action": "keep",
+      "duration": "shorter",
+      "intensity": "medium",
+      "problem": "Gate landmark is one of the clearest Port Louis cues, so keep it as a geographic anchor; the bird’s size and orientation should remain easy to find on the first pass.",
+      "redo_keyframe": true,
+      "shot_id": "s06_chinatown_gate"
+    },
+    {
+      "action": "keep",
+      "duration": "longer",
+      "intensity": "medium",
+      "problem": "This is a key place shot because the mountain must sit behind the waterfront so the later far-mountain hope feels earned; any drift in mountain shape or waterfront layout would break continuity.",
+      "redo_keyframe": true,
+      "shot_id": "s07_waterfront_pouce"
+    },
+    {
+      "action": "keep",
+      "duration": "longer",
+      "intensity": "medium",
+      "problem": "The souvenir and mural irony is central to the theme: the bird is famous as an image but homeless in reality. It needs to register before the hilltop widens the search.",
+      "redo_keyframe": true,
+      "shot_id": "s08_own_image"
+    },
+    {
+      "action": "keep",
+      "duration": "longer",
+      "intensity": "medium",
+      "problem": "This motivates the turn from wandering to being seen in public by showing distance; the rim, sightline and mountain direction should agree with the earlier waterfront view.",
+      "redo_keyframe": true,
+      "shot_id": "s09_see_mountains"
+    },
+    {
+      "action": "keep",
+      "duration": "shorter",
+      "intensity": "medium",
+      "problem": "Umbrellas are colourful in the frame, but the notice beat must be unmistakable without dialogue: eyes, bodies and phones should turn toward the bird rather than merely coexist with it.",
+      "redo_keyframe": true,
+      "shot_id": "s10_umbrellas_noticed"
+    },
+    {
+      "action": "keep",
+      "duration": "longer",
+      "intensity": "medium",
+      "problem": "The phone ring is a decisive escalation from curiosity to capture; if the faces close in too fast it can read comic instead of trapping, so write the silhouettes as closing space.",
+      "redo_keyframe": true,
+      "shot_id": "s11_surrounded"
+    },
+    {
+      "action": "keep",
+      "duration": "shorter",
+      "intensity": "medium",
+      "problem": "A wide version of the crowd should confirm the bird is encircled, not simply standing near onlookers; spatial continuity with the closer surrounded shot is essential.",
+      "redo_keyframe": true,
+      "shot_id": "s12_crowd_wide"
+    },
+    {
+      "action": "startle",
+      "duration": "longer",
+      "intensity": "medium",
+      "problem": "The crate and cranes carry the wordless transition from public attention to removal; sway, shadow bars and harbour parallax should make being taken feel involuntary.",
+      "redo_keyframe": true,
+      "shot_id": "s13_crate_harbour"
+    },
+    {
+      "action": "keep",
+      "duration": "longer",
+      "intensity": "medium",
+      "problem": "The park entrance must clearly say attraction rather than rescue, or the moral pivot will be missed; signage should stay generic and word-light while fences and gate read managed, not wild refuge.",
+      "redo_keyframe": true,
+      "shot_id": "s14_park_arrival"
+    }
+  ]
+}

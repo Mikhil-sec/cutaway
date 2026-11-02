@@ -1,0 +1,189 @@
+{
+  "overall": "Minor issues only",
+  "pacing": [
+    "s08_own_image",
+    "s09_see_mountains",
+    "s10_umbrellas_noticed",
+    "s14_park_arrival",
+    "s17_mural_wall"
+  ],
+  "score": 15,
+  "shots": [
+    {
+      "action": "keep",
+      "duration": "keep",
+      "intensity": "keep",
+      "problem": "none",
+      "redo_keyframe": false,
+      "shot_id": "s01_forest_dawn"
+    },
+    {
+      "action": "keep",
+      "duration": "keep",
+      "intensity": "keep",
+      "problem": "none",
+      "redo_keyframe": false,
+      "shot_id": "s02_settle_sleep"
+    },
+    {
+      "action": "keep",
+      "duration": "keep",
+      "intensity": "keep",
+      "problem": "none",
+      "redo_keyframe": false,
+      "shot_id": "s03_wake_city"
+    },
+    {
+      "action": "keep",
+      "duration": "keep",
+      "intensity": "keep",
+      "problem": "none",
+      "redo_keyframe": false,
+      "shot_id": "s04_startle_close"
+    },
+    {
+      "action": "keep",
+      "duration": "keep",
+      "intensity": "keep",
+      "problem": "none",
+      "redo_keyframe": false,
+      "shot_id": "s05_downtown_search"
+    },
+    {
+      "action": "keep",
+      "duration": "keep",
+      "intensity": "keep",
+      "problem": "none",
+      "redo_keyframe": false,
+      "shot_id": "s06_chinatown_gate"
+    },
+    {
+      "action": "keep",
+      "duration": "keep",
+      "intensity": "keep",
+      "problem": "none",
+      "redo_keyframe": false,
+      "shot_id": "s07_waterfront_pouce"
+    },
+    {
+      "action": "keep",
+      "duration": "keep",
+      "intensity": "keep",
+      "problem": "none",
+      "redo_keyframe": false,
+      "shot_id": "s08_own_image"
+    },
+    {
+      "action": "keep",
+      "duration": "keep",
+      "intensity": "keep",
+      "problem": "none",
+      "redo_keyframe": false,
+      "shot_id": "s09_see_mountains"
+    },
+    {
+      "action": "keep",
+      "duration": "keep",
+      "intensity": "keep",
+      "problem": "none",
+      "redo_keyframe": false,
+      "shot_id": "s10_umbrellas_noticed"
+    },
+    {
+      "action": "keep",
+      "duration": "keep",
+      "intensity": "keep",
+      "problem": "none",
+      "redo_keyframe": false,
+      "shot_id": "s11_surrounded"
+    },
+    {
+      "action": "keep",
+      "duration": "keep",
+      "intensity": "keep",
+      "problem": "none",
+      "redo_keyframe": false,
+      "shot_id": "s12_crowd_wide"
+    },
+    {
+      "action": "keep",
+      "duration": "keep",
+      "intensity": "keep",
+      "problem": "none",
+      "redo_keyframe": false,
+      "shot_id": "s13_crate_harbour"
+    },
+    {
+      "action": "keep",
+      "duration": "keep",
+      "intensity": "keep",
+      "problem": "none",
+      "redo_keyframe": false,
+      "shot_id": "s14_park_arrival"
+    },
+    {
+      "action": "keep",
+      "duration": "keep",
+      "intensity": "keep",
+      "problem": "none",
+      "redo_keyframe": false,
+      "shot_id": "s15_many_behind_glass"
+    },
+    {
+      "action": "keep",
+      "duration": "keep",
+      "intensity": "keep",
+      "problem": "none",
+      "redo_keyframe": false,
+      "shot_id": "s16_phones_flashes"
+    },
+    {
+      "action": "keep",
+      "duration": "keep",
+      "intensity": "keep",
+      "problem": "none",
+      "redo_keyframe": false,
+      "shot_id": "s17_mural_wall"
+    },
+    {
+      "action": "keep",
+      "duration": "keep",
+      "intensity": "keep",
+      "problem": "none",
+      "redo_keyframe": false,
+      "shot_id": "s18_walk_to_mural"
+    },
+    {
+      "action": "keep",
+      "duration": "keep",
+      "intensity": "keep",
+      "problem": "none",
+      "redo_keyframe": false,
+      "shot_id": "s19_press_mural"
+    },
+    {
+      "action": "keep",
+      "duration": "keep",
+      "intensity": "keep",
+      "problem": "none",
+      "redo_keyframe": false,
+      "shot_id": "s20_alone_vast"
+    },
+    {
+      "action": "keep",
+      "duration": "keep",
+      "intensity": "keep",
+      "problem": "none",
+      "redo_keyframe": false,
+      "shot_id": "s21_sleep_again"
+    },
+    {
+      "action": "keep",
+      "duration": "keep",
+      "intensity": "keep",
+      "problem": "none",
+      "redo_keyframe": false,
+      "shot_id": "s22_end_card"
+    }
+  ]
+}

@@ -1,0 +1,8 @@
+{
+  "note": "Text cards approved by the author on 2026-11-01 (story.md, 'Text cards'). offset_s is from the start of the shot.",
+  "captions": [
+    {"shot": "s01_forest_dawn", "text": "Mauritius, 1681.", "offset_s": 1.2, "seconds": 3.6},
+    {"shot": "s03_wake_city", "text": "Port Louis. Today.", "offset_s": 1.0, "seconds": 3.4},
+    {"shot": "s15_many_behind_glass", "text": "It was not the only one.", "offset_s": 1.5, "seconds": 3.8}
+  ]
+}

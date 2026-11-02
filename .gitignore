@@ -18,3 +18,7 @@ films/*/*.png
 films/*/*.log
 films/*/*.err
 films/*/music/
+ledger_fal.json
+films/*/i2v/
+tools/
+films/*/makingof/

@@ -1,0 +1,136 @@
+{
+  "cues": [
+    {
+      "bed": "forest",
+      "level": "low",
+      "shot_id": "s01_forest_dawn",
+      "shutter_clicks": 0
+    },
+    {
+      "bed": "forest",
+      "level": "low",
+      "shot_id": "s02_settle_sleep",
+      "shutter_clicks": 0
+    },
+    {
+      "bed": "city",
+      "level": "high",
+      "shot_id": "s03_wake_city",
+      "shutter_clicks": 0
+    },
+    {
+      "bed": "city",
+      "level": "high",
+      "shot_id": "s04_startle_close",
+      "shutter_clicks": 0
+    },
+    {
+      "bed": "city",
+      "level": "mid",
+      "shot_id": "s05_downtown_search",
+      "shutter_clicks": 0
+    },
+    {
+      "bed": "city",
+      "level": "mid",
+      "shot_id": "s06_chinatown_gate",
+      "shutter_clicks": 0
+    },
+    {
+      "bed": "harbour",
+      "level": "low",
+      "shot_id": "s07_waterfront_pouce",
+      "shutter_clicks": 0
+    },
+    {
+      "bed": "city",
+      "level": "low",
+      "shot_id": "s08_own_image",
+      "shutter_clicks": 0
+    },
+    {
+      "bed": "wind",
+      "level": "low",
+      "shot_id": "s09_see_mountains",
+      "shutter_clicks": 0
+    },
+    {
+      "bed": "crowd",
+      "level": "mid",
+      "shot_id": "s10_umbrellas_noticed",
+      "shutter_clicks": 3
+    },
+    {
+      "bed": "crowd",
+      "level": "high",
+      "shot_id": "s11_surrounded",
+      "shutter_clicks": 5
+    },
+    {
+      "bed": "crowd",
+      "level": "high",
+      "shot_id": "s12_crowd_wide",
+      "shutter_clicks": 4
+    },
+    {
+      "bed": "harbour",
+      "level": "mid",
+      "shot_id": "s13_crate_harbour",
+      "shutter_clicks": 0
+    },
+    {
+      "bed": "city",
+      "level": "low",
+      "shot_id": "s14_park_arrival",
+      "shutter_clicks": 0
+    },
+    {
+      "bed": "crowd",
+      "level": "high",
+      "shot_id": "s15_many_behind_glass",
+      "shutter_clicks": 8
+    },
+    {
+      "bed": "crowd",
+      "level": "high",
+      "shot_id": "s16_phones_flashes",
+      "shutter_clicks": 8
+    },
+    {
+      "bed": "room",
+      "level": "low",
+      "shot_id": "s17_mural_wall",
+      "shutter_clicks": 0
+    },
+    {
+      "bed": "room",
+      "level": "low",
+      "shot_id": "s18_walk_to_mural",
+      "shutter_clicks": 0
+    },
+    {
+      "bed": "silence",
+      "level": "low",
+      "shot_id": "s19_press_mural",
+      "shutter_clicks": 0
+    },
+    {
+      "bed": "room",
+      "level": "low",
+      "shot_id": "s20_alone_vast",
+      "shutter_clicks": 0
+    },
+    {
+      "bed": "silence",
+      "level": "low",
+      "shot_id": "s21_sleep_again",
+      "shutter_clicks": 0
+    },
+    {
+      "bed": "silence",
+      "level": "low",
+      "shot_id": "s22_end_card",
+      "shutter_clicks": 0
+    }
+  ]
+}

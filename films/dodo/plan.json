@@ -1,0 +1,583 @@
+{
+  "logline": "A dodo wakes from the ancient forest into modern Port Louis and searches for home, only to become an exhibit facing a painted forest.",
+  "shots": [
+    {
+      "action": "idle",
+      "atmosphere": "mist",
+      "beat": 1,
+      "camera_move": "crane_down",
+      "characters": [
+        "dodo"
+      ],
+      "duration_s": 5.6,
+      "end_card_text": "",
+      "focus_from": "subject",
+      "focus_to": "subject",
+      "foreground": "fern leaves",
+      "ground": "mossy rock",
+      "id": "s01_forest_dawn",
+      "intensity": "medium",
+      "keyframe_prompt": "Muted cinematic anime with painterly 2D backgrounds and soft natural light. Wide shot of ancient Mauritian ebony forest at evening, a plump grey-brown dodo with large hooked beak in centre third, full body visible standing on a mossy rock, standing still at home, tall ebony trees and mist between trunks, soft pink-gold evening light, tranquil mood, no legible text or logos.",
+      "kind": "painted",
+      "place_refs": [],
+      "sound": "soft dawn bird chorus, light breeze, gentle strings",
+      "subjects": [
+        "dodo"
+      ],
+      "transition_in": "fade_from_black"
+    },
+    {
+      "action": "look_down",
+      "atmosphere": "mist",
+      "beat": 1,
+      "camera_move": "push_in",
+      "characters": [
+        "dodo"
+      ],
+      "duration_s": 4.8,
+      "end_card_text": "",
+      "focus_from": "subject",
+      "focus_to": "subject",
+      "foreground": "out-of-focus leaves",
+      "ground": "mossy rock",
+      "id": "s02_settle_sleep",
+      "intensity": "medium",
+      "keyframe_prompt": "Medium-close shot of the same mossy rock and ebony trees as the previous shot, the dodo in centre third, full body visible, crouching low on the mossy rock with its head lowering and eyes half-closed as it settles to sleep, warm pink-gold evening light starting to fade to soft blue dusk, mist gathering between the trunks, tranquil dreamlike mood, no legible text or logos.",
+      "kind": "painted",
+      "place_refs": [],
+      "sound": "fading birdsong, soft breathing, low warm drone",
+      "subjects": [
+        "dodo"
+      ],
+      "transition_in": "cut",
+      "match_shots": [
+        "s01_forest_dawn"
+      ]
+    },
+    {
+      "action": "look_around",
+      "atmosphere": "dust",
+      "beat": 2,
+      "camera_move": "pull_out",
+      "characters": [
+        "dodo"
+      ],
+      "duration_s": 8.4,
+      "end_card_text": "",
+      "focus_from": "subject",
+      "focus_to": "background",
+      "foreground": "street curb",
+      "ground": "concrete pavement",
+      "id": "s03_wake_city",
+      "intensity": "medium",
+      "keyframe_prompt": "Muted cinematic anime with painterly 2D backgrounds and soft natural light. Wide shot of modern downtown Port Louis street with office towers and shops, the dodo in centre third, full body visible standing on concrete pavement, waking confused, blurred buses and hurrying passers-by around with no close-up faces, harsh morning light and dust, no legible text or logos.",
+      "kind": "painted",
+      "place_refs": [
+        "refs/port_louis/unsplash_street_2C7ATUy4XQ0.jpg"
+      ],
+      "sound": "traffic rumble, bus brakes, crowd footsteps, uneasy strings",
+      "subjects": [
+        "dodo"
+      ],
+      "transition_in": "crossfade"
+    },
+    {
+      "action": "startle",
+      "atmosphere": "none",
+      "beat": 2,
+      "camera_move": "dolly_zoom",
+      "characters": [
+        "dodo"
+      ],
+      "duration_s": 3.8,
+      "end_card_text": "",
+      "focus_from": "subject",
+      "focus_to": "subject",
+      "foreground": "blurred passing legs",
+      "ground": "concrete pavement",
+      "id": "s04_startle_close",
+      "intensity": "subtle",
+      "keyframe_prompt": "Muted cinematic anime with painterly 2D backgrounds and soft natural light. Close medium shot of the dodo in centre third, full body visible standing on concrete pavement, head jerked up startled with round eyes wide, blurred bus and city facades behind, bright daylight, tense mood, no legible text or logos.",
+      "kind": "painted",
+      "place_refs": [
+        "refs/port_louis/unsplash_street_2C7ATUy4XQ0.jpg"
+      ],
+      "sound": "horn blast, gasp of crowd, heartbeat pulse",
+      "subjects": [
+        "dodo"
+      ],
+      "transition_in": "cut"
+    },
+    {
+      "action": "look_around",
+      "atmosphere": "none",
+      "beat": 3,
+      "camera_move": "truck_left",
+      "characters": [
+        "dodo"
+      ],
+      "duration_s": 5.6,
+      "end_card_text": "",
+      "focus_from": "subject",
+      "focus_to": "subject",
+      "foreground": "market awning edge",
+      "ground": "asphalt sidewalk",
+      "id": "s05_downtown_search",
+      "intensity": "subtle",
+      "keyframe_prompt": "Muted cinematic anime with painterly 2D backgrounds and soft natural light. Medium wide shot of busy downtown Port Louis street, the dodo in right third, full body visible standing on asphalt sidewalk looking around, pedestrians hurrying past with blurred faces, colonial shopfronts and office towers, overcast soft daylight, lonely mood, no legible text or logos.",
+      "kind": "painted",
+      "place_refs": [
+        "refs/port_louis/unsplash_street_2C7ATUy4XQ0.jpg"
+      ],
+      "sound": "street chatter, footsteps, motorbikes, wistful woodwinds",
+      "subjects": [
+        "dodo"
+      ],
+      "transition_in": "cut"
+    },
+    {
+      "action": "look_up",
+      "atmosphere": "none",
+      "beat": 3,
+      "camera_move": "truck_right",
+      "characters": [
+        "dodo"
+      ],
+      "duration_s": 5.6,
+      "end_card_text": "",
+      "focus_from": "subject",
+      "focus_to": "background",
+      "foreground": "paper lantern out of focus",
+      "ground": "brick pavement",
+      "id": "s06_chinatown_gate",
+      "intensity": "medium",
+      "keyframe_prompt": "Muted cinematic anime with painterly 2D backgrounds and soft natural light. Medium wide shot under the ornate Chinatown gateway arch in Port Louis, the dodo in centre third, full body visible standing on brick pavement looking up at the arch, red pillars and tiled roof details, blurred passers-by, soft daylight, curious mood, no legible text or logos.",
+      "kind": "painted",
+      "place_refs": [
+        "refs/port_louis/unsplash_chinatown_G0D9rRvn-Uk.jpg"
+      ],
+      "sound": "distant drums, street murmur, light flute",
+      "subjects": [
+        "dodo"
+      ],
+      "transition_in": "cut"
+    },
+    {
+      "action": "look_around",
+      "atmosphere": "none",
+      "beat": 3,
+      "camera_move": "crane_up",
+      "characters": [
+        "dodo"
+      ],
+      "duration_s": 8.4,
+      "end_card_text": "",
+      "focus_from": "subject",
+      "focus_to": "subject",
+      "foreground": "canal railing",
+      "ground": "stone embankment",
+      "id": "s07_waterfront_pouce",
+      "intensity": "subtle",
+      "keyframe_prompt": "Muted cinematic anime with painterly 2D backgrounds and soft natural light. Wide shot of Caudan waterfront canal with stone footbridge and shopfronts, Le Pouce mountain rising behind buildings, the dodo in left third, full body visible standing on stone embankment tilting head, palms and water reflections, clear afternoon light, searching mood, no legible text or logos. The dodo stands fully inside the frame on the embankment in the left third, its whole body clearly visible with space around it, well away from the frame edge.",
+      "kind": "painted",
+      "place_refs": [
+        "refs/port_louis/wikimedia_caudan_cc0.jpg"
+      ],
+      "sound": "water lapping, gulls, soft guitar",
+      "subjects": [
+        "dodo"
+      ],
+      "transition_in": "cut"
+    },
+    {
+      "action": "head_tilt",
+      "atmosphere": "none",
+      "beat": 3,
+      "camera_move": "drift",
+      "characters": [
+        "dodo"
+      ],
+      "duration_s": 7.2,
+      "end_card_text": "",
+      "focus_from": "subject",
+      "focus_to": "background",
+      "foreground": "souvenir stand edge",
+      "ground": "shopfront pavement",
+      "id": "s08_own_image",
+      "intensity": "medium",
+      "keyframe_prompt": "Muted cinematic anime with painterly 2D backgrounds and soft natural light. Medium shot of a shop wall with generic dodo mural and plush souvenirs with no legible text, the dodo in right third, full body visible standing on shopfront pavement staring at its own painted image, head tilted, warm shop light, bittersweet mood, no legible text or logos.",
+      "kind": "painted",
+      "place_refs": [],
+      "sound": "market hum, quiet music-box motif",
+      "subjects": [
+        "dodo"
+      ],
+      "transition_in": "cut"
+    },
+    {
+      "action": "look_around",
+      "atmosphere": "light_shafts",
+      "beat": 3,
+      "camera_move": "orbit_left",
+      "characters": [
+        "dodo"
+      ],
+      "duration_s": 6.7,
+      "end_card_text": "",
+      "focus_from": "subject",
+      "focus_to": "background",
+      "foreground": "grasses",
+      "ground": "hilltop stone overlook",
+      "id": "s09_see_mountains",
+      "intensity": "subtle",
+      "keyframe_prompt": "Muted cinematic anime with painterly 2D backgrounds and soft natural light. Wide high shot from a hilltop overlook over Port Louis toward Champ de Mars racecourse and the jagged Moka range with Le Pouce, the dodo in centre third, full body visible standing on hilltop stone overlook looking toward far mountains, city haze below, golden late light, longing mood, no legible text or logos.",
+      "kind": "painted",
+      "place_refs": [
+        "refs/port_louis/unsplash_signalhill_IEheuRq4SyQ.jpg",
+        "refs/port_louis/unsplash_champdemars_R1Dfnqiajqo.jpg"
+      ],
+      "sound": "wind, distant city, swelling strings",
+      "subjects": [
+        "dodo"
+      ],
+      "transition_in": "crossfade"
+    },
+    {
+      "action": "look_around",
+      "atmosphere": "none",
+      "beat": 4,
+      "camera_move": "orbit_right",
+      "characters": [
+        "dodo"
+      ],
+      "duration_s": 5.6,
+      "end_card_text": "",
+      "focus_from": "subject",
+      "focus_to": "subject",
+      "foreground": "umbrella strings",
+      "ground": "cobbled plaza",
+      "id": "s10_umbrellas_noticed",
+      "intensity": "subtle",
+      "keyframe_prompt": "Muted cinematic anime with painterly 2D backgrounds and soft natural light. Medium wide shot at Caudan Waterfront under colourful hanging umbrellas over cobbled plaza, the dodo in centre third, full body visible standing on cobbled plaza looking around, small crowd of tourists at distance raising phones with no close-up faces, stone arch gate tower behind, bright dappled light, curious tension, no legible text or logos. Medium-wide: the dodo is small in the centre third with its whole body and feet visible and space around it; in the distance, tourists clearly hold phones up toward it. The people under the umbrellas have all turned toward the dodo: faces, bodies and raised phones point at it, some pointing with a hand.",
+      "kind": "painted",
+      "place_refs": [
+        "refs/port_louis/wikimedia_caudan_cc0.jpg"
+      ],
+      "sound": "excited murmurs, phone clicks, playful percussion",
+      "subjects": [
+        "dodo"
+      ],
+      "transition_in": "cut"
+    },
+    {
+      "action": "startle",
+      "atmosphere": "none",
+      "beat": 4,
+      "camera_move": "push_in",
+      "characters": [
+        "dodo"
+      ],
+      "duration_s": 7.2,
+      "end_card_text": "",
+      "focus_from": "subject",
+      "focus_to": "subject",
+      "foreground": "tourist legs and shoes",
+      "ground": "cobbled plaza",
+      "id": "s11_surrounded",
+      "intensity": "subtle",
+      "keyframe_prompt": "Muted cinematic anime with painterly 2D backgrounds and soft natural light. Close medium shot of the dodo in centre third, full body visible standing on cobbled plaza stones, startled with head up, tight ring of blurred tourist legs and raised phones around with no close-up faces, colourful umbrella bokeh above, harsh midday light, claustrophobic mood, no legible text or logos.",
+      "kind": "painted",
+      "place_refs": [
+        "refs/port_louis/wikimedia_caudan_cc0.jpg"
+      ],
+      "sound": "crowd rising, shutters, anxious rhythm",
+      "subjects": [
+        "dodo"
+      ],
+      "transition_in": "cut"
+    },
+    {
+      "action": "look_down",
+      "atmosphere": "dust",
+      "beat": 4,
+      "camera_move": "crane_down",
+      "characters": [
+        "dodo"
+      ],
+      "duration_s": 4.8,
+      "end_card_text": "",
+      "focus_from": "subject",
+      "focus_to": "subject",
+      "foreground": "hanging umbrella edge",
+      "ground": "cobbled plaza",
+      "id": "s12_crowd_wide",
+      "intensity": "medium",
+      "keyframe_prompt": "High wide shot looking down on the Caudan Waterfront plaza under colourful hanging umbrellas: a dense ring of tourists stands shoulder to shoulder in a closed circle, all facing inward, many holding up phones. In the empty circle of cobblestones at the exact centre of the ring stands the dodo, alone, whole body visible, head lowered. The stone arch gate tower and palms are behind. Overwhelming, trapped mood. No legible text or logos.",
+      "kind": "painted",
+      "place_refs": [
+        "refs/port_louis/wikimedia_caudan_cc0.jpg"
+      ],
+      "sound": "crowd swell, whispers, low brass",
+      "subjects": [
+        "dodo"
+      ],
+      "transition_in": "cut"
+    },
+    {
+      "action": "idle",
+      "atmosphere": "dust",
+      "beat": 5,
+      "camera_move": "truck_left",
+      "characters": [
+        "dodo"
+      ],
+      "duration_s": 8.4,
+      "end_card_text": "",
+      "focus_from": "subject",
+      "focus_to": "background",
+      "foreground": "crate bars",
+      "ground": "wooden crate floor",
+      "id": "s13_crate_harbour",
+      "intensity": "subtle",
+      "keyframe_prompt": "Muted cinematic anime with painterly 2D backgrounds and soft natural light. Medium shot of the dodo in centre third, full body visible standing on wooden crate floor inside a slatted wooden crate, looking around, Port Louis harbour with container cranes and ships at dusk across water behind, orange-grey sky, sad drifting mood, no legible text or logos.",
+      "kind": "painted",
+      "place_refs": [
+        "refs/port_louis/unsplash_harbour_WX7iLclCnVI.jpg"
+      ],
+      "sound": "truck engine, metal clanks, harbour horns, mournful strings",
+      "subjects": [
+        "dodo"
+      ],
+      "transition_in": "crossfade"
+    },
+    {
+      "action": "idle",
+      "atmosphere": "none",
+      "beat": 5,
+      "camera_move": "truck_right",
+      "characters": [
+        "dodo"
+      ],
+      "duration_s": 8.4,
+      "end_card_text": "",
+      "focus_from": "background",
+      "focus_to": "subject",
+      "foreground": "fence post",
+      "ground": "gravel path",
+      "id": "s14_park_arrival",
+      "intensity": "subtle",
+      "keyframe_prompt": "Muted cinematic anime with painterly 2D backgrounds and soft natural light. Medium wide shot of a modern park enclosure entrance with generic blank sign and palms, the dodo in centre third, full body visible standing on gravel path beside an open crate, standing still, keepers legs blurred, evening light, resigned mood, no legible text or logos. The entrance reads as a tourist attraction, not a refuge: a ticket booth, a turnstile, a queue rope and a large blank sign with a cartoon dodo logo over a gate in a chain-link fence.",
+      "kind": "painted",
+      "place_refs": [],
+      "sound": "gates squeak, footsteps on gravel, muted ambience",
+      "subjects": [
+        "dodo"
+      ],
+      "transition_in": "cut"
+    },
+    {
+      "action": "idle",
+      "atmosphere": "flashes",
+      "beat": 5,
+      "camera_move": "push_in",
+      "characters": [
+        "dodo"
+      ],
+      "duration_s": 7.0,
+      "end_card_text": "",
+      "focus_from": "background",
+      "focus_to": "subject",
+      "foreground": "person silhouette",
+      "ground": "sandy enclosure floor",
+      "id": "s15_many_behind_glass",
+      "intensity": "subtle",
+      "keyframe_prompt": "Wide interior shot through a large glass wall into a bare enclosure with a sandy floor: five plump grey-brown dodos, each whole body clearly visible and roughly the same size, standing spaced apart in a row across the middle of the frame from left to right, none hidden or overlapping. In the dark foreground, silhouettes of visitors seen from behind hold up glowing phones toward the glass. Flash-lit night interior, cold light, a shocking reveal. No legible text or logos.",
+      "kind": "painted",
+      "place_refs": [],
+      "sound": "crowd oohs, endless shutters, cold synth pulse",
+      "subjects": [
+        "dodo",
+        "dodo",
+        "dodo",
+        "dodo"
+      ],
+      "transition_in": "cut"
+    },
+    {
+      "action": "startle",
+      "atmosphere": "flashes",
+      "beat": 5,
+      "camera_move": "drift",
+      "characters": [
+        "dodo"
+      ],
+      "duration_s": 3.8,
+      "end_card_text": "",
+      "focus_from": "subject",
+      "focus_to": "subject",
+      "foreground": "phone hands blurred",
+      "ground": "sandy enclosure floor",
+      "id": "s16_phones_flashes",
+      "intensity": "subtle",
+      "keyframe_prompt": "Muted cinematic anime with painterly 2D backgrounds and soft natural light. Medium shot of the dodo in centre third, full body visible standing on sandy enclosure floor startled by flashes, large glass wall behind with blurred visitor hands holding phones and white flashes, no close-up faces, artificial spotlights, harsh anxious mood, no legible text or logos.",
+      "kind": "painted",
+      "place_refs": [],
+      "sound": "rapid shutters, murmurs, harsh flashes",
+      "subjects": [
+        "dodo"
+      ],
+      "transition_in": "cut"
+    },
+    {
+      "action": "look_up",
+      "atmosphere": "dust",
+      "beat": 6,
+      "camera_move": "truck_right",
+      "characters": [
+        "dodo"
+      ],
+      "duration_s": 7.0,
+      "end_card_text": "",
+      "focus_from": "subject",
+      "focus_to": "background",
+      "foreground": "scattered straw",
+      "ground": "sandy enclosure floor",
+      "id": "s17_mural_wall",
+      "intensity": "subtle",
+      "keyframe_prompt": "Muted cinematic anime with painterly 2D backgrounds and soft natural light. Wide shot of enclosure back wall with a large faded painted mural of ancient ebony forest and mist, the dodo in left third, full body visible standing on sandy enclosure floor looking up at the mural, dim indoor light with dust, melancholy mood, no legible text or logos.",
+      "kind": "painted",
+      "place_refs": [],
+      "sound": "hushed room tone, distant crowd muffled, lonely piano",
+      "subjects": [
+        "dodo"
+      ],
+      "transition_in": "crossfade"
+    },
+    {
+      "action": "look_around",
+      "atmosphere": "light_shafts",
+      "beat": 6,
+      "camera_move": "push_in",
+      "characters": [
+        "dodo"
+      ],
+      "duration_s": 5.6,
+      "end_card_text": "",
+      "focus_from": "subject",
+      "focus_to": "subject",
+      "foreground": "low grass tuft",
+      "ground": "sandy enclosure floor",
+      "id": "s18_walk_to_mural",
+      "intensity": "subtle",
+      "keyframe_prompt": "Muted cinematic anime with painterly 2D backgrounds and soft natural light. Medium shot facing the faded forest mural wall, the dodo in centre third, full body visible standing on sandy enclosure floor facing the painted ebony trees, head raised, soft shaft of light falling on paint, quiet hopeful mood, no legible text or logos.",
+      "kind": "painted",
+      "place_refs": [],
+      "sound": "soft steps in sand, breath, tender strings",
+      "subjects": [
+        "dodo"
+      ],
+      "transition_in": "cut"
+    },
+    {
+      "action": "idle",
+      "atmosphere": "light_shafts",
+      "beat": 6,
+      "camera_move": "push_in",
+      "characters": [
+        "dodo"
+      ],
+      "duration_s": 7.0,
+      "end_card_text": "",
+      "focus_from": "subject",
+      "focus_to": "foreground",
+      "foreground": "fallen feather",
+      "ground": "sandy floor",
+      "id": "s19_press_mural",
+      "intensity": "subtle",
+      "keyframe_prompt": "Muted cinematic anime with painterly 2D backgrounds and soft natural light. Close medium shot of the dodo in right third, full body visible standing on sandy floor pressing its beak and wing gently against the faded painted forest mural, head tilted into the paint, peeling wall texture and painted mist, single warm light shaft, heartbreaking tender mood, no legible text or logos.",
+      "kind": "painted",
+      "place_refs": [],
+      "sound": "silence then soft piano, faint forest memory",
+      "subjects": [
+        "dodo"
+      ],
+      "transition_in": "cut"
+    },
+    {
+      "action": "idle",
+      "atmosphere": "dust",
+      "beat": 6,
+      "camera_move": "pull_out",
+      "characters": [
+        "dodo"
+      ],
+      "duration_s": 7.0,
+      "end_card_text": "",
+      "focus_from": "subject",
+      "focus_to": "background",
+      "foreground": "shadow edge",
+      "ground": "sandy enclosure floor",
+      "id": "s20_alone_vast",
+      "intensity": "medium",
+      "keyframe_prompt": "Muted cinematic anime with painterly 2D backgrounds and soft natural light. Wide shot of vast empty enclosure with huge faded forest mural, the dodo tiny in centre third, full body visible standing on sandy enclosure floor alone, head still, long shadows and dust in cold light, utter loneliness, no legible text or logos.",
+      "kind": "painted",
+      "place_refs": [],
+      "sound": "empty echo, low held note",
+      "subjects": [
+        "dodo"
+      ],
+      "transition_in": "cut"
+    },
+    {
+      "action": "look_down",
+      "atmosphere": "light_shafts",
+      "beat": 6,
+      "camera_move": "crane_down",
+      "characters": [
+        "dodo"
+      ],
+      "duration_s": 8.0,
+      "end_card_text": "",
+      "focus_from": "subject",
+      "focus_to": "subject",
+      "foreground": "dark vignette",
+      "ground": "sandy enclosure floor",
+      "id": "s21_sleep_again",
+      "intensity": "subtle",
+      "keyframe_prompt": "Medium shot mirroring the opening, the dodo in centre third, full body visible, crouching low on the sandy enclosure floor to sleep, head lowered and eyes closed, in front of the same faded, peeling painted forest mural wall as the reference: the trees are flat paint on a cracked concrete wall, with flakes of paint on the floor and no real plants anywhere. One dim warm light shaft fading into dusk, dark corners, quiet heartbreaking mood, no legible text or logos.",
+      "kind": "painted",
+      "place_refs": [],
+      "sound": "breathing slows, strings fade to silence",
+      "subjects": [
+        "dodo"
+      ],
+      "transition_in": "crossfade",
+      "match_shots": [
+        "s19_press_mural"
+      ]
+    },
+    {
+      "action": "idle",
+      "atmosphere": "none",
+      "beat": 7,
+      "camera_move": "pull_out",
+      "characters": [],
+      "duration_s": 8.0,
+      "end_card_text": "The dodo came back. Its home didn't.",
+      "focus_from": "background",
+      "focus_to": "background",
+      "foreground": "",
+      "ground": "",
+      "id": "s22_end_card",
+      "intensity": "subtle",
+      "keyframe_prompt": "",
+      "kind": "end_card",
+      "place_refs": [],
+      "sound": "silence, single piano note fading",
+      "subjects": [],
+      "transition_in": "fade_from_black"
+    }
+  ],
+  "style": "Muted cinematic anime with painterly 2D backgrounds and soft natural light.",
+  "title": "The Dodo Came Back"
+}

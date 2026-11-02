@@ -1,0 +1,121 @@
+{
+  "overall": "A clear, moving wordless fable whose pretty painted places and strong final irony survive, but the 2.5D stills often hold static instead of performing the story's key actions — capture, walking, pressing the mural — and several focus, scale and time-of-day breaks blunt the emotional build.",
+  "pacing": [
+    "s01_forest_dawn",
+    "s02_settle_sleep",
+    "s03_wake_city"
+  ],
+  "score": 6,
+  "shots": [
+    {
+      "action": "startle",
+      "duration": "longer",
+      "intensity": "strong",
+      "problem": "s01_forest_dawn: The protagonist sits heavily out of focus in the foreground for the opening seconds, so the film introduces its hero as a blur before s02_settle_sleep finally shows him clearly.",
+      "redo_keyframe": true,
+      "shot_id": "s01_forest_dawn"
+    },
+    {
+      "action": "startle",
+      "duration": "shorter",
+      "intensity": "medium",
+      "problem": "s03_wake_city: The long hold on a near-empty, quiet street with a tiny static dodo does not deliver the promised traffic, buses and startling displacement from the forest.",
+      "redo_keyframe": true,
+      "shot_id": "s03_wake_city"
+    },
+    {
+      "action": "startle",
+      "duration": "longer",
+      "intensity": "strong",
+      "problem": "s05_downtown_search: The dodo abruptly shrinks to the far right edge with a noticeably bluer wing, breaking character scale and continuity with s04_startle_close and s06_chinatown_gate.",
+      "redo_keyframe": true,
+      "shot_id": "s05_downtown_search"
+    },
+    {
+      "action": "startle",
+      "duration": "shorter",
+      "intensity": "medium",
+      "problem": "s07_waterfront_pouce: The attractive canal and Le Pouce hold for over eight seconds with almost no searching movement, stalling momentum between s06_chinatown_gate and s08_own_image.",
+      "redo_keyframe": true,
+      "shot_id": "s07_waterfront_pouce"
+    },
+    {
+      "action": "startle",
+      "duration": "longer",
+      "intensity": "strong",
+      "problem": "s09_see_mountains: The dodo falls out of focus mid-shot and his unexplained jump to a hilltop overlooking Champ de Mars, followed by a return to Caudan, breaks geographic continuity.",
+      "redo_keyframe": true,
+      "shot_id": "s09_see_mountains"
+    },
+    {
+      "action": "startle",
+      "duration": "longer",
+      "intensity": "strong",
+      "problem": "s10_umbrellas_noticed: The protagonist is a blurred shape at the bottom of frame while the distant crowd is already filming, so the cause-and-effect moment of being noticed does not read.",
+      "redo_keyframe": true,
+      "shot_id": "s10_umbrellas_noticed"
+    },
+    {
+      "action": "startle",
+      "duration": "longer",
+      "intensity": "strong",
+      "problem": "s13_crate_harbour: The cut jumps from the crowd in s12_crowd_wide to the dodo already behind crate bars at the harbour, missing the capture that motivates the whole 'Taken' section.",
+      "redo_keyframe": true,
+      "shot_id": "s13_crate_harbour"
+    },
+    {
+      "action": "startle",
+      "duration": "longer",
+      "intensity": "medium",
+      "problem": "s14_park_arrival: The dodo is already loose beside an open crate in front of a blank generic sign, so neither his arrival nor the identity of Dodo Park is dramatised.",
+      "redo_keyframe": true,
+      "shot_id": "s14_park_arrival"
+    },
+    {
+      "action": "startle",
+      "duration": "longer",
+      "intensity": "strong",
+      "problem": "s15_many_behind_glass: Five identical dodos stand in an evenly spaced row in the same pose at night, reading as clones, and with the protagonist absent the reveal is disconnected from s14_park_arrival and the daylight of s16_phones_flashes.",
+      "redo_keyframe": true,
+      "shot_id": "s15_many_behind_glass"
+    },
+    {
+      "action": "startle",
+      "duration": "shorter",
+      "intensity": "medium",
+      "problem": "s16_phones_flashes: This single-dodo hold against blurred phones repeats s11_surrounded and s15_many_behind_glass instead of advancing toward the mural, flattening the climax's pacing.",
+      "redo_keyframe": true,
+      "shot_id": "s16_phones_flashes"
+    },
+    {
+      "action": "startle",
+      "duration": "longer",
+      "intensity": "strong",
+      "problem": "s18_walk_to_mural: The dodo remains essentially static in front of the mural rather than visibly walking toward it, weakening the build to s19_press_mural.",
+      "redo_keyframe": true,
+      "shot_id": "s18_walk_to_mural"
+    },
+    {
+      "action": "startle",
+      "duration": "longer",
+      "intensity": "strong",
+      "problem": "s19_press_mural: The story's emotional peak is not shown — the dodo stands in the right third looking down, body and beak clear of the peeling wall, instead of pressing against the painted forest.",
+      "redo_keyframe": true,
+      "shot_id": "s19_press_mural"
+    }
+  ],
+  "strengths": [
+    "Bookended sleep motif lands: the breathing, eyes-closed settle in s02_settle_sleep is poignantly mirrored on bare sand in s21_sleep_again, making captivity feel like a corrupted homecoming before s22_end_card.",
+    "The central irony is wordlessly clear in s08_own_image: the real dodo studies a giant mural of himself above tiny plush dodos outside a souvenir shop — his image is everywhere, his forest nowhere.",
+    "Recognisable Mauritius geography carries the search: the arch in s06_chinatown_gate, Le Pouce over the canal in s07_waterfront_pouce, the Champ de Mars racetrack in s09_see_mountains and the hanging umbrellas in s12_crowd_wide.",
+    "The crowd escalation is readable without dialogue: phones raised at the edges in s10_umbrellas_noticed, the two lines closing in during s11_surrounded, then the overhead ring in s12_crowd_wide turns wonder into threat.",
+    "The reveal and ending are strong in conception: silhouetted visitors filming five dodos through glass in s15_many_behind_glass, followed by the tiny lone figure before the vast faded mural in s20_alone_vast, sets up the end card perfectly."
+  ],
+  "weaknesses": [
+    "Key actions are missing rather than animated within the 2.5D limits: no capture between s12_crowd_wide and s13_crate_harbour, no release at s14_park_arrival, no walk in s18_walk_to_mural and no physical press in s19_press_mural — neck bends and a short hop toward the wall would suffice.",
+    "Focus and scale continuity repeatedly slip: the hero is blurred in s01_forest_dawn, s09_see_mountains and s10_umbrellas_noticed, and he changes relative size abruptly from s04_startle_close to the tiny figure at the edge of s05_downtown_search.",
+    "The search and enclosure sections are over-extended with near-identical static holds — s03_wake_city, s07_waterfront_pouce, s16_phones_flashes, s17_mural_wall, s18_walk_to_mural and s20_alone_vast — so the middle sags despite a correct total running time.",
+    "Time and place continuity confuse the 'Taken' arc: night in s15_many_behind_glass sits between daylight in s14_park_arrival and s16_phones_flashes, while s09_see_mountains teleports the dodo to an overlook and back to Caudan with no journey.",
+    "The many-dodos reveal undercuts itself in s15_many_behind_glass: five identical, identically posed birds in a row look pasted rather than alive, and because our protagonist is not placed among or before them, the twist lacks a reaction from the character we have followed."
+  ]
+}

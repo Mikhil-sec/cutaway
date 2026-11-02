@@ -1,0 +1,119 @@
+{
+  "overall": "Rough-cut director/edit notes",
+  "pacing": [
+    "The broad emotional arc is clear without dialogue: forest home, urban displacement, public attention, confinement and a false painted forest. The middle search and the final mural section both linger on repeated static compositions, slowing momentum before the end card."
+  ],
+  "score": 6,
+  "shots": [
+    {
+      "action": "startle",
+      "duration": "shorter",
+      "intensity": "subtle",
+      "problem": "The subtitle reads almost exactly like the obvious beat, so the moment lands visually stronger than the text.",
+      "redo_keyframe": false,
+      "shot_id": "s04_startle_close"
+    },
+    {
+      "action": "look_around",
+      "duration": "keep",
+      "intensity": "subtle",
+      "problem": "The main story beat is emotionally sound, but the performance and timing could communicate the intended reaction more clearly.",
+      "redo_keyframe": false,
+      "shot_id": "s05_downtown_search"
+    },
+    {
+      "action": "look_around",
+      "duration": "keep",
+      "intensity": "subtle",
+      "problem": " The physical geography is readable, yet the dodo feels comparatively less integral to the action of the wide location shot.",
+      "redo_keyframe": false,
+      "shot_id": "s07_waterfront_pouce"
+    },
+    {
+      "action": "look_around",
+      "duration": "shorter",
+      "intensity": "subtle",
+      "problem": "This is an important transitional beat, but its visual communication is less clear than the surrounding shots.",
+      "redo_keyframe": true,
+      "shot_id": "s09_see_mountains"
+    },
+    {
+      "action": "look_around",
+      "duration": "keep",
+      "intensity": "subtle",
+      "problem": "The dodo is heavily blurred and partly cropped at the bottom of frame while the crowd already reacts, weakening the cause-and-effect of it being noticed.",
+      "redo_keyframe": true,
+      "shot_id": "s10_umbrellas_noticed"
+    },
+    {
+      "action": "startle",
+      "duration": "keep",
+      "intensity": "subtle",
+      "problem": "The surrounding crowd reads as a static wall of phones and largely cropped bodies, so the dodos isolation is clearer than the crowds escalating excitement.",
+      "redo_keyframe": false,
+      "shot_id": "s11_surrounded"
+    },
+    {
+      "action": "idle",
+      "duration": "keep",
+      "intensity": "subtle",
+      "problem": "The dodo stands openly on a crate-like deck rather than visibly being carried or confined, making the transition from being surrounded to being taken unclear.",
+      "redo_keyframe": true,
+      "shot_id": "s13_crate_harbour"
+    },
+    {
+      "action": "idle",
+      "duration": "keep",
+      "intensity": "subtle",
+      "problem": "The dodo appears already outside an open crate at a closed generic park gate, so its arrival and entry into the attraction are not visually explained.",
+      "redo_keyframe": true,
+      "shot_id": "s14_park_arrival"
+    },
+    {
+      "action": "idle",
+      "duration": "keep",
+      "intensity": "subtle",
+      "problem": "The five identical dodos in a rigid line look like clones and the protagonist cannot be identified among them, breaking character continuity at the reveal.",
+      "redo_keyframe": true,
+      "shot_id": "s15_many_behind_glass"
+    },
+    {
+      "action": "startle",
+      "duration": "shorter",
+      "intensity": "subtle",
+      "problem": "This repeats the phones-behind-glass idea from the reveal without clearly showing the protagonist, flashes, or a new emotional change.",
+      "redo_keyframe": false,
+      "shot_id": "s16_phones_flashes"
+    },
+    {
+      "action": "look_around",
+      "duration": "shorter",
+      "intensity": "subtle",
+      "problem": "The walk toward the mural is mostly conveyed through reframing rather than a readable approach, weakening the build to the emotional climax.",
+      "redo_keyframe": false,
+      "shot_id": "s18_walk_to_mural"
+    },
+    {
+      "action": "idle",
+      "duration": "keep",
+      "intensity": "subtle",
+      "problem": "The dodo remains standing apart from the wall instead of visibly pressing against it, so the intended climactic contact with the painted forest does not actually happen.",
+      "redo_keyframe": true,
+      "shot_id": "s19_press_mural"
+    }
+  ],
+  "strengths": [
+    "The opening and closing sleep images create a clear emotional bookend, with the dodo settling in the real forest in s02_settle_sleep and repeating the bowed-head posture on bare enclosure ground in s21_sleep_again.",
+    "The wordless waking transition is immediately understandable as the sleeping dodo and mossy rock dissolve into the same bird standing on a modern Port Louis street in s03_wake_city.",
+    "The irony of the search is legible in s08_own_image, where the living dodo confronts its oversized mural and miniature souvenir versions while remaining homeless.",
+    "The geographical journey is recognisably Mauritian through the Chinatown gate in s06_chinatown_gate, mountain-backed waterfront in s07_waterfront_pouce, Champ de Mars overlook in s09_see_mountains, Caudan umbrellas in s12_crowd_wide and harbour cranes in s13_crate_harbour.",
+    "The final contrast between the living bird and the faded enclosure mural is emotionally effective in s20_alone_vast, and s22_end_card states the theme concisely without over-explaining it."
+  ],
+  "weaknesses": [
+    "Character continuity weakens at the reveal because the five uniform birds in s15_many_behind_glass provide no visual way to follow the original protagonist into s16_phones_flashes or the mural sequence.",
+    "Several causal links are missing: the dodo is not visibly captured in s13_crate_harbour, appears unexplained outside the crate in s14_park_arrival and is then suddenly separated from the other dodos by s17_mural_wall.",
+    "The pacing becomes repetitive during the search and ending, particularly across s17_mural_wall, s18_walk_to_mural, s19_press_mural and s20_alone_vast, where similar mural compositions continue for roughly 28 seconds with little change in action.",
+    "Performance range is underused in the crowd sequence: s10_umbrellas_noticed makes the protagonist a blurred foreground shape, while s11_surrounded and s12_crowd_wide rely mainly on scale and surrounding phones rather than a progression of alarm.",
+    "Visual consistency fluctuates through repeated rack-focus blurring and changing dodo proportions or eye treatment in s01_forest_dawn, s04_startle_close, s09_see_mountains and s13_crate_harbour, occasionally making the protagonist look like a cut-out placed over the painted backgrounds."
+  ]
+}

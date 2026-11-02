@@ -43,6 +43,46 @@ def end_card(text, seconds, out, resolution):
     return out
 
 
+def caption_png(text, out, resolution):
+    """A text card: warm white serif near the bottom edge (below the characters' feet), over a soft dark
+    gradient and shadow so it reads on bright city streets as well as dark forest."""
+    from PIL import ImageFilter
+    w, h = resolution
+    font = ImageFont.truetype(str(FONT), int(h * 0.052))
+    grad = Image.new("L", (1, h))
+    for y in range(h):  # transparent above 72% of the height, up to ~45% black at the bottom edge
+        grad.putpixel((0, y), int(115 * max(0.0, (y / h - 0.72) / 0.28) ** 1.4))
+    base = Image.new("RGBA", (w, h), (0, 0, 0, 0))
+    base.putalpha(grad.resize((w, h)))
+    draw = ImageDraw.Draw(base)
+    l, t, r, b = draw.textbbox((0, 0), text, font=font)
+    xy = ((w - (r - l)) / 2 - l, h * 0.945 - b)
+    shadow = Image.new("RGBA", (w, h), (0, 0, 0, 0))
+    ImageDraw.Draw(shadow).text(xy, text, font=font, fill=(0, 0, 0, 235))
+    shadow = shadow.filter(ImageFilter.GaussianBlur(h * 0.008))
+    card = Image.alpha_composite(base, shadow)
+    ImageDraw.Draw(card).text(xy, text, font=font, fill=(244, 240, 230, 255))
+    card.save(out)
+    return out
+
+
+def add_captions(cut, captions, out, resolution):
+    """captions: [(text, start_s, seconds)] on the cut's timeline; each fades in and out over the picture."""
+    if not captions:
+        return cut
+    inputs, graph, acc = ["-i", cut], [], "0:v"
+    for i, (text, start, dur) in enumerate(captions, start=1):
+        png = caption_png(text, Path(out).with_name(f"caption_{i}.png"), resolution)
+        inputs += ["-loop", 1, "-t", dur, "-i", png]
+        graph.append(f"[{i}:v]format=rgba,fade=in:st=0:d=0.8:alpha=1,fade=out:st={dur - 0.8}:d=0.8:alpha=1,"
+                     f"setpts=PTS+{start}/TB[c{i}]")
+        graph.append(f"[{acc}][c{i}]overlay=0:0:eof_action=pass[o{i}]")
+        acc = f"o{i}"
+    ff(*inputs, "-filter_complex", ";".join(graph), "-map", f"[{acc}]", "-c:v", "libx264", "-crf", 18,
+       "-pix_fmt", "yuv420p", out)
+    return out
+
+
 def assemble(clips, out):
     """clips: [(path, transition_in)] in order. Crossfades overlap clips; cuts butt them together."""
     inputs, graph = [], []

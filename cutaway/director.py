@@ -204,6 +204,7 @@ def keyframe(film, shot):
     chars = shot["characters"]
     sheets = [film.ref_path(film.refs["characters"][c]["sheet"]) for c in chars]
     places = [film.ref_path(p) for p in shot["place_refs"]]
+    matches = [film.root / "shots" / sid / "keyframe.png" for sid in shot.get("match_shots", [])]
     base = f"{film.plan['style']} {shot['keyframe_prompt']}"
     if chars:
         base += (" Every " + ", ".join(chars) + " must match the character reference sheet exactly: same design, "
@@ -211,13 +212,16 @@ def keyframe(film, shot):
     if places:
         base += (" Use the reference photographs only for the real architecture and layout of this place in "
                  "Port Louis, Mauritius; repaint everything in the film's style.")
+    if matches:  # a shot that continues another: same place, light and palette, seen from the new framing
+        base += (" The last reference image is an earlier shot of the film in the same place: show the same "
+                 "setting, surfaces, light and colours, from this shot's framing, so the cut reads as continuous.")
     base += " No legible text, logos or brand names."
     if st.get("repaint_notes"):  # why the previous painting was rejected by a review or critique
         base += " This repaint must fix: " + " ".join(st["repaint_notes"])
     notes = ""
     for attempt in range(3):
         prompt = base + (f" Avoid these problems from a previous attempt: {notes}" if notes else "")
-        _, used = keyframes.generate(prompt, out, refs=sheets + places)
+        _, used = keyframes.generate(prompt, out, refs=sheets + places + matches)
         verdict = check_keyframe(film, shot, out, sheets)
         st.setdefault("keyframe_attempts", []).append({"prompt": used, "verdict": verdict})
         ok = (verdict["matches_shot"] and not verdict["has_legible_text_or_logos"] and verdict["style_match"]
@@ -668,6 +672,52 @@ def critique(film, cut, timeline):
     return r
 
 
+I2V_REVIEW = strict({
+    "score": I,
+    "overall": S,
+    "strengths": arr(S),
+    "weaknesses": arr(S),
+    "pacing": arr(S),
+    "shots": arr(strict({"shot_id": S, "problem": S, "fix": S})),
+})
+
+
+def critique_i2v(film, cut, timeline):
+    """Muse Wonder watches the image-to-video cut. Notes only: nothing is applied, because the 2.5D fixes
+    (actions, intensity) mean nothing to a video model, and a retake costs the user's money."""
+    from . import edit
+    meta.CONTEXT.pop("shot", None)
+    proxy = Path(cut).with_name("critique_proxy.mp4")  # a small copy: the whole film goes up as one data URL
+    edit.ff("-i", cut, "-vf", "scale=960:-2", "-c:v", "libx264", "-crf", 30, "-preset", "slow", "-an", proxy)
+    lines = "\n".join(f"{t0:6.1f}-{t1:6.1f} s  {sid}: {desc}" for sid, t0, t1, desc in timeline)
+    messages = [
+        {"role": "system", "content":
+            "You are a film director and editor giving notes on the cut of a wordless animated short. Each shot "
+            "began as a painted keyframe that an image-to-video model animated; sparse text cards stand in for "
+            "narration, and there is no sound yet. Watch the whole cut and judge story clarity, emotional arc, "
+            "flow between shots, pacing, continuity of the character and places, and visual quality (morphing, "
+            "flicker, off-model frames). score is an integer from 0 to 10. strengths and weaknesses: at least "
+            "three specific observations each, citing shot ids from the timeline. In shots, list only shots "
+            "that need a change: the problem in one sentence, and the cheapest fix in one sentence (trim, "
+            "reorder, a different transition, a retake with a named change, or a repainted keyframe)."},
+        {"role": "user", "content": [
+            {"type": "text", "text": f"Story brief:\n{(film.root / 'story.md').read_text(encoding='utf-8')}\n\n"
+                                     f"Timeline of the cut:\n{lines}"},
+            {"type": "video_url", "video_url": {"url": str(proxy), "fps": 1}},
+        ]},
+    ]
+    for effort in ("medium", "high"):
+        r = meta.chat("muse-wonder-1.0", json.loads(json.dumps(messages)), schema=I2V_REVIEW, max_tokens=24000,
+                      reasoning_effort=effort)
+        if 0 <= r["score"] <= 10 and len(r["strengths"]) >= 2 and len(r["weaknesses"]) >= 2:
+            break
+        print(f"  critique rejected (score {r['score']}, {len(r['weaknesses'])} weaknesses); retrying deeper")
+    else:
+        r["unreliable"] = True
+    (film.root / "critique_i2v.json").write_text(json.dumps(r, indent=2, ensure_ascii=False), encoding="utf-8")
+    return r
+
+
 REPAINT_CHECK = strict({"repaint": B, "reason": S})
 
 
@@ -777,25 +827,45 @@ def voice_notes(film, audio):
 
 # ---------------------------------------------------------------- 7. cut and disclosure
 
-def cut(film, res=(960, 540)):
-    from . import edit
+def cut(film, res=(960, 540), source="render"):
+    """source "render": the Blender 2.5D shots; "i2v": the chosen video-model takes, with the transitions
+    from Muse Spark's motion plan."""
+    from . import animate, edit
+    motion = animate.load_motion(film) if source == "i2v" else {}
     clips, timeline, t = [], [], 0.0
     for shot in film.plan["shots"]:
         d = film.shot_dir(shot)
+        trans = motion.get(shot["id"], {}).get("transition_in", shot["transition_in"])
         if shot["kind"] == "end_card":
             clip = edit.end_card(shot["end_card_text"], shot["duration_s"], d / f"end_{res[0]}.mp4", res)
             desc = f"end card: {shot['end_card_text']}"
         else:
-            clip = d / f"shot_{res[0]}.mp4"
+            clip = d / (f"shot_i2v_{res[0]}.mp4" if source == "i2v" else f"shot_{res[0]}.mp4")
             if not clip.exists():
-                raise RuntimeError(f"{shot['id']} has no render at {res[0]} px yet")
+                raise RuntimeError(f"{shot['id']} has no {clip.name} yet")
+            trim = motion.get(shot["id"], {}).get("trim") if source == "i2v" else None
+            if trim:  # an editor's trim [in_s, out_s] of the chosen take; the take itself stays whole
+                part = clip.with_name(f"{clip.stem}_trim.mp4")
+                edit.ff("-ss", trim[0], "-to", trim[1], "-i", clip, "-an", "-c:v", "libx264", "-crf", 16,
+                        "-pix_fmt", "yuv420p", part)
+                clip = part
             desc = shot["keyframe_prompt"][:140]
         dur = edit.duration(clip)
-        overlap = edit.XFADE_S if (clips and shot["transition_in"] == "crossfade") else 0.0
+        overlap = edit.XFADE_S if (clips and trans == "crossfade") else 0.0
         timeline.append((shot["id"], t - overlap, t - overlap + dur, desc))
         t += dur - overlap
-        clips.append((clip, shot["transition_in"]))
+        clips.append((clip, trans))
     out, length = edit.assemble(clips, film.root / f"cut_{res[0]}.mp4")
+    cap_path = film.root / "captions.json"  # the author's text cards (story.md, "Text cards")
+    if cap_path.exists():
+        starts = {sid: t0 for sid, t0, _, _ in timeline}
+        caps = [(c["text"], round(starts[c["shot"]] + c["offset_s"], 3), c["seconds"])
+                for c in json.loads(cap_path.read_text(encoding="utf-8"))["captions"] if c["shot"] in starts]
+        plain = out.with_name(f"cut_{res[0]}_nocaptions.mp4")
+        out.replace(plain)
+        edit.add_captions(plain, caps, out, res)
+        timeline = [(sid, t0, t1, desc + "".join(f' [text card: "{c[0]}"]' for c in caps
+                                                 if t0 <= c[1] < t1)) for sid, t0, t1, desc in timeline]
     (film.root / "timeline.json").write_text(json.dumps(timeline, indent=1, ensure_ascii=False), encoding="utf-8")
     print(f"cut: {out} ({length:.1f} s)")
     if not 90 <= length <= 180:
@@ -865,7 +935,10 @@ def disclosure(film):
     roles = {"muse-image-1.0": "keyframes, clean plates", "sam-3.1": "cutting depth layers and characters",
              "muse-spark-1.3": "shot planning, continuity checks, shot reviews, prompt rewording, sound cues",
              "muse-wonder-1.0": "review of the full cut",
-             "muse-voice-transcribe-1.0": "the director's spoken notes"}
+             "muse-voice-transcribe-1.0": "the director's spoken notes",
+             "wan30": "animating the keyframes (Wan 3.0 image-to-video by Alibaba, via fal.ai; commercial licence)",
+             "h3": "model bake-off only, not in the film (MiniMax H3 via fal.ai)",
+             "kling26": "model bake-off only, not in the film (Kling 2.6 Pro via fal.ai)"}
     for model, m in sorted(by_model.items()):
         lines.append(f"| {model} | {roles.get(model, '')} | {m['calls']} | {m['cost_usd']:.2f} |")
     lines += ["", "## Per-shot record", ""]
@@ -931,14 +1004,17 @@ def main():
     ap.add_argument("film")
     ap.add_argument("stage", choices=["plan", "show", "keyframes", "layers", "specs", "render", "review",
                                       "produce", "cut", "sound", "critique", "notes", "disclosure", "storyboard",
-                                      "exploded"])
+                                      "exploded", "motion", "i2v", "upscale"])
+    ap.add_argument("--source", choices=["render", "i2v"], default="render",
+                    help="cut/sound/critique: Blender renders or the chosen video-model takes")
     ap.add_argument("--shots", default="")
     ap.add_argument("--audio", help="notes: a recording of the director's spoken notes")
     ap.add_argument("--force", action="store_true", help="review: review again even if already reviewed")
     ap.add_argument("--preview", action="store_true", help="render 3 stills per shot instead of the clip")
     ap.add_argument("--final", action="store_true", help="1920x1080 instead of 960x540")
     a = ap.parse_args()
-    if sys.platform == "win32" and a.stage in ("keyframes", "layers", "render", "produce", "exploded"):
+    if sys.platform == "win32" and a.stage in ("keyframes", "layers", "render", "produce", "exploded", "i2v",
+                                               "upscale"):
         # Keep the machine awake while this process works (long renders died when the laptop slept);
         # Windows drops the request when the process exits, and no power settings are changed.
         import ctypes
@@ -958,13 +1034,30 @@ def main():
     if a.stage == "notes":
         voice_notes(film, a.audio)
         return print(f"spent ${meta.spent():.2f}")
-    res = (1920, 1080) if a.final else (960, 540)
+    only = only or None
+    if a.stage in ("motion", "i2v", "upscale"):
+        from . import animate
+        if a.stage == "motion":
+            return animate.plan_motion(film, force=a.force)
+        if a.stage == "i2v":
+            return animate.produce(film, only)
+        return animate.upscale(film, only)
+    res = (1920, 1080) if a.final else ((1280, 720) if a.source == "i2v" else (960, 540))
     if a.stage == "cut":
-        return cut(film, res)
+        return cut(film, res, a.source)
     if a.stage == "sound":
         return soundtrack(film, res)
     if a.stage == "critique":
-        out, timeline = cut(film, res)
+        out, timeline = cut(film, res, a.source)
+        if a.source == "i2v":
+            r = critique_i2v(film, out, timeline)
+            print(f"Muse Wonder: {r['score']}/10{' (UNRELIABLE)' if r.get('unreliable') else ''}. {r['overall']}")
+            for label in ("strengths", "weaknesses", "pacing"):
+                for p in r.get(label, []):
+                    print(f" {label}: {p}")
+            for n in r["shots"]:
+                print(f" {n['shot_id']}: {n['problem']} -> {n['fix']}")
+            return print(f"spent ${meta.spent():.2f}")
         r = critique(film, out, timeline)
         print(f"Muse Wonder: {r['score']}/10{' (UNRELIABLE)' if r.get('unreliable') else ''}. {r['overall']}")
         for label in ("strengths", "weaknesses", "pacing"):

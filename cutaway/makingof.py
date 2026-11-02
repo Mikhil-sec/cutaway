@@ -126,6 +126,38 @@ def video_clip(src, out, start=0.0, seconds=None, caption=None):
     return out
 
 
+def compare_clip(left, right, left_label, right_label, caption, out, seconds=None, start=0.0):
+    """Two clips side by side (a rejected take and the one that replaced it), labelled, with a caption.
+    The shorter clip holds its last frame."""
+    seconds = seconds or max(edit.duration(left), edit.duration(right)) - start
+    png = Path(out).with_suffix(".frame.png")
+    img = canvas()
+    d = ImageDraw.Draw(img)
+    for i, label in enumerate((left_label, right_label)):
+        text_block(d, (40 + i * 940, 680), label, 30, 52, ACCENT if i else DIM)
+    text_block(d, (40, 860), caption, 36, 95)
+    img.save(png)
+    box = "scale=900:506:force_original_aspect_ratio=decrease,pad=900:506:(ow-iw)/2:(oh-ih)/2:color=0x0e0f12"
+    hold = f"tpad=stop_mode=clone:stop_duration={seconds}"
+    edit.ff("-loop", 1, "-t", seconds, "-i", png, "-ss", start, "-i", left, "-ss", start, "-i", right,
+            "-filter_complex", f"[1:v]fps=24,{box},{hold}[l];[2:v]fps=24,{box},{hold}[r];"
+                               f"[0:v][l]overlay=40:150[a];[a][r]overlay=980:150,format=yuv420p",
+            "-t", seconds, "-an", "-r", 24, "-c:v", "libx264", "-crf", 18, out)
+    return out
+
+
+def sequence(clips, out):
+    """[(path, seconds)] trimmed and butted together, for before/after comparisons of a cut."""
+    inputs, graph = [], []
+    for i, (path, secs) in enumerate(clips):
+        inputs += ["-i", path]
+        graph.append(f"[{i}:v]fps=24,scale=1280:720,setsar=1,trim=0:{secs},setpts=PTS-STARTPTS[v{i}]")
+    graph.append("".join(f"[v{i}]" for i in range(len(clips))) + f"concat=n={len(clips)}:v=1:a=0[o]")
+    edit.ff(*inputs, "-filter_complex", ";".join(graph), "-map", "[o]", "-c:v", "libx264", "-crf", 18,
+            "-pix_fmt", "yuv420p", out)
+    return out
+
+
 LIST_PRICES = {"muse-image-1.0": 0.01, "sam-3.1": 0.0025, "muse-voice-transcribe-1.0": 0.003}
 
 
@@ -258,3 +290,138 @@ def build(film, out_dir, film_cut, res_tag="960"):
                          "generated for the competition. Open source: github.com/Mikhil-sec/cutaway", "Result"), 8)
     out, length = edit.assemble(clips, out_dir / "making_of.mp4")
     return out, length
+
+
+def _take(film, sid, n):
+    shot = next(s for s in film.plan["shots"] if s["id"] == sid)
+    t = next(t for t in film.state(shot)["i2v_takes"] if t["take"] == n)
+    return film.shot_dir(shot) / Path(t["file"]).name, t
+
+
+def _note(take, n=1):
+    return "; ".join(p.rstrip(".") for p in (take["review"].get("problems") or [])[:n])
+
+
+def build_i2v(film, out_dir, film_cut, excerpt_s=40):
+    """The making-of for the image-to-video pipeline: Muse models direct, video models animate. It shows
+    only the last ~excerpt_s seconds of the film, from a shot boundary: the demo is public before the
+    competition film is."""
+    out_dir = Path(out_dir)
+    out_dir.mkdir(parents=True, exist_ok=True)
+    painted = [s for s in film.plan["shots"] if s["kind"] == "painted"]
+    by_id = {s["id"]: s for s in painted}
+    timeline = {sid: (t0, t1) for sid, t0, t1, _ in
+                json.loads((film.root / "timeline.json").read_text(encoding="utf-8"))}
+    clips, n = [], 0
+
+    def add(clip_fn, *args, **kw):
+        nonlocal n
+        n += 1
+        clips.append((clip_fn(*args, out=out_dir / f"i2v_{n:02d}.mp4", **kw), "cut"))
+
+    # 1. Cold open: the forest, the first text card, the cut into the dodo settling.
+    add(video_clip, film_cut, start=0.0, seconds=timeline["s02_settle_sleep"][1])
+    add(still_clip, card("Cutaway", "An AI film crew for a 2-minute animated short. Meta's Muse models plan, "
+                                    "paint, direct and critique; video models do the camera work.",
+                         "Meta Global AI Hackathon"), 5)
+    add(still_clip, card("One prompt gives you five seconds, a different bird every shot, and streets that melt.",
+                         "I'm making a film for Mauritius's national short film competition. A story needs a "
+                         "director: someone who plans every shot, checks every take and asks for it again.",
+                         "The problem"), 7)
+
+    # 2. The motion plan, written for flow across cuts.
+    motion = json.loads((film.root / "motion.json").read_text(encoding="utf-8"))
+    img = canvas()
+    d = ImageDraw.Draw(img)
+    d.text((80, 60), "Muse Spark directs the motion, thinking across cuts", font=font(52), fill=INK)
+    y = text_block(d, (80, 150), motion["flow_notes"], 30, 115, DIM)
+    for m in motion["shots"][2:5]:
+        y = text_block(d, (80, y + 28), f"{m['shot_id']}   in: {m['transition_in']}", 28, 120, ACCENT, mono=True)
+        y = text_block(d, (110, y + 4), m["motion_prompt"], 26, 125, INK)
+        y = text_block(d, (110, y + 4), "ends on: " + m["ends_on"], 26, 125, DIM)
+    add(still_clip, img, 10)
+
+    # 3. Real places, repainted, and the keyframe check.
+    s = by_id["s06_chinatown_gate"]
+    add(still_clip, side_by_side(film.ref_path(s["place_refs"][0]), film.shot_dir(s) / "keyframe.png",
+                                 "Reference photo (Unsplash licence)", "Keyframe by Muse Image",
+                                 "Real Port Louis, repainted in the film's style, with the dodo's character sheet "
+                                 "as a second reference so it stays the same bird."), 6)
+    s = next((s for s in painted if len(film.state(s).get("keyframe_attempts", [])) > 1), None)
+    if s:
+        notes = [f"Attempt {i + 1}: " + ("; ".join(a["verdict"]["problems"][:2]) or "approved")
+                 for i, a in enumerate(film.state(s)["keyframe_attempts"])]
+        add(still_clip, picture_with_notes(film.shot_dir(s) / "keyframe.png",
+                                           "Muse Spark checks every keyframe and sends back fixes", notes), 7)
+
+    # 4. Muse Spark watches every take; a bad one gets a rewritten prompt and goes again.
+    for sid, bad, good in (("s09_see_mountains", 1, 2), ("s03_wake_city", 1, 2)):
+        (lp, lt), (rp, rt) = _take(film, sid, bad), _take(film, sid, good)
+        add(compare_clip, lp, rp, f"Take {bad}: {lt['review']['score']}/10. {_note(lt)}",
+            f"Take {good}: {rt['review']['score']}/10, accepted",
+            "Muse Spark watches every take as video, scores it against the shot's intent and the painted "
+            "frame, and rewrites the prompt when the model invents scenery or loses the bird.", seconds=8)
+
+    # 5. When one model keeps failing, try another.
+    (lp, lt), (rp, rt) = _take(film, "s06_chinatown_gate", 2), _take(film, "s06_chinatown_gate", 3)
+    add(compare_clip, lp, rp, f"Wan 3.0, take 2: {lt['review']['score']}/10. {_note(lt)}",
+        f"Kling 2.6, take 3: {rt['review']['score']}/10, accepted",
+        "After two failed takes on one model, the agent switches to another. Each model fails differently.",
+        seconds=7)
+
+    # 6. Flow: the first cut, before and after Muse Image repainted shot 2 into the same place and light.
+    s1, s2 = by_id["s01_forest_dawn"], by_id["s02_settle_sleep"]
+    d1, d2 = s1["duration_s"], s2["duration_s"]
+    before = sequence([(film.shot_dir(s1) / "prev0_take_1.mp4", d1), (film.shot_dir(s2) / "prev0_take_1.mp4", d2)],
+                      out_dir / "i2v_flow_before.mp4")
+    after = sequence([(film.shot_dir(s1) / "take_1.mp4", d1), (film.shot_dir(s2) / "take_1.mp4", d2)],
+                     out_dir / "i2v_flow_after.mp4")
+    add(compare_clip, before, after, "Before: two good shots that don't connect",
+        "After: one place, one light, the movement carries across the cut",
+        "Shots must flow like a movie. Muse Image repainted the second shot from the first one's keyframe, and "
+        "the first shot now ends mid-movement so the cut lands on action.")
+
+    # 7. Spend: the user's own money, under a hard cap.
+    fal = json.loads((film.repo / "ledger_fal.json").read_text(encoding="utf-8"))["spent_usd"]
+    takes = sum(len(film.state(s).get("i2v_takes", [])) for s in painted)
+    add(still_clip, card(f"${fal:.2f} of video, under a hard $45 cap.",
+                         f"{takes} takes for {len(painted)} shots. Every clip's worst-case cost is reserved before "
+                         "it is sent, and the ledger is checked against fal's own bill after each one. When the "
+                         "laptop hibernated mid-clip, the paid request was saved and collected on the next run.",
+                         "Spend"), 8)
+
+    # 8. Muse Wonder watches the whole film.
+    crit = film.root / "critique_i2v.json"
+    if crit.exists():
+        c = json.loads(crit.read_text(encoding="utf-8"))
+        img = canvas()
+        d = ImageDraw.Draw(img)
+        d.text((80, 70), f"Muse Wonder watches the whole film:  {c['score']}/10", font=font(56), fill=INK)
+        y = text_block(d, (80, 170), c["overall"], 32, 100, DIM)
+        y = text_block(d, (80, y + 30), "Strengths it names:", 32, 100, INK)
+        for x in c["strengths"][:2]:
+            y = text_block(d, (110, y + 8), x, 28, 110, ACCENT)
+        y = text_block(d, (80, y + 30), "Notes for the next cut:", 32, 100, INK)
+        for x in c["weaknesses"][:2]:
+            y = text_block(d, (110, y + 8), x, 28, 110, DIM)
+        add(still_clip, img, 12)
+
+    # 9. The end of the film, from the shot boundary nearest excerpt_s before the end.
+    add(still_clip, card("The Dodo Came Back", "What if the dodo returned to Mauritius?", "The film"), 3)
+    total = edit.duration(film_cut)
+    start = min((t0 for t0, _ in timeline.values()), key=lambda t0: abs(total - t0 - excerpt_s))
+    add(video_clip, film_cut, start=start, seconds=total - start)
+
+    # 10. Numbers.
+    log = film.repo / "generation_log.jsonl"
+    c = costs(film.root, log)
+    entries = [json.loads(line) for line in log.read_text(encoding="utf-8").splitlines()
+               if f'"film": "{film.root.name}"' in line]
+    muse = sum(e.get("cost_usd", LIST_PRICES.get(e.get("model"), 0.0)) for e in entries if e.get("kind") != "video")
+    accepted = sum(1 for s in painted for t in film.state(s).get("i2v_takes", [])
+                   if t["take"] == film.state(s).get("i2v_choice") and t["review"]["score"] >= 7)
+    add(still_clip, card(f"{total:.0f} seconds. {len(painted)} shots. {accepted} rated 7/10 or better.",
+                         f"${fal:.2f} of video and ${muse:.2f} of Meta model calls. {c['calls']} calls in all, "
+                         "every prompt, take and review logged, and an AI-disclosure report generated for the "
+                         "competition. Open source: github.com/Mikhil-sec/cutaway", "Result"), 8)
+    return edit.assemble(clips, out_dir / "making_of_i2v.mp4")

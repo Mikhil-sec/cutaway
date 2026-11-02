@@ -19,6 +19,14 @@ Short, concrete lessons from building Cutaway and making its first film. Read be
 - **The overscan margin crops the composition.** 25% leaves room for moves but cuts characters near the painting's edge; step it down per shot until the characters fit, and ask for real breathing room (12%) around one character, not just "inside the frame".
 - **A clip is current only if it was made from the current spec.** Stamp each frames folder with its spec and re-render when they differ; skip-if-exists silently kept stale renders.
 
+## Video models (image-to-video)
+
+- **Check the real bill, not the price list.** fal listed Wan 3.0 at $0.05/s but billed $0.10/s at 720p and $0.20/s at 1080p. A ledger built on list prices undercounted by 60%. Reconcile with fal's usage records (BILLING-preset key) before and after every clip.
+- **Wan exaggerates camera moves and invents what the move reveals.** Trucks, cranes, orbits and pull-outs gave new buildings, the wrong mountains and a shrinking dodo; 4 of 5 city first takes were rejected for it. Nearly locked-off cameras passed. Put the life into the character's acting and the secondary motion inside the frame.
+- **Shots that cut together need the same place and light, and the action must carry across the cut.** Two good shots in different light on different rocks read as unrelated. Repainting the second from the first's keyframe and ending the first mid-movement fixed it.
+- **A paid request must never be abandoned.** The laptop hibernated mid-clip, the poll timed out on wall-clock time, and fal had already charged for the clip. Save the request id before waiting, count only answered polls toward the timeout, and collect leftover requests on the next run.
+- **Muse Spark's review catches what the eye would:** morphing streets, teleporting characters, legible text on buses. Its rewritten prompt, as one consistent description, usually fixed the take.
+
 ## Process
 
 - **Parallel runs must not share mutable state.** Two processes saving one plan.json lost each other's changes; each shot now keeps its own state file, and revisions are re-applied on load.
