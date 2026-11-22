@@ -12,6 +12,7 @@ import json
 import mimetypes
 import os
 import subprocess
+import threading
 import time
 from datetime import datetime
 from pathlib import Path
@@ -89,9 +90,20 @@ def _reserve(model, n=1, cost=None):
 CONTEXT = {}  # e.g. {"film": "dodo", "shot": "s01"}: stamped on every log entry, for the disclosure report
 
 
+_LOCAL = threading.local()  # per-thread additions to CONTEXT, so parallel calls log their own shot
+_LOG_LOCK = threading.Lock()
+
+
+def thread_context(**kw):
+    """Set log fields (e.g. shot=...) for calls made from the current thread only."""
+    _LOCAL.ctx = kw
+
+
 def _log(**entry):
-    with LOG.open("a", encoding="utf-8") as f:
-        f.write(json.dumps({"time": datetime.now().isoformat(), **CONTEXT, **entry}, ensure_ascii=False) + "\n")
+    line = json.dumps({"time": datetime.now().isoformat(), **CONTEXT, **getattr(_LOCAL, "ctx", {}), **entry},
+                      ensure_ascii=False)
+    with _LOG_LOCK, LOG.open("a", encoding="utf-8") as f:
+        f.write(line + "\n")
 
 
 def data_url(path):
@@ -112,15 +124,15 @@ def ref_data_url(path, max_side=1536):
     return f"data:image/jpeg;base64,{base64.b64encode(buf.getvalue()).decode()}"
 
 
-def _client():
-    return httpx.Client(base_url=BASE_URL, headers={"Authorization": f"Bearer {_key()}"}, timeout=300)
+def _client(timeout=300):
+    return httpx.Client(base_url=BASE_URL, headers={"Authorization": f"Bearer {_key()}"}, timeout=timeout)
 
 
-def _post(path, body, **kw):
+def _post(path, body, timeout=300, **kw):
     """POST, retrying only on 429/503 (not billed). Never retries a timeout,
     since a timed-out request may already have been billed."""
     for attempt in range(4):
-        with _client() as c:
+        with _client(timeout) as c:
             r = c.post(path, json=body, **kw)
         if r.status_code == 200:
             return r
@@ -147,7 +159,7 @@ def image(prompt, out, size="1536x864", refs=()):
     return out
 
 
-def chat(model, messages, schema=None, max_tokens=4000, reasoning_effort=None):
+def chat(model, messages, schema=None, max_tokens=4000, reasoning_effort=None, timeout=300):
     """Chat completion; with `schema`, the reply is forced to match it and returned parsed.
 
     Messages use the OpenAI shape; image parts may give a local path as
@@ -181,7 +193,7 @@ def chat(model, messages, schema=None, max_tokens=4000, reasoning_effort=None):
     if schema:
         body["response_format"] = {"type": "json_schema",
                                    "json_schema": {"name": "reply", "strict": True, "schema": schema}}
-    r = _post("/chat/completions", body).json()
+    r = _post("/chat/completions", body, timeout=timeout).json()
     u = r.get("usage", {})
     cached = (u.get("prompt_tokens_details") or {}).get("cached_tokens", 0)
     billed = ((u.get("prompt_tokens", 0) - cached) * price_in + cached * price_cached
