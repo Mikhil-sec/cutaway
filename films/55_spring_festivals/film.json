@@ -1,0 +1,1020 @@
+{
+ "title": "55 Spring Festivals",
+ "look": "Hand-painted 2D anime film still, soft watercolour and gouache painted backgrounds, lush detailed skies and tropical foliage, warm natural light, clean expressive linework, gentle cel shading on the characters, cinematic 16:9 widescreen composition, dynamic cinematic camera angle, a candid moment caught mid-action: every person, background extras included, caught mid-movement (mid-step, mid-gesture, mid-laugh, hair and clothes in motion), never stiffly standing still. No text anywhere except the shop sign when the shop is in view. When a scene in Mauritius already includes a crowd or a group of children, that group is visibly diverse: Indo-Mauritian, Creole of African descent, Sino-Mauritian, Muslim and Franco-Mauritian. Never add extra people who are not described.",
+ "sheet_look": "Hand-painted 2D anime character model sheet, clean expressive linework, gentle cel shading, soft watercolour colouring, plain flat warm-grey background with nothing else on it, front view and three-quarter view of the same character side by side, full body, no text, no labels.",
+ "motion_style": "Continue the uploaded image as one 2D hand-painted anime cinematic shot. Maintain precisely the faces, identities, ages, wardrobe, architecture, the LAM STORE sign, palette and composition of the image; flat cel shading and painted backgrounds throughout, no photorealism, no 3D. Faces stay stable and consistent with no morphing; nobody appears from nowhere or vanishes; people walk forward naturally, never backwards, at natural speed, with physically plausible bodies, clothing and hair. The scene is alive from the very first frame: every person, background extras included, is already in motion, and leaves, lanterns, smoke and fabric keep moving.",
+ "characters": [
+  {
+   "name": "wei14",
+   "prompt": "The same Wei as the reference sheet, but as a 14-year-old boy in 1972: exactly the same East Asian Hakka Chinese face (same eye shape, nose, jaw and hairline), younger, thinner and shorter, unmistakably Chinese, short black hair with a side parting, shy gentle eyes, white short-sleeved cotton shirt, grey shorts, brown leather sandals.",
+   "refs": [
+    "@wei21"
+   ]
+  },
+  {
+   "name": "wei21",
+   "refs": [],
+   "prompt": "The same boy Wei from the reference, now a 21-year-old young man in 1979: same face and hair, taller and broader, light blue short-sleeved shirt, dark grey trousers, cloth shop apron. Front view and three-quarter view, full body, neutral warm-grey background."
+  },
+  {
+   "name": "wei26",
+   "refs": [
+    "@wei21",
+    "@wei50"
+   ],
+   "prompt": "The same man Wei as the reference sheets, now 26 in 1984: exactly the same East Asian Hakka Chinese face as the references, clearly a grown man, a little fuller in the face than at 21, neat short black hair, cream short-sleeved shirt, dark trousers, sandals, warm confident smile."
+  },
+  {
+   "name": "wei50",
+   "refs": [
+    "@wei26"
+   ],
+   "prompt": "The same man Wei from the reference, now 50 in 2008: same face, grey at the temples, light lines around the eyes, thin-framed glasses, brown knitted cardigan over a white shirt, tired kind eyes. Front view and three-quarter view, full body, neutral warm-grey background."
+  },
+  {
+   "name": "wei69",
+   "refs": [
+    "@wei50"
+   ],
+   "prompt": "The same man Wei from the reference, now 69 in 2027: same face, short white hair, deeper smile lines, the same thin glasses, red knitted cardigan over a white shirt, warm grandfather smile. Front view and three-quarter view, full body, neutral warm-grey background."
+  },
+  {
+   "name": "smriti14",
+   "prompt": "Smriti, a 14-year-old Indo-Mauritian girl in 1972, bright mischievous grin, long black hair in one thick braid, warm brown skin, yellow cotton dress, bare feet. Front view and three-quarter view, full body, neutral warm-grey background."
+  },
+  {
+   "name": "smriti26",
+   "refs": [
+    "@smriti14",
+    "@smriti68"
+   ],
+   "prompt": "The same Smriti as the reference sheets, now a 26-year-old married woman in 1984: same face and grin as the references, clearly an adult woman with mature adult facial features and adult proportions, taller, not a girl, long black hair in a low bun, teal cotton dress with short sleeves, small gold earrings, sandals."
+  },
+  {
+   "name": "smriti68",
+   "refs": [
+    "@smriti26"
+   ],
+   "prompt": "The same woman Smriti from the reference, now 68 in 2027: same face and grin, silver-white hair in a low bun, small round glasses, maroon cardigan over a cream dress. Front view and three-quarter view, full body, neutral warm-grey background."
+  },
+  {
+   "name": "uncle_lam",
+   "prompt": "Uncle Lam, a stern but kind Hakka Chinese shopkeeper of about 55 in 1972, short grey crew-cut hair, square face, white cotton singlet, khaki trousers, dark canvas apron. Front view and three-quarter view, full body, neutral warm-grey background."
+  },
+  {
+   "name": "photographer",
+   "prompt": "Smriti's father, an Indo-Mauritian man of about 40 in 1972, thick black moustache, kind eyes, short-sleeved brown checked shirt, holding a small vintage film camera with a round flash bulb reflector. Front view and three-quarter view, full body, neutral warm-grey background."
+  },
+  {
+   "name": "mother",
+   "prompt": "Wei's mother, a Hakka Chinese woman of about 40 in 1972, hair in a tight low bun, dark indigo high-collared cotton tunic and trousers, strong gentle face. Front view and three-quarter view, full body, neutral warm-grey background."
+  },
+  {
+   "name": "mother_old",
+   "refs": [
+    "@mother"
+   ],
+   "prompt": "The same woman from the reference, now 76 in 2008: same face, very frail, thin white hair in a low bun, soft lined face, pale grey cotton tunic. Front view and three-quarter view, sitting upright in a chair, neutral warm-grey background."
+  },
+  {
+   "name": "mira",
+   "prompt": "Mira, an 18-year-old Sino-Mauritian girl in 2027, shoulder-length black hair, bright determined eyes, light denim jacket over a white t-shirt, black jeans, white sneakers. Front view and three-quarter view, full body, neutral warm-grey background."
+  }
+ ],
+ "shots": [
+  {
+   "id": "s01a",
+   "seconds": 6,
+   "mode": "i2v",
+   "flash_out": false,
+   "frames": [
+    {
+     "name": "start",
+     "at": 0,
+     "refs": [
+      "@wei14",
+      "@mother"
+     ],
+     "prompt": "Dawn in Meizhou, Guangdong, 1972. High wide angle looking down a misty valley of terraced fields at a small, modest, poor farmhouse of rammed yellow earth with a simple grey tiled roof; the mother stands just outside its wooden gate while the boy Wei, carrying his string-tied cardboard suitcase, has already started walking away from the house down the dirt path toward the valley. Soft pink dawn light, mist."
+    }
+   ],
+   "motion": "Slow crane down over the misty terraces as the boy walks away from the farmhouse down the path, his mother staying at the gate behind him with her hand on the gatepost. Mist drifts, the dawn light warms. Sound: a rooster far off, wind in bamboo, footsteps on gravel. No music, no subtitles, no added text or logos, no cuts.",
+   "voice": [
+    {
+     "text": "I was fourteen when I left Meizhou.",
+     "voice": "Bill",
+     "at": 0.8
+    }
+   ]
+  },
+  {
+   "id": "s01b",
+   "seconds": 6,
+   "mode": "i2v",
+   "flash_out": false,
+   "frames": [
+    {
+     "name": "start",
+     "at": 0,
+     "refs": [
+      "@wei14",
+      "@mother",
+      "@s01a.start"
+     ],
+     "prompt": "Same dawn place as the reference. Low-angle close-up of the boy Wei's face, eyes wet, gripping the string handle of the cardboard suitcase; behind him, soft and out of focus, his mother at the modest farmhouse gate raising her hand to wave."
+    }
+   ],
+   "motion": "Slow push-in on the boy's face as he walks; he stops, looks back over his shoulder at his mother at the gate, swallows, then turns and walks on out of frame. Her waving hand stays soft in the background. Sound: wind in bamboo, footsteps on gravel, a soft sniff. No music, no subtitles, no added text or logos, no cuts."
+  },
+  {
+   "id": "s02",
+   "seconds": 8,
+   "mode": "i2v",
+   "flash_out": false,
+   "frames": [
+    {
+     "name": "start",
+     "at": 0,
+     "refs": [],
+     "prompt": "1972. Aerial view over a deep blue Indian Ocean at sunrise, a small white ocean liner far below leaving a long wake, scattered cumulus clouds, warm golden light."
+    },
+    {
+     "name": "end",
+     "at": "end",
+     "refs": [],
+     "prompt": "1972 Mauritius from the air: endless fields of tall dense sugar cane with feathery silver plumes, a red dirt road, small tin-roofed houses, and the Pieter Both mountain behind: a green pointed peak with a SMALL round boulder balanced on its very tip (the boulder is tiny compared with the peak), golden morning light, scattered clouds."
+    }
+   ],
+   "motion": "FPV drone dive out of the clouds, skimming past the ship's wake, then racing low over the coast and the sugar-cane fields toward the mountain. Clouds whip past the camera. Sound: wind rushing, a distant ship horn, then cane rustling. No subtitles or captions. The shop sign keeps its painted words. No music."
+  },
+  {
+   "id": "s03a",
+   "seconds": 6,
+   "mode": "i2v",
+   "flash_out": false,
+   "frames": [
+    {
+     "name": "start",
+     "at": 0,
+     "refs": [
+      "@wei14"
+     ],
+     "prompt": "1972, bright afternoon. Low-angle wide shot from the red dirt road: the small single-storey shop with thick dark grey basalt-stone walls and a rusted corrugated tin roof; above the green wooden double doors hangs a red wooden signboard painted with the words \"LAM STORE\" in bold cream English capital letters and \"林記\" in Chinese characters beside them; sugar cane on both sides and the Pieter Both mountain behind: a green pointed peak with a SMALL round boulder balanced on its very tip (the boulder is tiny compared with the peak). The small boy Wei stands in the road with his cardboard suitcase, his back to camera, looking up at the shop."
+    }
+   ],
+   "motion": "Low-angle slow push-in as the boy walks up the road toward the shop and its sign, suitcase swinging; cane sways, dust drifts, a chicken crosses the road. Sound: cane rustling, cicadas, footsteps on dirt, a cart rattling far away. No music, no subtitles, no added text or logos, no cuts."
+  },
+  {
+   "id": "s03b",
+   "seconds": 6,
+   "mode": "i2v",
+   "flash_out": false,
+   "frames": [
+    {
+     "name": "start",
+     "at": 0,
+     "refs": [
+      "@uncle_lam",
+      "@wei14"
+     ],
+     "prompt": "Reverse angle from inside the dim shop: over the shoulder of Uncle Lam, arms folded, in the foreground, looking out through the bright open doorway at the nervous boy Wei on the step with his suitcase; shelves of tins, rice sacks and sweet jars frame the door. Through the doorway only the sunny red dirt road, sugar cane and sky are visible: no buildings and no signs outside."
+    }
+   ],
+   "motion": "Over-the-shoulder, slight push-in toward the boy. Uncle Lam studies him, then steps aside and tilts his head toward the shelves, and the boy picks up the suitcase and steps in. Nobody speaks. Sound: a fly buzzing, floorboards creaking, cane outside. No music, no subtitles, no added text or logos, no cuts.",
+   "voice": [
+    {
+     "text": "So you're Wei. We open at five.",
+     "voice": "George",
+     "at": 0.8
+    }
+   ]
+  },
+  {
+   "id": "s04",
+   "seconds": 6,
+   "mode": "i2v",
+   "flash_out": false,
+   "frames": [
+    {
+     "name": "start",
+     "at": 0,
+     "refs": [],
+     "prompt": "x"
+    }
+   ],
+   "motion": "Slow continuous tilt up from the boy writing by the lamp against the stone wall, past the tin roof edge, up to the Milky Way over the mountain. The flame flickers, he folds the letter onto the bundle and looks up at the stars. Sound: crickets, frogs, pen scratching on paper. No music, no subtitles, no added text or logos, no cuts."
+  },
+  {
+   "id": "s04b",
+   "seconds": 8,
+   "mode": "i2v",
+   "flash_out": false,
+   "frames": [
+    {
+     "name": "start",
+     "at": 0,
+     "refs": [
+      "@wei14",
+      "@smriti14"
+     ],
+     "prompt": "1972, bright afternoon, a dusty open field among tall sugar cane. Wide shot: in the foreground the boy Wei stands alone at the edge of the field holding his elbows, watching from a distance; in the middle of the field a diverse group of village children (Indo-Mauritian, Creole, Muslim, Sino-Mauritian) play cricket with wooden stumps, and the girl Smriti in her yellow dress holds the red ball among them; the Pieter Both mountain with a small boulder on its tip behind."
+    },
+    {
+     "name": "end",
+     "at": "end",
+     "refs": [
+      "@s04b.start",
+      "@wei14",
+      "@smriti14"
+     ],
+     "prompt": "Same field and light as the reference, closer: the girl Smriti has run up to the boy Wei at the field edge and stands in front of him, grinning, holding out the red cricket ball; he looks at her, surprised, a first hint of a smile; the children play behind them."
+    }
+   ],
+   "motion": "Slow push-in on the lonely boy at the field edge. The children play cricket behind him; Smriti notices him, then runs across the field toward him and holds out the ball, calling, \"Hey! Want to play?\" as he looks up. Smriti: Mauritian girl, 14, bright and cheeky, no announcer delivery. Sound: cricket game, children shouting, running footsteps on dry earth. No music, no subtitles, no added text or logos, no cuts.",
+   "voice": [
+    {
+     "text": "Hey! Want to play?",
+     "voice": "Lily",
+     "at": 3.6,
+     "stability": 0.3,
+     "duck": true
+    }
+   ]
+  },
+  {
+   "id": "s05a",
+   "seconds": 8,
+   "mode": "i2v",
+   "flash_out": false,
+   "frames": [
+    {
+     "name": "start",
+     "at": 0,
+     "refs": [
+      "@smriti14",
+      "@wei14",
+      "@s04b.start"
+     ],
+     "prompt": "Same golden-hour sugar-cane field as the reference, now late afternoon. Low angle from behind and beside the girl Smriti as she winds up to throw the red cricket ball, arm drawn back, braid swinging; far ahead at the wooden stumps the boy Wei crouches with a flat wooden bat, diverse children fielding around them, warm backlight and dust in the air."
+    }
+   ],
+   "motion": "Low tracking camera behind Smriti as she runs in and throws the ball hard toward Wei; the camera whips forward following the ball as the boy swings and cracks it high into the sky, and Smriti shouts, \"Nobody knows the rules. Just run!\" The boy drops the bat and runs, laughing, as the children cheer. Smriti: Mauritian girl, 14, cheeky, no announcer delivery. Sound: running feet, the bat cracking the ball, children cheering, cane rustling. No music, no subtitles, no added text or logos, no cuts.",
+   "voice": [
+    {
+     "text": "Nobody knows the rules. Just run!",
+     "voice": "Lily",
+     "at": 3.6,
+     "stability": 0.3,
+     "duck": true
+    }
+   ]
+  },
+  {
+   "id": "s06",
+   "seconds": 7,
+   "mode": "i2v",
+   "flash_out": true,
+   "frames": [
+    {
+     "name": "start",
+     "at": 0,
+     "refs": [
+      "@s17c.p01",
+      "@uncle_lam",
+      "@wei14",
+      "@photographer"
+     ],
+     "prompt": "Spring Festival 1972. Camera directly in front of the shop, perfectly straight-on and centred on the doors, the whole shop front and its signboard in frame; in the bottom-left foreground, seen from behind and slightly out of focus, the photographer holds up his small vintage camera toward the people, who pose in a row directly in front of the doors. The people: a stiff unsmiling Uncle Lam and the nervous boy Wei side by side; red paper decorations with no writing on the doors; above the green wooden double doors hangs a red wooden signboard painted with the words \"LAM STORE\" in bold cream English capital letters and \"林記\" in Chinese characters beside them."
+    },
+    {
+     "name": "end",
+     "at": "end",
+     "refs": [
+      "@s06.start",
+      "@s17c.p01"
+     ],
+     "prompt": "Same framing and light as the first reference, the photographer's camera flash firing: a burst of bright white light starting to wash over the frame, Uncle Lam stiff, the boy giving a tiny nervous smile."
+    }
+   ],
+   "motion": "Locked-off, perfectly frontal. The photographer raises the camera, Uncle Lam straightens his apron, the boy forces a tiny smile, then the flash fires and the frame bursts white. Sound: distant firecrackers, the shutter click and flash pop. No subtitles or captions. The shop sign keeps its painted words. No music.",
+   "voice": [
+    {
+     "text": "Every Spring Festival, her father took a photo.",
+     "voice": "Bill",
+     "at": 0.3
+    }
+   ]
+  },
+  {
+   "id": "s07a",
+   "seconds": 6,
+   "mode": "i2v",
+   "flash_out": false,
+   "frames": [
+    {
+     "name": "start",
+     "at": 0,
+     "refs": [
+      "@uncle_lam",
+      "@wei21"
+     ],
+     "prompt": "1979, inside the basalt-stone shop at dawn, warm light through the open doors, shelves of goods. Medium two-shot from a low angle across the wooden counter: an older, greyer Uncle Lam, smiling warmly with crinkled happy eyes, one hand on the shoulder of Wei, now 21, the other holding out a ring of old iron keys."
+    }
+   ],
+   "motion": "Slow push-in on the two men; only the two of them are in the shop. Uncle Lam smiles, squeezes Wei's shoulder and says, \"Take care of this street, and it will take care of you.\" Wei looks at him, moved. Dust floats in the dawn light. Uncle Lam: older Hakka Chinese man, warm, proud, gentle gravelly voice, no announcer delivery. Sound: birdsong, keys jingling. No music, no subtitles, no added text or logos, no cuts.",
+   "voice": [
+    {
+     "text": "Take care of this street, and it will take care of you.",
+     "voice": "George",
+     "at": 1.0,
+     "stability": 0.3,
+     "duck": true
+    }
+   ]
+  },
+  {
+   "id": "s07b",
+   "seconds": 5,
+   "mode": "i2v",
+   "flash_out": false,
+   "frames": [
+    {
+     "name": "start",
+     "at": 0,
+     "refs": [
+      "@wei21",
+      "@s07a.start"
+     ],
+     "prompt": "Top-down close-up looking straight down at the worn wooden counter: Wei's open palm, a heavy ring of old iron keys being placed into it by Uncle Lam's weathered hand, dawn light raking across the wood grain."
+    }
+   ],
+   "motion": "Top-down, slow push-in. The old hand lets go, the keys settle into the young palm with a clink, then the fingers slowly close around them. Nothing else moves. Sound: keys clinking, a soft breath, birdsong. No subtitles or captions. The shop sign keeps its painted words. No music."
+  },
+  {
+   "id": "s09a",
+   "seconds": 5,
+   "mode": "i2v",
+   "flash_out": false,
+   "frames": [
+    {
+     "name": "start",
+     "at": 0,
+     "refs": [
+      "@wei26",
+      "@smriti26",
+      "@s08.k3"
+     ],
+     "prompt": "1984 wedding feast in the street in front of the small single-storey shop with thick dark grey basalt-stone walls and a rusted corrugated tin roof; above the green wooden double doors hangs a red wooden signboard painted with the words \"LAM STORE\" in bold cream English capital letters and \"林記\" in Chinese characters beside them. High crane angle looking down on two long tables with white cloths, dumplings and dholl puri, neighbours of every community laughing, red lanterns strung overhead, the couple Wei in a dark suit and Smriti in a red and gold saree at the head."
+    }
+   ],
+   "motion": "High angle, nearly locked-off with a very slow, gentle push-in, no big camera travel. Guests pass plates, raise glasses, laugh and talk, children weave between the chairs, lanterns sway. Faces stay stable. Sound: crowd laughter, clinking glasses, a ravanne drum. No music, no subtitles, no added text or logos, no cuts."
+  },
+  {
+   "id": "s09b",
+   "seconds": 5,
+   "mode": "i2v",
+   "flash_out": false,
+   "frames": [
+    {
+     "name": "start",
+     "at": 0,
+     "refs": [
+      "@uncle_lam",
+      "@photographer",
+      "@s09a.start"
+     ],
+     "prompt": "1984 wedding feast at dusk under red lanterns. Medium over-the-shoulder shot past Smriti's father (moustache, brown checked shirt) toward Uncle Lam, now about 67 with white crew-cut hair, smiling slyly, a glass raised, seated at the wedding table; guests of every community behind."
+    }
+   ],
+   "motion": "Over-the-shoulder, slight push-in on Uncle Lam. He leans in with a teasing smile and says, \"Your daughter is marrying a shopkeeper.\" Guests laugh and talk behind him. Uncle Lam: Hakka Chinese man in his late sixties, dry humour, no announcer delivery. Sound: wedding chatter, clinking glasses. No music, no subtitles, no added text or logos, no cuts.",
+   "voice": [
+    {
+     "text": "Your daughter is marrying a shopkeeper.",
+     "voice": "George",
+     "at": 0.8,
+     "stability": 0.3,
+     "duck": true
+    }
+   ]
+  },
+  {
+   "id": "s09c",
+   "seconds": 6,
+   "mode": "i2v",
+   "flash_out": false,
+   "frames": [
+    {
+     "name": "start",
+     "at": 0,
+     "refs": [
+      "@photographer",
+      "@uncle_lam",
+      "@s09b.start"
+     ],
+     "prompt": "Same wedding table and dusk lantern light as the reference, reverse angle: medium over-the-shoulder shot past Uncle Lam toward Smriti's father, warm proud smile, glass in hand; behind him, out of focus, the newly married Wei and Smriti laughing."
+    }
+   ],
+   "motion": "Over-the-shoulder, slight push-in on Smriti's father. He smiles proudly and answers, \"My daughter is marrying a good man.\" Then he reaches across and the two men clink glasses and laugh. Smriti's father: Indo-Mauritian man in his fifties, warm, no announcer delivery. Sound: wedding chatter, glasses clinking, laughter. No music, no subtitles, no added text or logos, no cuts.",
+   "voice": [
+    {
+     "text": "My daughter is marrying a good man.",
+     "voice": "Brian",
+     "at": 0.8,
+     "stability": 0.3,
+     "duck": true
+    }
+   ]
+  },
+  {
+   "id": "s10",
+   "seconds": 8,
+   "mode": "i2v",
+   "flash_out": false,
+   "frames": [
+    {
+     "name": "start",
+     "at": 0,
+     "refs": [
+      "@wei26",
+      "@smriti26",
+      "refs/port_louis/unsplash_chinatown_G0D9rRvn-Uk.jpg"
+     ],
+     "prompt": "Spring Festival night, 1989, the Chinatown street in Port Louis, Mauritius, with its red gate like the reference photo, packed with a festive crowd under red lanterns. A red and gold lion dance leaps in the middle of the street; in the crowd Wei carries a small laughing child on his shoulders, Smriti beside him laughing, red firecracker smoke and paper confetti in the air."
+    },
+    {
+     "name": "end",
+     "at": "end",
+     "refs": [
+      "@s10.start",
+      "@wei26",
+      "@smriti26"
+     ],
+     "prompt": "Same place and light as the reference. Closer: the red and gold lion's head rears up right in front of Wei, Smriti and the child, the child shrieking with delight, firecracker sparks bursting behind."
+    }
+   ],
+   "motion": "Energetic handheld camera rushing through the crowd toward the family. The lion dance leaps and shakes its head, firecrackers burst in red smoke, confetti falls, then the lion lunges up toward the lens in front of the child as the child laughs. Sound: lion-dance drums and cymbals, firecrackers crackling, crowd cheering. No subtitles or captions. The shop sign keeps its painted words. No music.",
+   "trim": [
+    1.8,
+    8
+   ]
+  },
+  {
+   "id": "s10b",
+   "seconds": 6,
+   "mode": "i2v",
+   "flash_out": false,
+   "frames": [
+    {
+     "name": "start",
+     "at": 0,
+     "refs": [
+      "@s08.k3"
+     ],
+     "prompt": "1989, late golden afternoon on the road in front of the small single-storey shop with thick dark grey basalt-stone walls and a rusted corrugated tin roof; above the green wooden double doors hangs a red wooden signboard painted with the words \"LAM STORE\" in bold cream English capital letters and \"林記\" in Chinese characters beside them, the frangipani in flower, red lanterns. Low wide shot at road level: three laughing children on old bicycles racing straight toward the camera, red dust behind them."
+    }
+   ],
+   "motion": "Fast low tracking shot as the three diverse children race their bicycles toward the camera, then the camera pans with them as they ride past toward the shop door, laughing. Red dust swirls. Sound: bicycle bells, tyres on gravel, a skid, children laughing. No music, no subtitles, no added text or logos, no cuts.",
+   "voice": [
+    {
+     "text": "Dinner!",
+     "voice": "Sarah",
+     "at": 4.0
+    }
+   ]
+  },
+  {
+   "id": "s11",
+   "seconds": 8,
+   "mode": "i2v",
+   "flash_out": false,
+   "frames": [
+    {
+     "name": "start",
+     "at": 0,
+     "refs": [
+      "@wei26",
+      "@smriti26"
+     ],
+     "prompt": "1989, a small warm kitchen behind the shop, steam rising. Two-shot: Wei folds dumplings on a floured board while Smriti rolls out dholl puri on the other side of the same table; both glance at each other with playful competitive smiles, two small children reaching for food."
+    },
+    {
+     "name": "end",
+     "at": "end",
+     "refs": [
+      "@s11.start",
+      "@wei26",
+      "@smriti26"
+     ],
+     "prompt": "Same place and light as the reference. Smriti laughing, holding a dumpling and a dholl puri side by side, Wei laughing too, a child grabbing one of each."
+    }
+   ],
+   "motion": "Slow push-in on the kitchen table. Wei pinches a dumpling closed, Smriti flips a dholl puri, then she holds one of each up and laughs, \"Both. We make both.\" The children stay at the table and reach for food. Steam curls in the lamp light. Smriti: Mauritian woman, warm, laughing, no announcer delivery. Sound: sizzling pan, rolling pin on wood, children giggling. No music, no subtitles, no added text or logos, no cuts.",
+   "voice": [
+    {
+     "text": "Both. We make both.",
+     "voice": "Sarah",
+     "at": 3.0,
+     "stability": 0.3,
+     "duck": true
+    }
+   ]
+  },
+  {
+   "id": "s12",
+   "seconds": 7,
+   "mode": "i2v",
+   "flash_out": true,
+   "frames": [
+    {
+     "name": "start",
+     "at": 0,
+     "refs": [
+      "@s17c.p18",
+      "@wei26",
+      "@smriti26"
+     ],
+     "prompt": "Spring Festival 1989. Camera directly in front of the shop, perfectly straight-on and centred on the doors, the whole shop front in frame, above the green wooden double doors hangs a red wooden signboard painted with the words \"LAM STORE\" in bold cream English capital letters and \"林記\" in Chinese characters beside them; in the bottom-left foreground, seen from behind and out of focus, the photographer holds up his small vintage camera. Posing in front of the doors: Wei and Smriti in their early thirties with their three small children and a much older Uncle Lam, with five neighbours of every community (Indo-Mauritian, Creole, Muslim, Franco-Mauritian) beside them, all smiling; red lanterns, the frangipani in flower. The photographer appears only once, in the foreground."
+    }
+   ],
+   "motion": "Locked-off, perfectly frontal. The same group stays exactly as it is, nobody arrives or leaves: they smile, children wiggle and wave, a neighbour laughs and puts an arm round another, hair and clothes move gently in the breeze, lanterns sway. The photographer calls, \"Everyone smile!\" and they all beam at the camera. The photographer: Mauritian man, cheerful, no announcer delivery. Sound: laughter, distant firecrackers, a shutter click. No music, no subtitles, no added text or logos, no cuts.",
+   "voice": [
+    {
+     "text": "Everyone smile!",
+     "voice": "Charlie",
+     "at": 2.0,
+     "stability": 0.3,
+     "duck": true
+    }
+   ]
+  },
+  {
+   "id": "s13a",
+   "seconds": 5,
+   "mode": "i2v",
+   "flash_out": false,
+   "frames": [
+    {
+     "name": "start",
+     "at": 0,
+     "refs": [
+      "@s08.k3"
+     ],
+     "prompt": "2008, a stormy evening. Cinematic low-angle wide shot of the shop, now with a second storey of whitewashed concrete and a small balcony above the basalt walls, a big frangipani tree beside it, above the green wooden double doors hangs a red wooden signboard painted with the words \"LAM STORE\" in bold cream English capital letters and \"林記\" in Chinese characters beside them (faded), one warm light in the window, heavy rain, wet tarmac road with reflections, lightning over the Pieter Both mountain behind: a green pointed peak with a SMALL round boulder balanced on its very tip (the boulder is tiny compared with the peak)."
+    }
+   ],
+   "motion": "Slow push-in through the rain toward the single lit window; lightning flashes across the sky, rain sheets across the frame, then a telephone starts ringing inside. Sound: heavy rain on the tin roof, rolling thunder, then a phone ringing. No subtitles or captions. The shop sign keeps its painted words. No music."
+  },
+  {
+   "id": "s13b",
+   "seconds": 7,
+   "mode": "i2v",
+   "flash_out": false,
+   "frames": [
+    {
+     "name": "start",
+     "at": 0,
+     "refs": [
+      "@s08.k3",
+      "@wei50"
+     ],
+     "prompt": "2008, a rainy evening inside the quiet basalt-stone shop: half-empty shelves, a single warm bulb, rain streaming down the window, Wei at 50 sitting alone at the wooden counter doing the accounts, an old framed photo on the wall."
+    },
+    {
+     "name": "end",
+     "at": "end",
+     "refs": [
+      "@s13.start",
+      "@wei50"
+     ],
+     "prompt": "Same place and light as the reference. Close shot: Wei holding an old beige landline telephone receiver to his ear, frozen, his face falling."
+    }
+   ],
+   "motion": "Locked-off on Wei alone at the counter as the phone rings, then a sudden whip pan to the ringing telephone as he picks it up, then a fast crash zoom onto his frozen face. Rain lashes the window, the bulb flickers. Sound: rain on the tin roof, the phone ringing loudly, then only rain. No subtitles or captions. The shop sign keeps its painted words. No music.",
+   "voice": [
+    {
+     "text": "Wei... your mother is very ill. Come home.",
+     "voice": "Alice",
+     "at": 4.5,
+     "gain_db": -4
+    }
+   ]
+  },
+  {
+   "id": "s13c",
+   "seconds": 6,
+   "mode": "i2v",
+   "flash_out": false,
+   "frames": [
+    {
+     "name": "start",
+     "at": 0,
+     "refs": [
+      "@wei50",
+      "@s01a.start"
+     ],
+     "prompt": "2008, Meizhou at grey dawn after rain. Wide shot from a low angle on a wet country road between misty terraced fields; Wei, 50, in his brown cardigan, carrying a small travel bag, walks alone toward the distant modest farmhouse, puddles reflecting the pale sky, bamboo bending in the wind."
+    }
+   ],
+   "motion": "Slow tracking shot alongside Wei at the same distance as he walks the wet road; he stays the same size in frame the whole time. Bamboo bends in the wind, puddles ripple. Sound: dripping leaves, footsteps on a wet road, wind in bamboo. No music, no subtitles, no added text or logos, no cuts."
+  },
+  {
+   "id": "s14",
+   "seconds": 12,
+   "mode": "i2v",
+   "flash_out": false,
+   "frames": [
+    {
+     "name": "start",
+     "at": 0,
+     "refs": [
+      "@wei50",
+      "@mother_old"
+     ],
+     "prompt": "2008, Meizhou, a dim simple room inside a Hakka roundhouse, grey morning light from a small window. Over-the-shoulder shot from behind Wei, who kneels by a wooden bed holding the hand of his frail old mother; her face is visible, looking at him tenderly."
+    },
+    {
+     "name": "end",
+     "at": "end",
+     "refs": [
+      "@s14.start",
+      "@mother_old"
+     ],
+     "prompt": "Same place and light as the reference. Closer on the old mother's face as she smiles and squeezes Wei's hand, a tear on her cheek."
+    }
+   ],
+   "motion": "Core summary: a son sees his dying mother after 36 years. One continuous shot.\n0.0-4.0s: Slow push-in over Wei's shoulder. He kneels by the bed, his breath catches, he takes her thin hand in both of his and bows his head; his shoulders begin to shake.\n4.0-10.0s: The old mother slowly lifts her other hand to his cheek, her eyes wet, and says softly, \"Home is where your children laugh. Go back to them.\"\n10.0-12.0s: The camera holds. He presses her hand to his face. Grey morning light shifts slightly through the window. Nothing else moves.\nWei's mother: frail old Hakka Chinese woman, very soft and slow, a little breathless, close to the microphone, no announcer delivery. Sound: quiet morning birds outside, a clock ticking, a held breath, fabric rustle. No subtitles or captions. The shop sign keeps its painted words. No music.",
+   "voice": [
+    {
+     "text": "I don't know where I belong anymore, Ma.",
+     "voice": "Brian",
+     "at": 0.5
+    },
+    {
+     "text": "Home is where your children laugh. Go back to them.",
+     "voice": "Matilda",
+     "at": 4.3,
+     "stability": 0.3,
+     "duck": true
+    }
+   ]
+  },
+  {
+   "id": "s14c",
+   "seconds": 6,
+   "mode": "i2v",
+   "flash_out": false,
+   "frames": [
+    {
+     "name": "start",
+     "at": 0,
+     "refs": [
+      "@s14.start",
+      "@wei50",
+      "@mother_old"
+     ],
+     "prompt": "Same room and grey morning light as the first reference. Close-up of Wei's face, 50, eyes red and wet, tears on his cheeks, his mother's thin wrinkled hand resting against his cheek, held there by his own hand; soft window light on one side of his face."
+    }
+   ],
+   "motion": "Very slow push-in on Wei's face. A tear runs down his cheek, he closes his eyes, then slowly nods and kisses his mother's palm. Nothing else moves. Sound: a clock ticking, birds outside, one shaky breath. No dialogue. No subtitles or captions. The shop sign keeps its painted words. No music."
+  },
+  {
+   "id": "s15",
+   "seconds": 8,
+   "mode": "i2v",
+   "flash_out": false,
+   "frames": [
+    {
+     "name": "start",
+     "at": 0,
+     "refs": [
+      "@s13a.start",
+      "@wei50",
+      "@smriti26"
+     ],
+     "prompt": "2008, night after the rain, the wet road in front of the two-storey shop, above the green wooden double doors hangs a red wooden signboard painted with the words \"LAM STORE\" in bold cream English capital letters and \"林記\" in Chinese characters beside them. From behind, Wei walks up the road with his bag toward the shop, which blazes with light: strings of red lanterns and fairy lights across the front, a big hand-painted cloth banner reading \"WELCOME HOME\", marigold garlands on the doors, neighbours of every community waiting on the step holding sparklers and flower petals, festive and joyful. Smriti, around 50 with grey streaks in her hair, in her teal dress, stands at the very front of the neighbours at the bottom of the step, clearly visible, already reaching her arms out toward Wei."
+    },
+    {
+     "name": "end",
+     "at": "end",
+     "refs": [
+      "@s15.start",
+      "@wei50",
+      "@smriti26"
+     ],
+     "prompt": "Same place and festive light as the reference. Medium shot at the shop door: Smriti, now around 50 with grey streaks in her hair, embraces Wei while neighbours throw flower petals and wave sparklers, a firecracker string bursting at the side."
+    }
+   ],
+   "motion": "Smooth Steadicam follow shot low behind Wei as he walks up the wet road toward the glowing, festive shop. Neighbours cheer and throw petals, sparklers fizz, and Smriti, already at the front, walks down the step to meet him, takes his hands and says, \"We kept the lights on.\" They embrace as firecrackers burst. Smriti: Mauritian woman about 50, moved, no announcer delivery. Sound: cheering, firecrackers, sparklers fizzing, dripping eaves. No music, no subtitles, no added text or logos, no cuts.",
+   "voice": [
+    {
+     "text": "We kept the lights on.",
+     "voice": "Sarah",
+     "at": 4.0,
+     "stability": 0.3,
+     "duck": true
+    }
+   ]
+  },
+  {
+   "id": "s15b",
+   "seconds": 8,
+   "mode": "keyframes",
+   "flash_out": false,
+   "frames": [
+    {
+     "name": "k1",
+     "at": 0,
+     "refs": [
+      "@s08.k3",
+      "@s13a.start"
+     ],
+     "prompt": "Exactly the same camera position and framing as the first reference, now a rainy evening in 2008: the shop now has a whitewashed concrete second storey and balcony, the frangipani is a tall tree, the paint is faded, above the green wooden double doors hangs a red wooden signboard painted with the words \"LAM STORE\" in bold cream English capital letters and \"林記\" in Chinese characters beside them (faded), the road is wet tarmac, the houses along the road are older, cloudy sky, the Pieter Both mountain behind: a green pointed peak with a SMALL round boulder balanced on its very tip (the boulder is tiny compared with the peak)."
+    },
+    {
+     "name": "k2",
+     "at": 4,
+     "refs": [
+      "@s15b.k1"
+     ],
+     "prompt": "Exactly the same camera position and framing as the reference, now a sunny day in 2016: the upper storey repainted pale yellow, solar panels on the roof, a new concrete pavement, modern houses and a small apartment block along the road, a parked car, satellite dishes, a young tree planted by the bench. The shop sign stays exactly the same."
+    },
+    {
+     "name": "k3",
+     "at": "end",
+     "refs": [
+      "@s15b.k2"
+     ],
+     "prompt": "Exactly the same camera position and framing as the reference, now a festive dusk in 2027: the shop restored with its basalt walls proudly exposed and the signboard freshly repainted, the frangipani huge and in full bloom, strings of red lanterns and fairy lights across the street, three tables with white cloths set out in front, clear violet sky with the first stars over the mountain. The shop sign stays exactly the same."
+    }
+   ],
+   "motion": "Locked-off time-lapse from 2008 to 2027, the shop holding the same place in the frame: the rain stops, clouds stream, day and night flicker, the upper storey is repainted, solar panels and new houses appear, cars come and go, the walls are restored, lanterns and tables appear. Sound: rain fading, a fast wash of passing years and traffic, then a festive crowd murmur and a firecracker pop. No subtitles or captions. The shop sign keeps its painted words. No music."
+  },
+  {
+   "id": "s16",
+   "seconds": 8,
+   "mode": "i2v",
+   "flash_out": false,
+   "frames": [
+    {
+     "name": "start",
+     "at": 0,
+     "refs": [
+      "@s15b.k3",
+      "@wei69",
+      "@smriti68"
+     ],
+     "prompt": "2027, festive dusk. High drone view looking down at three tables with white cloths set end to end in front of the small single-storey shop with thick dark grey basalt-stone walls and a rusted corrugated tin roof; above the green wooden double doors hangs a red wooden signboard painted with the words \"LAM STORE\" in bold cream English capital letters and \"林記\" in Chinese characters beside them (restored, freshly painted sign), under red lanterns and fairy lights, about thirty people of every Mauritian community sharing dumplings, dholl puri, curries and fruit; the big frangipani in bloom."
+    },
+    {
+     "name": "end",
+     "at": "end",
+     "refs": [
+      "@s16.start",
+      "@wei69",
+      "@smriti68"
+     ],
+     "prompt": "Same place and light as the reference, at table height: at the head of the table old Wei and Smriti hold up a tablet showing a video call with a smiling family in Meizhou at their own red-lit table; everyone around them waves at the screen."
+    }
+   ],
+   "motion": "Slow, smooth drone glide descending gently from above the lanterns and gliding along the tables to old Wei and Smriti, who hold up a tablet as everyone waves and shouts, \"Happy Spring Festival, Meizhou!\" Sound: crowd chatter and laughter, clinking dishes, firecrackers far away. No subtitles or captions. The shop sign keeps its painted words. No music.",
+   "voice": [
+    {
+     "text": "Happy Spring Festival, Mauritius!",
+     "voice": "Lily",
+     "at": 6.5,
+     "gain_db": -3
+    }
+   ]
+  },
+  {
+   "id": "s16b",
+   "seconds": 8,
+   "mode": "i2v",
+   "flash_out": false,
+   "frames": [
+    {
+     "name": "start",
+     "at": 0,
+     "refs": [
+      "@mira",
+      "@wei69",
+      "@s15b.k3"
+     ],
+     "prompt": "A bright sunny morning in 2027, the day after the festival. Low angle from the road: old Wei sweeps red firecracker paper off the step of the small single-storey shop with thick dark grey basalt-stone walls and a rusted corrugated tin roof; above the green wooden double doors hangs a red wooden signboard painted with the words \"LAM STORE\" in bold cream English capital letters and \"林記\" in Chinese characters beside them, under the huge flowering frangipani; in the doorway behind him Mira bursts out of the shop holding an opened letter with no readable writing, overjoyed."
+    },
+    {
+     "name": "end",
+     "at": "end",
+     "refs": [
+      "@s16b.start",
+      "@mira",
+      "@wei69"
+     ],
+     "prompt": "Same sunny morning, closer: Mira hugs old Wei tightly, the letter in her hand, the broom fallen against the step, frangipani petals drifting down around them; Wei's eyes are wet with pride."
+    }
+   ],
+   "motion": "Low tracking shot as Mira runs out of the shop toward her grandfather and says, breathless, \"Grandpa! I got the scholarship. I'm going to China!\" He drops the broom and pulls her into a hug as frangipani petals drift down. Mira: Mauritian girl, 18, breathless and happy, no announcer delivery. Sound: morning birds, the broom clattering, red paper rustling. No subtitles or captions. The shop sign keeps its painted words. No music.",
+   "voice": [
+    {
+     "text": "Grandpa! I got the scholarship. I'm going to China!",
+     "voice": "Jessica",
+     "at": 1.5,
+     "stability": 0.3,
+     "duck": true
+    }
+   ]
+  },
+  {
+   "id": "s17",
+   "seconds": 7,
+   "mode": "i2v",
+   "flash_out": true,
+   "frames": [
+    {
+     "name": "start",
+     "at": 0,
+     "refs": [
+      "@s17c.p55",
+      "@wei69",
+      "@smriti68",
+      "@mira"
+     ],
+     "prompt": "Spring Festival 2027. Camera directly in front of the shop, perfectly straight-on and centred on the doors, the whole shop front and its signboard in frame; in the bottom-left foreground, seen from behind and slightly out of focus, the photographer holds up his small vintage camera toward the people, who pose in a row directly in front of the doors. The people, about twelve in total: old Wei and Smriti in the centre with Mira, and around them a diverse group of family and neighbours: a Chinese couple, an Indian grandmother in a sari, a Creole man with a guitar, a Muslim woman in a headscarf with a child, a Franco-Mauritian couple, a young boy; lanterns lit, the big frangipani in bloom; above the green wooden double doors hangs a red wooden signboard painted with the words \"LAM STORE\" in bold cream English capital letters and \"林記\" in Chinese characters beside them, freshly painted."
+    },
+    {
+     "name": "end",
+     "at": "end",
+     "refs": [
+      "@s17.start",
+      "@s17c.p55"
+     ],
+     "prompt": "Same framing and light as the first reference, everyone squeezed closer together and laughing, the camera flash firing: a burst of bright white light starting to wash the frame."
+    }
+   ],
+   "motion": "Locked-off, perfectly frontal. Everyone shuffles closer to fit in the frame. Old Wei laughs and says, \"We needed a wider lens.\" Then the flash fires and the frame bursts white. Wei: Hakka Chinese man, 69, warm, amused, no announcer delivery. Sound: laughter, firecrackers, shutter click and flash pop. No subtitles or captions. The shop sign keeps its painted words. No music.",
+   "voice": [
+    {
+     "text": "We needed a wider lens.",
+     "voice": "Bill",
+     "at": 2.0,
+     "stability": 0.3,
+     "duck": true
+    }
+   ]
+  },
+  {
+   "id": "s17c",
+   "seconds": 10,
+   "mode": "keyframes",
+   "flash_out": false,
+   "frames": [
+    {
+     "name": "p01",
+     "at": 0.0,
+     "refs": [
+      "@wei14",
+      "@uncle_lam"
+     ],
+     "prompt": "Camera directly in front of the shop, perfectly straight-on and centred, the green double doors and the red signboard above them in frame, above the green wooden double doors hangs a red wooden signboard painted with the words \"LAM STORE\" in bold cream English capital letters and \"林記\" in Chinese characters beside them; the people pose in a row directly in front of the doors for the yearly Spring Festival photograph, lit by a bright camera flash, red paper decorations with no writing. The framing, walls, doors and signboard are identical in every year. Spring Festival 1972: a stiff unsmiling Uncle Lam and the nervous 14-year-old boy Wei side by side."
+    },
+    {
+     "name": "p08",
+     "at": 1.4,
+     "refs": [
+      "@s17c.p01",
+      "@wei21",
+      "@uncle_lam",
+      "@smriti14"
+     ],
+     "prompt": "Camera directly in front of the shop, perfectly straight-on and centred, the green double doors and the red signboard above them in frame, above the green wooden double doors hangs a red wooden signboard painted with the words \"LAM STORE\" in bold cream English capital letters and \"林記\" in Chinese characters beside them; the people pose in a row directly in front of the doors for the yearly Spring Festival photograph, lit by a bright camera flash, red paper decorations with no writing. The framing, walls, doors and signboard are identical in every year. Spring Festival 1979: Uncle Lam, greyer and smiling, his hand on the shoulder of Wei, now a proud young man of 21 holding a ring of keys; Smriti, now a young woman of 21, laughing at the edge."
+    },
+    {
+     "name": "p13",
+     "at": 2.8,
+     "refs": [
+      "@s17c.p08",
+      "@wei26",
+      "@smriti26",
+      "@uncle_lam",
+      "@photographer"
+     ],
+     "prompt": "Camera directly in front of the shop, perfectly straight-on and centred, the green double doors and the red signboard above them in frame, above the green wooden double doors hangs a red wooden signboard painted with the words \"LAM STORE\" in bold cream English capital letters and \"林記\" in Chinese characters beside them; the people pose in a row directly in front of the doors for the yearly Spring Festival photograph, lit by a bright camera flash, red paper decorations with no writing. The framing, walls, doors and signboard are identical in every year. Spring Festival 1984: Wei and Smriti, 26, newly married in festive clothes, beaming, with Uncle Lam and Smriti's parents."
+    },
+    {
+     "name": "p18",
+     "at": 4.2,
+     "refs": [
+      "@s17c.p13",
+      "@wei26",
+      "@smriti26",
+      "@uncle_lam"
+     ],
+     "prompt": "Camera directly in front of the shop, perfectly straight-on and centred, the green double doors and the red signboard above them in frame, above the green wooden double doors hangs a red wooden signboard painted with the words \"LAM STORE\" in bold cream English capital letters and \"林記\" in Chinese characters beside them; the people pose in a row directly in front of the doors for the yearly Spring Festival photograph, lit by a bright camera flash, red paper decorations with no writing. The framing, walls, doors and signboard are identical in every year. Spring Festival 1989: Wei and Smriti in their early thirties with three small children, Uncle Lam much older, neighbours squeezing in."
+    },
+    {
+     "name": "p27",
+     "at": 5.6,
+     "refs": [
+      "@s17c.p18",
+      "@wei50",
+      "@smriti26",
+      "@uncle_lam"
+     ],
+     "prompt": "Camera directly in front of the shop, perfectly straight-on and centred, the green double doors and the red signboard above them in frame, above the green wooden double doors hangs a red wooden signboard painted with the words \"LAM STORE\" in bold cream English capital letters and \"林記\" in Chinese characters beside them; the people pose in a row directly in front of the doors for the yearly Spring Festival photograph, lit by a bright camera flash, red paper decorations with no writing. The framing, walls, doors and signboard are identical in every year. Spring Festival 1998: Wei and Smriti, 40, their three children now teenagers, and a very old Uncle Lam sitting in a wooden chair in the middle, smiling."
+    },
+    {
+     "name": "p37",
+     "at": 7.0,
+     "refs": [
+      "@s17c.p27",
+      "@wei50",
+      "@smriti26"
+     ],
+     "prompt": "Camera directly in front of the shop, perfectly straight-on and centred, the green double doors and the red signboard above them in frame, above the green wooden double doors hangs a red wooden signboard painted with the words \"LAM STORE\" in bold cream English capital letters and \"林記\" in Chinese characters beside them; the people pose in a row directly in front of the doors for the yearly Spring Festival photograph, lit by a bright camera flash, red paper decorations with no writing. The framing, walls, doors and signboard are identical in every year. Spring Festival 2008, grey evening: only Wei, 50, with grey temples, and Smriti, 50, with a few grey streaks in her dark hair, standing alone beside an empty wooden chair; quiet, a little sad."
+    },
+    {
+     "name": "p46",
+     "at": 8.4,
+     "refs": [
+      "@s17c.p37",
+      "@wei69",
+      "@smriti68"
+     ],
+     "prompt": "Camera directly in front of the shop, perfectly straight-on and centred, the green double doors and the red signboard above them in frame, above the green wooden double doors hangs a red wooden signboard painted with the words \"LAM STORE\" in bold cream English capital letters and \"林記\" in Chinese characters beside them; the people pose in a row directly in front of the doors for the yearly Spring Festival photograph, lit by a bright camera flash, red paper decorations with no writing. The framing, walls, doors and signboard are identical in every year. Spring Festival 2017: Wei and Smriti, 59, greying, their grown children back home, and one little 8-year-old granddaughter in front; the wooden chair holds a small framed photo."
+    },
+    {
+     "name": "p55",
+     "at": "end",
+     "refs": [
+      "@s17c.p46",
+      "@wei69",
+      "@smriti68",
+      "@mira"
+     ],
+     "prompt": "Camera directly in front of the shop, perfectly straight-on and centred, the green double doors and the red signboard above them in frame, above the green wooden double doors hangs a red wooden signboard painted with the words \"LAM STORE\" in bold cream English capital letters and \"林記\" in Chinese characters beside them; the people pose in a row directly in front of the doors for the yearly Spring Festival photograph, lit by a bright camera flash, red paper decorations with no writing. The framing, walls, doors and signboard are identical in every year. Spring Festival 2027: old Wei, 69, and Smriti, 68, white-haired, Mira, 18, beside them, and around a dozen family and neighbours of every community: Chinese, Indian, Creole, Muslim, Franco-Mauritian, all laughing; the chair with the framed photo."
+    }
+   ],
+   "motion": "Locked-off, perfectly frontal on the same shop front for the whole shot. One Spring Festival photograph after another, each change marked by a bright camera flash: the boy grows into a young man, marries, children appear and grow, the old uncle sits and then his chair is empty, hair turns grey, a granddaughter arrives, and the family and neighbours gather. The people hold still for each photo, then the flash and the next year. Sound: a camera shutter click and flash pop at every change, festival crowds and firecrackers growing louder through the years. No subtitles or captions. The shop sign keeps its painted words. No music."
+  },
+  {
+   "id": "s17b",
+   "seconds": 7,
+   "mode": "i2v",
+   "flash_out": false,
+   "frames": [
+    {
+     "name": "start",
+     "at": 0,
+     "refs": [
+      "@s07.start",
+      "@wei69"
+     ],
+     "prompt": "2027, late night inside the restored basalt-stone shop, one warm lamp, festival lanterns glowing through the window. Old Wei stands on a small wooden stool, lifting the same old string-tied brown cardboard suitcase down from the top shelf, dust in the lamplight."
+    },
+    {
+     "name": "end",
+     "at": "end",
+     "refs": [
+      "@s17b.start",
+      "@wei69"
+     ],
+     "prompt": "Same place and light as the reference. Close shot: old Wei sits at the counter with the open old brown CARDBOARD suitcase tied with string (cardboard, not a wooden trunk), gently holding a small faded old photograph from inside its lid, smiling with wet eyes."
+    }
+   ],
+   "motion": "Slow push-in. Old Wei lifts the suitcase down, blows the dust off in the lamplight, then sits, opens the lid and finds the old photograph tucked inside; he smiles. Dust floats. Nothing else moves. Sound: a clock ticking, the stool creaking, the last firecrackers far away, the lid creaking open. No subtitles or captions. The shop sign keeps its painted words. No music."
+  },
+  {
+   "id": "s18",
+   "seconds": 12,
+   "mode": "i2v",
+   "flash_out": false,
+   "frames": [
+    {
+     "name": "start",
+     "at": 0,
+     "refs": [
+      "@wei69",
+      "@mira"
+     ],
+     "prompt": "2027, a bright modern airport departure hall in Mauritius, big windows onto the runway and green mountains. Medium shot: old Wei hands Mira the same old string-tied brown cardboard suitcase, worn with age; she holds it, smiling through tears, her backpack on."
+    },
+    {
+     "name": "end",
+     "at": "end",
+     "refs": [],
+     "prompt": "Mauritius, bright late afternoon: a passenger jet climbing away into a huge blue sky over the turquoise lagoon and green mountains, sunlight glinting on its wings."
+    }
+   ],
+   "motion": "Slow arc around the two of them while travellers in the hall walk forward naturally behind them. Old Wei places the suitcase handle in her hand and says, \"It brought me here. Let it bring you back.\" She hugs him and walks toward the gate, then the camera tilts up through the big window to the plane, which climbs away into the sky for several seconds until it is small among the clouds. Wei: Hakka Chinese man, 69, gentle, slightly choked, no announcer delivery. Sound: airport hall murmur, a gate chime, then the jet engine roar fading into wind. No music, no subtitles, no added text or logos, no cuts.",
+   "voice": [
+    {
+     "text": "It brought me here. Let it bring you back.",
+     "voice": "Bill",
+     "at": 2.0,
+     "stability": 0.3,
+     "duck": true
+    }
+   ]
+  }
+ ]
+}

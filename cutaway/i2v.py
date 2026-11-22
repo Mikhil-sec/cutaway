@@ -18,7 +18,7 @@ import io
 import json
 import os
 import time
-from datetime import datetime
+from datetime import datetime, timezone
 from pathlib import Path
 
 import httpx
@@ -29,10 +29,18 @@ from cutaway import meta
 
 ROOT = Path(__file__).resolve().parent.parent
 QUEUE = "https://queue.fal.run"
-HARD_CAP_USD = 45.00  # the user's own money; never exceeded; .env may only lower it
-LEDGER = ROOT / "ledger_fal.json"
-
 load_dotenv(ROOT / ".env")
+
+# One ledger and hard cap per fal account. "dodo": the user's own money, finished. "bootcamp": $60 pooled by
+# three students on a new account (docs/BOOTCAMP.md); the cap leaves $2 of headroom and must never be raised
+# without the user's word. `since`: where fal's usage records for that account start.
+PROFILES = {
+    "dodo": {"ledger": "ledger_fal.json", "cap": 45.00, "since": "2026-10-01"},
+    "bootcamp": {"ledger": "ledger_fal_bootcamp.json", "cap": 58.00, "since": "2026-11-20"},
+}
+PROFILE = os.environ.get("CUTAWAY_FAL_PROFILE", "bootcamp")
+HARD_CAP_USD = PROFILES[PROFILE]["cap"]  # never exceeded; .env may only lower it
+LEDGER = ROOT / PROFILES[PROFILE]["ledger"]
 BUDGET = min(HARD_CAP_USD, float(os.environ.get("CUTAWAY_FAL_BUDGET_USD", HARD_CAP_USD)))
 
 STYLE_GUARD = ("Keep the painterly 2D anime look of the first frame exactly: flat cel shading, "
@@ -57,7 +65,33 @@ MODELS = {
               "args": lambda img, prompt, dur, res: {"start_image_url": img, "prompt": f"{prompt} {STYLE_GUARD}",
                                                      "duration": dur, "resolution": res, "aspect_ratio": "16:9",
                                                      "audio": False}},
+    # FLUX 3 Max (Black Forest Labs, commercial licence): 5-20 s, sound generated in the same pass, 1080p only
+    # an upscale of 720p. Half price until 23 Nov 00:00 UTC. margin 2.0 until a usage record confirms the bill
+    # (Wan billed 2x its list price). Prompting: docs/FLUX3_PLAYBOOK.md.
+    "flux3": {"endpoint": "blackforestlabs/flux-3-max/image-to-video", "usd_per_s": lambda res: _flux_rate(res),
+              "resolution": "720p", "margin": 1.15, "durations": tuple(range(5, 21)), "max_side": 1280,
+              "args": lambda img, prompt, dur, res: {"image_url": img, "prompt": prompt, "duration": dur,
+                                                     "resolution": res, "aspect_ratio": "16:9",
+                                                     "generate_audio": True}},
+    "flux3_kf": {"endpoint": "blackforestlabs/flux-3-max/keyframes-to-video", "usd_per_s": lambda res: _flux_rate(res),
+                 "resolution": "720p", "margin": 1.15, "durations": tuple(range(5, 21)), "max_side": 1280},
 }
+
+
+def _flux_rate(resolution):
+    full = {"720p": 0.17, "1080p": 0.29}[resolution]
+    return full / 2 if datetime.now(timezone.utc) < datetime(2026, 11, 23, tzinfo=timezone.utc) else full
+
+
+def _strip(v):
+    """args for the log: image data URLs replaced by a marker, at any depth."""
+    if isinstance(v, str) and v.startswith("data:"):
+        return "<image>"
+    if isinstance(v, dict):
+        return {k: _strip(x) for k, x in v.items()}
+    if isinstance(v, list):
+        return [_strip(x) for x in v]
+    return v
 
 
 # Audio, through the same ledger. `media` is where the file is in fal's result. ElevenLabs Music lists $0.60 a
@@ -67,6 +101,9 @@ AUDIO = {
                  "reserve": lambda s: 0.60 * math.ceil(s / 60) * 1.25},
     "sfx_el": {"endpoint": "fal-ai/elevenlabs/sound-effects/v2", "usd_per_s": 0.002, "media": "audio",
                "reserve": lambda s: 0.002 * math.ceil(s) * 2},
+    # ElevenLabs v3 TTS: $0.10 per 1000 characters; audio() is called with seconds = len(text).
+    "tts_el": {"endpoint": "fal-ai/elevenlabs/tts/eleven-v3", "usd_per_s": 0.0001, "media": "audio",
+               "reserve": lambda chars: max(0.01, 0.0001 * chars * 2)},
     "mmaudio": {"endpoint": "fal-ai/mmaudio-v2", "usd_per_s": 0.001, "media": "video",
                 "reserve": lambda s: 0.001 * math.ceil(s) * 2},
 }
@@ -119,7 +156,7 @@ def real_spent():
         return None
     try:
         r = httpx.get("https://api.fal.ai/v1/models/usage", headers={"Authorization": f"Key {key}"}, timeout=60,
-                      params={"start": "2026-10-01", "expand": "summary", "timeframe": "day"})
+                      params={"start": PROFILES[PROFILE]["since"], "expand": "summary", "timeframe": "day"})
         r.raise_for_status()
         return round(sum(x["cost"] for x in r.json().get("summary", [])), 6)
     except (httpx.HTTPError, ValueError, KeyError):
@@ -147,7 +184,9 @@ def quote(model, seconds, resolution=None):
     """(expected price, worst-case reservation) in USD for one clip."""
     m = MODELS[model]
     rate = m["usd_per_s"]
-    if isinstance(rate, dict):
+    if callable(rate):
+        rate = rate(resolution or m["resolution"])
+    elif isinstance(rate, dict):
         rate = rate[resolution or m["resolution"]]
     price = rate * math.ceil(seconds + m.get("pad_s", 0))
     return price, price * m["margin"]
@@ -163,9 +202,34 @@ def image_data_url(path, max_side=1920):
     return f"data:image/jpeg;base64,{base64.b64encode(buf.getvalue()).decode()}"
 
 
-def generate(model, image, prompt, out, seconds=5, limit=None, timeout_s=1800, resolution=None):
+def keyframes(frames, prompt, out, seconds, model="flux3_kf", extra=None, limit=None, timeout_s=1800,
+              resolution=None):
+    """FLUX 3 Max keyframes-to-video: frames = [(image_path, frame_index)], 24 fps, up to 10, unique indices,
+    each at most seconds*24. Same reserve/collect behaviour as generate()."""
+    m = MODELS[model]
+    if seconds not in m["durations"]:
+        raise ValueError(f"{model} takes durations {m['durations'][0]}-{m['durations'][-1]}, not {seconds}")
+    idx = [int(i) for _, i in frames]
+    if not 1 <= len(frames) <= 10 or len(set(idx)) != len(idx) or max(idx) > seconds * 24 or min(idx) < 0:
+        raise ValueError(f"keyframe indices {idx} must be 1-10 unique values in 0..{seconds * 24}")
+    out = Path(out)
+    if out.with_suffix(".pending.json").exists():
+        return _run(out)
+    resolution = resolution or m["resolution"]
+    price, reserved = quote(model, seconds, resolution)
+    body = {"prompt": prompt, "duration": seconds, "resolution": resolution, "aspect_ratio": "16:9",
+            "generate_audio": True,
+            "keyframes": [{"image_url": image_data_url(p, m["max_side"]), "frame_index": int(i)} for p, i in frames],
+            **(extra or {})}
+    return _run(out, model, m["endpoint"], body, price, reserved, limit, timeout_s, "video",
+                {"prompt": prompt, "image": [f"{p}@{i}" for p, i in frames], "seconds": seconds})
+
+
+def generate(model, image, prompt, out, seconds=5, limit=None, timeout_s=1800, resolution=None, end_image=None,
+             extra=None):
     """Animate `image` into a clip at `out` with one of MODELS. Returns the result dict, with the prompt
-    actually used under "_prompt".
+    actually used under "_prompt". end_image: the last frame (FLUX 3 Max); extra: more endpoint inputs
+    (e.g. {"seed": 7, "reasoning_level": "low", "generate_audio": False}).
 
     The request is written to <out>.pending.json as soon as fal accepts it. If a run dies while waiting
     (a crash, the laptop hibernating), calling this again for the same `out` collects that paid request
@@ -179,7 +243,11 @@ def generate(model, image, prompt, out, seconds=5, limit=None, timeout_s=1800, r
         return _run(out)
     resolution = resolution or m.get("resolution")
     price, reserved = quote(model, seconds, resolution)
-    body = m["args"](image_data_url(image), prompt, seconds, resolution)
+    side = m.get("max_side", 1920)
+    body = m["args"](image_data_url(image, side), prompt, seconds, resolution)
+    if end_image:
+        body["end_image_url"] = image_data_url(end_image, side)
+    body.update(extra or {})
     return _run(out, model, m["endpoint"], body, price, reserved, limit, timeout_s, "video",
                 {"prompt": prompt, "image": str(image), "seconds": seconds})
 
@@ -221,7 +289,7 @@ def _run(out, model=None, endpoint=None, body=None, price=None, reserved=None, l
         job = {"request_id": sub["request_id"], "status_url": sub["status_url"], "response_url": sub["response_url"],
                "model": model, "endpoint": endpoint, "prompt": record.get("prompt", ""), "image": record.get("image"),
                "seconds": record.get("seconds"), "price": price, "reserved": reserved, "media": media, "kind": record.get("kind", "video"),
-               "args": {k: v for k, v in body.items() if not (isinstance(v, str) and v.startswith("data:"))}}
+               "args": _strip(body)}
         out.parent.mkdir(parents=True, exist_ok=True)
         pending.write_text(json.dumps(job, indent=2, ensure_ascii=False), encoding="utf-8")
     rid = job["request_id"]
