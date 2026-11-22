@@ -6,14 +6,16 @@ Video-generation models are expensive, cap out at a few seconds, and drift: the 
 
 It was built to make an entry for Mauritius's National Short Film Competition 2026 (AI category, theme "What If the Dodo Returns?"): a creator on a small island, with a laptop and no budget, telling a story about their own place.
 
-Built for the Meta Global AI Developer Hackathon (Oct 27 – Nov 4, 2026), track **Build for Your World**. The 2.5D pipeline was written during the hackathon. The video-model pipeline used for *55 Spring Festivals* (`cutaway/bootcamp.py`, `cutaway/bootcamp_final.py`, and the FLUX 3 Max and ElevenLabs support in `cutaway/i2v.py`) was added afterwards, for the China-Mauritius AI Video Bootcamp on 21 November 2026.
+Built for the Meta Global AI Developer Hackathon (Oct 27 – Nov 4, 2026), track **Build for Your World**. The 2.5D pipeline and the image-to-video pipeline used for the dodo film (`cutaway/director.py`, `cutaway/i2v.py` with Wan 3.0 and Kling 2.6) were written during the hackathon. The bootcamp pipeline used for *55 Spring Festivals* (`cutaway/bootcamp.py`, `cutaway/bootcamp_final.py`, and the FLUX 3 Max and ElevenLabs support in `cutaway/i2v.py`) was added afterwards, for the China-Mauritius AI Video Bootcamp on 21 November 2026.
+
+Cutaway has two ways of moving a painted keyframe: the **2.5D Blender pipeline** described below, and **image-to-video models** directed and reviewed by Muse Spark. The dodo film started in Blender, but its final cut uses image-to-video, because the video models gave the dodo more natural motion.
 
 ## Films made with Cutaway
 
 | | Film | How it was made |
 |---|---|---|
 | <a href="films/55_spring_festivals/"><img src="films/55_spring_festivals/media/55_photos.gif" width="320" alt="55 Spring Festivals"></a> | **[55 Spring Festivals · 五十五个春节](films/55_spring_festivals/)** (3:59). One shop, one family and 55 years between China and Mauritius. Team Proxima's entry for the China-Mauritius AI Storytelling and AI Video Clip Competition 2026, made in one day at the bootcamp. | Video-model pipeline: Muse Image keyframes checked by Muse Spark, animated by FLUX 3 Max, reviewed by Muse Spark, scored with ElevenLabs |
-| <a href="films/dodo/"><img src="films/dodo/media/dodo.gif" width="320" alt="The Dodo Came Back"></a> | **[The Dodo Came Back](films/dodo/)**. MFDC National Short Film Competition 2026, AI category, theme "What If the Dodo Returns?" | 2.5D pipeline: painted keyframes cut into depth layers and filmed in Blender (below) |
+| <a href="films/dodo/"><img src="films/dodo/media/dodo.gif" width="320" alt="The Dodo Came Back"></a> | **[The Dodo Came Back](films/dodo/)**. MFDC National Short Film Competition 2026, AI category, theme "What If the Dodo Returns?" | Image-to-video: Muse Image keyframes animated by Wan 3.0 (Kling 2.6 where Wan failed), Muse Spark reviewing every take, upscaled with Real-ESRGAN. An earlier version used the 2.5D Blender pipeline below |
 
 
 ## How it works
