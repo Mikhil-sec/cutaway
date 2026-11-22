@@ -21,7 +21,7 @@ China-Mauritius AI Storytelling and AI Video Clip Competition 2026, Generative A
 | Meta Muse Spark (Meta Model API) | Checked every keyframe and video take, rewrote weak prompts, wrote the music composition plan | Online |
 | FLUX 3 Max, Black Forest Labs (via fal.ai) | Image-to-video and keyframes-to-video: animated every shot and generated its sound effects | Online |
 | ElevenLabs Music (via fal.ai) | The film's music score | Online |
-| ElevenLabs Eleven v3 text-to-speech (via fal.ai) | All English dialogue and narration | Online |
+| ElevenLabs Eleven v3 text-to-speech (via fal.ai) | Off-screen English voice lines (narration, phone call, video call) | Online |
 | Claude (Anthropic) | Wrote the pipeline code and the image and video prompts with the team; adapted the team's comic into a shot list; translated the Chinese subtitles | Online |
 | Cutaway (our own Python pipeline) | Runs and logs every AI call, its prompt and its cost | Offline |
 | ffmpeg | Non-AI editing: cutting, ordering, flash transitions, captions and subtitles, audio mixing, MP4 export | Offline |
