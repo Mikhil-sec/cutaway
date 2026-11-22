@@ -94,4 +94,8 @@ The day ran like this: plan → character sheets → keyframes (with Spark's rev
 
 Mikhil Naika (team leader) · Seeya Awotar · Yorvan Rengasamy, Middlesex University.
 
+### Thank you
+
+A big thank you to my teammates **Seeya Awotar** ([seeya0611](https://github.com/seeya0611)) and **Yorvan Rengasamy** ([yorvan2401](https://github.com/yorvan2401)). *55 Spring Festivals* began as our stage-1 comic, and we wrote its story, characters and dialogue together. On bootcamp day they critiqued every keyframe and every take with me, pushed for the scenes that make the film (Wei's goodbye to his mother, the 55 photos, the ending), and helped pay for the video generation. This film is theirs as much as mine.
+
 The film was generated during the bootcamp for the China-Mauritius AI Storytelling and AI Video Clip Competition 2026. The organisers hold non-commercial rights to exhibit and promote it.
