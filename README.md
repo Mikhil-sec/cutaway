@@ -6,7 +6,15 @@ Video-generation models are expensive, cap out at a few seconds, and drift: the 
 
 It was built to make an entry for Mauritius's National Short Film Competition 2026 (AI category, theme "What If the Dodo Returns?"): a creator on a small island, with a laptop and no budget, telling a story about their own place.
 
-Built for the Meta Global AI Developer Hackathon (Oct 27 – Nov 4, 2026), track **Build for Your World**. All code in this repository was written during the hackathon.
+Built for the Meta Global AI Developer Hackathon (Oct 27 – Nov 4, 2026), track **Build for Your World**. The 2.5D pipeline was written during the hackathon. The video-model pipeline used for *55 Spring Festivals* (`cutaway/bootcamp.py`, `cutaway/bootcamp_final.py`, and the FLUX 3 Max and ElevenLabs support in `cutaway/i2v.py`) was added afterwards, for the China-Mauritius AI Video Bootcamp on 21 November 2026.
+
+## Films made with Cutaway
+
+| | Film | How it was made |
+|---|---|---|
+| <a href="films/55_spring_festivals/"><img src="films/55_spring_festivals/media/55_photos.gif" width="320" alt="55 Spring Festivals"></a> | **[55 Spring Festivals · 五十五个春节](films/55_spring_festivals/)** (3:59). One shop, one family and 55 years between China and Mauritius. Team Proxima's entry for the China-Mauritius AI Storytelling and AI Video Clip Competition 2026, made in one day at the bootcamp. | Video-model pipeline: Muse Image keyframes checked by Muse Spark, animated by FLUX 3 Max, reviewed by Muse Spark, scored with ElevenLabs |
+| | **[The Dodo Came Back](films/dodo/)**. MFDC National Short Film Competition 2026, AI category, theme "What If the Dodo Returns?" | 2.5D pipeline: painted keyframes cut into depth layers and filmed in Blender (below) |
+
 
 ## How it works
 
@@ -75,6 +83,32 @@ python -m cutaway.director films/dodo exploded --shots s07_waterfront_pouce   # 
 
 Add `--shots id1,id2` to work on some shots, `--preview` to render three stills per shot, and `--final` for 1920×1080.
 
+## Video-model pipeline (55 Spring Festivals)
+
+A second, faster mode for a time-boxed session. It animates painted keyframes with a video model instead of filming layers in Blender:
+
+```
+plan ──► sheets ──► keyframes ──► video ──► review ──► cut ──► score + voice ──► final edit
+         Muse       Muse Image    FLUX 3    Muse       ffmpeg  ElevenLabs        ffmpeg: captions,
+         Image      ×3 candidates Max       Spark                                subtitles, mix
+         (ages by   Muse Spark    (fal.ai)  watches
+         editing)   picks best              each take
+```
+
+```
+python -m cutaway.bootcamp sheets                 # character sheets, older ages painted from younger ones
+python -m cutaway.bootcamp keyframes              # 3 candidates per frame, Muse Spark picks the best
+python -m cutaway.bootcamp video --yes            # FLUX 3 Max, all clips in parallel, under the hard cap
+python -m cutaway.bootcamp review                 # Muse Spark scores every take and rewrites weak prompts
+python -m cutaway.bootcamp cut
+python -m cutaway.bootcamp score --yes            # ElevenLabs Music to the cut's timing
+python -m cutaway.bootcamp voice --yes            # ElevenLabs v3 voice lines
+python -m cutaway.bootcamp_final timeline         # title, photo inserts, end card, credits
+python -m cutaway.bootcamp_final render           # bilingual captions and subtitles, mix, MP4
+```
+
+The plan is one JSON file (see [films/55_spring_festivals/film.json](films/55_spring_festivals/film.json)). Prompting lessons for FLUX 3 Max are in [docs/FLUX3_PLAYBOOK.md](docs/FLUX3_PLAYBOOK.md).
+
 ## Layout
 
 - `cutaway/director.py`: the agent and its stages
@@ -84,6 +118,8 @@ Add `--shots id1,id2` to work on some shots, `--preview` to render three stills 
 - `cutaway/puppet.py`: bendable characters: weight maps, pivots, motion presets
 - `cutaway/blender_shot.py`: headless Blender renderer for a JSON shot spec
 - `cutaway/edit.py`, `cutaway/sound.py`: assembly, end cards, sound mixing
+- `cutaway/bootcamp.py`, `cutaway/bootcamp_final.py`: the video-model pipeline and its final edit
+- `cutaway/i2v.py`: image-to-video and audio models on fal.ai, with the reserve-then-settle spend cap
 - `experiments/`: the proofs that led here
 
 ## Credits and licence
