@@ -1,6 +1,44 @@
 # Progress
 
-Last updated: 2026-11-02.
+Last updated: 2026-11-24.
+
+## Status (2026-11-24): both films done; the next session starts a new film
+
+- **The Dodo Came Back** is finished and was submitted to MFDC on 16 Nov (details further down, from 2 Nov).
+- **55 Spring Festivals** is finished and was submitted at the bootcamp on 21 Nov.
+  - The submitted file is `films/bootcamp/backup_v1/55_Spring_Festivals_RNA_team.mp4` (3:58.8, 1280x720). In it, FLUX spoke the on-camera dialogue and ElevenLabs did the off-screen lines.
+  - A later version, `films/bootcamp/55_Spring_Festivals_final_v2.mp4`, re-voices every line with ElevenLabs v3. It was not submitted.
+  - The plan, rules and decisions are in [BOOTCAMP.md](BOOTCAMP.md) and [BOOTCAMP_FILM.md](BOOTCAMP_FILM.md); the final shot plan is `films/bootcamp/film.json` (31 shots).
+  - Public copy: `films/55_spring_festivals/` (README, compressed film, keyframes, character sheets, plan, AI Creation Statement).
+- **GitHub:** everything is merged into `main` (PRs 1 to 7). The README leads with the image-to-video crew and shows both films with GIFs. Teammates Seeya Awotar (seeya0611) and Yorvan Rengasamy (yorvan2401) are invited as collaborators and credited.
+- **fal accounts:**
+  - `bootcamp` profile (`ledger_fal_bootcamp.json`, cap $58): $32.72 spent; **$27.28 left of the $60 the three teammates pooled**. That's their money: ask before using it for anything else.
+  - `dodo` profile: the user's own account, $44.21 of the $45 cap spent.
+  - FLUX 3 Max's half-price offer ended on 23 Nov. **720p now costs $0.17/s**, so a 4-minute film is about $41 per full take.
+- **Meta Model API:** about $11.50 used on the bootcamp day (about $20 in total). Whether the hackathon credit still pays is unconfirmed; the dashboard updates late.
+
+## Starting a new film (bootcamp pipeline)
+
+1. **Agree the basics with the user first:** the story (the user supplies the core idea), the style, the length, the deadline and the rules, and **the budget and whose fal account pays**. Add a new profile to `PROFILES` in `cutaway/i2v.py` with its own ledger and cap, and select it with `CUTAWAY_FAL_PROFILE`.
+2. **Make the film folder configurable.** `FILM` in `cutaway/bootcamp.py` is hard-coded to `films/bootcamp`. Change it to take a `--film` argument or an environment variable before starting; otherwise the new film overwrites the bootcamp working folder. `meta.CONTEXT["film"]` and `statement()` also say "bootcamp".
+3. **Move the film-specific text out of the code.** `cutaway/bootcamp_final.py` has *55 Spring Festivals*' subtitles (`LINES`), captions (`CAPTIONS`), photo inserts (`PHOTO_AFTER`), title, end card and credits hard-coded. Move them into the film's `film.json`.
+4. **Write `film.json`** (format in the `bootcamp.py` docstring; `films/bootcamp/film.json` is a full example). Keep:
+   - `look` (Muse Image style line), `sheet_look` (plain model-sheet style) and `motion_style` (the FLUX prefix: "Continue the uploaded image... maintain faces... no morphing... alive from the first frame").
+   - Character sheets per age, where older ages use `refs: ["@younger"]`.
+   - Frames whose refs point at the shot they must cut with (`@sid.frame`).
+   - Short shots (5–8 s) with one camera move each, end frames only where the landing matters and the start and end frames are close.
+   - English dialogue as TTS `voice` lines when lips aren't the focus, because FLUX garbles names.
+5. **Run:** `sheets` → send previews → `keyframes` (3 candidates each) → send the final keyframes for approval → one paid test clip → `video --yes` (set `CUTAWAY_FAL_BUDGET_USD` to keep money back for audio) → `review` → labelled rough cut → the user's notes → retakes (set `choice` in a shot's `state.json` to the take you want) → `voice --yes` → `score --yes` → `bootcamp_final timeline` and `render`.
+
+## Known issues (fix before the next paid run)
+
+- **`i2v._run` leaks a reservation when the submit itself fails** (e.g. wifi drops: `ConnectError` after `_reserve`). The ledger then over-counts. It's safe, but it blocks budget. On 21 Nov it was reset by hand to fal's real bill. Release the reservation in an `except` around the `httpx.post`.
+- `best_take()` prefers reviewed takes, so an unreviewed retake loses to an older reviewed one. Either review new takes or set `choice`.
+- `bootcamp_final.render` writes `55_Spring_Festivals_final_v2.mp4` (hard-coded name).
+- A global "everyone is moving" line in `motion_style` contradicts quiet scenes (bedside, empty room). Let a shot override or skip it.
+
+## Earlier: the dodo film (as of 2026-11-02)
+
 
 ## Status (2026-11-02, end of day)
 

@@ -1,5 +1,7 @@
 # Bootcamp: China-Mauritius AI Video Clip Competition 2026 (stage 2)
 
+> **Done (21 Nov 2026).** *55 Spring Festivals* was submitted as `films/bootcamp/backup_v1/55_Spring_Festivals_RNA_team.mp4` (3:58.8) with the AI Creation Statement. fal spend: $32.72 of $60. The public copy is in `films/55_spring_festivals/`. What follows is the record from before and during the day; lessons are in [LESSONS.md](LESSONS.md).
+
 Read this first in a new session about the bootcamp. It holds the rules, the decisions made so far, the budget and the plan. The dodo film (MFDC, submitted 16 Nov) is a separate project: see `PROGRESS.md`.
 
 ## The competition

@@ -38,3 +38,19 @@ Short, concrete lessons from building Cutaway and making its first film. Read be
   only when it really changed, and replaced keyframes are archived.
 - **Muse Image's content filter is unpredictable,** and a critical story will trip it; rewording with Muse Spark gets through, but softens the mood, so put the harshness back with lighting.
 - **Reference photos of real places are what make it local.** Without "Mauritius", Port Louis came out Indonesian.
+
+## The bootcamp film (FLUX 3 Max, one day)
+
+- **Hand-painted 2D anime holds in FLUX 3 Max image-to-video.** The first test clip kept the painted look from the first frame to the last. BFL's docs say nothing about non-photoreal styles, so test once before committing.
+- **The real bill matched the list price** ($0.085/s at 720p on the discount). Reconcile anyway: fal's usage records lag by a minute.
+- **Clips start static.** People hold still for 1–2 s before moving. A prompt line saying everyone is already moving at frame one, extras included, helps. Trimming the first 1–2 s in the edit fixes what's left.
+- **Big camera moves over crowds morph faces** (a top-down crane over a wedding table). Over many small faces, keep the camera nearly locked off and put the life into the people.
+- **An end frame far from the start frame makes FLUX cut** to a new shot mid-clip (stars → boy by the wall, airport hall → plane over a lagoon). Keep start and end frames related, or drop the end frame.
+- **Someone who isn't in the start frame pops in** (Smriti appearing in the doorway). Put every character who matters in the first frame.
+- **FLUX garbles names and short lines** ("So you're Wei" became "So your way") and drifts toward an American announcer voice. Lines where the speaker's back is to the camera are cleaner as TTS (ElevenLabs v3), with the clip's own speech turned down underneath.
+- **A global style line applies to everything.** "Every crowd in Mauritius is diverse" made Muse Image add crowds of children to Meizhou and to the view through a doorway. Write conditional rules: "when a scene already has a crowd…", and "never add people who aren't described".
+- **Spark marks down what it was told to avoid, even when the prompt asks for it.** It flagged the requested WELCOME HOME banner as "text", and a shop that wasn't "exactly centred" because the reference frame wasn't. Write precise constraints and look at the frames yourself before repainting.
+- **Ageing chains work.** Painting each older sheet, or each photo in a sequence, from the previous one keeps faces consistent. But the user judged identity by eye: re-anchoring Wei at 14 and 26 on his 21-year-old sheet fixed "doesn't look like the same person".
+- **Three candidates per keyframe, with Spark picking the best**, costs cents and lifts most frames to 8–9/10 in one round.
+- **A dropped connection during submission** fails before fal accepts anything (nothing billed), but the code had already reserved the money. Requests already accepted resume from their `.pending.json`.
+- **Feedback rounds take far longer than generation.** All 32 clips rendered in about 6 minutes in parallel, but the team's critique rounds took hours. Leave at least 40 minutes before the deadline for the final edit and export.
